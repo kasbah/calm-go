@@ -128,6 +128,10 @@ export class Impl implements Methods<InternalState> {
     ctx: Context,
     request: IJoinGameRequest
   ): Response {
+    const playerJoined = state.players.find((player) => player.id === userId);
+    if (playerJoined != null) {
+      return Response.error("Player already joined");
+    }
     state.players.push({ id: userId, color: Color.None });
     return Response.ok();
   }
@@ -138,7 +142,6 @@ export class Impl implements Methods<InternalState> {
     request: IPickColorRequest
   ): Response {
     const player = state.players.find((player) => player.id === userId);
-    console.log(player, state.players)
     const oponent = state.players.find((player) => player.id !== userId);
     if (player == null) {
       return Response.error("Player not found");
