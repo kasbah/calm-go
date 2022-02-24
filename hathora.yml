@@ -1,0 +1,25 @@
+types:
+  Color:
+    - "Black"
+    - "White"
+    - "None"
+  Player:
+    id: "UserId"
+    color: "Color"
+  GameState:
+    board: "Color[][]"
+    turn: "Color"
+    players: "Player[]"
+
+methods:
+  joinGame:
+  pickColor:
+    color: Color
+  makeMove:
+    position: "int[]"
+
+auth:
+  anonymous: {}
+
+userState: "GameState"
+error: "string"
