@@ -128,11 +128,23 @@ export class Impl implements Methods<InternalState> {
     ctx: Context,
     request: IJoinGameRequest
   ): Response {
+    if (state.players.length === 2) {
+      return Response.error("Game already has two players.");
+    }
     const playerJoined = state.players.find((player) => player.id === userId);
     if (playerJoined != null) {
-      return Response.error("Player already joined");
+      return Response.error("Player already joined.");
     }
-    state.players.push({ id: userId, color: Color.None });
+    let color = Color.None;
+    const oponent = state.players.find((player) => player.id !== userId);
+    if (oponent != null) {
+      if (oponent.color === Color.Black) {
+        color = Color.White;
+      } else if (oponent.color === Color.White) {
+        color = Color.Black;
+      }
+    }
+    state.players.push({ id: userId, color });
     return Response.ok();
   }
   pickColor(
@@ -144,7 +156,7 @@ export class Impl implements Methods<InternalState> {
     const player = state.players.find((player) => player.id === userId);
     const oponent = state.players.find((player) => player.id !== userId);
     if (player == null) {
-      return Response.error("Player not found");
+      return Response.error("Player not found.");
     }
     player.color = request.color;
     if (oponent != null) {
