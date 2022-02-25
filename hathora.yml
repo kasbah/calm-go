@@ -6,8 +6,11 @@ types:
   Player:
     id: "UserId"
     color: "Color"
+  Move:
+    x: "int"
+    y: "int"
   GameState:
-    board: "Color[][]"
+    signMap: "int[][]"
     turn: "Color"
     players: "Player[]"
 
@@ -16,7 +19,7 @@ methods:
   pickColor:
     color: Color
   makeMove:
-    position: "int[]"
+    move: Move
 
 auth:
   anonymous: {}
