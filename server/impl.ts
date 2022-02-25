@@ -10,6 +10,7 @@ import {
   IPickColorRequest,
   IMakeMoveRequest,
   IPassRequest,
+  IUndoRequest,
 } from "../api/types";
 
 type Pass = { type: "pass"; color: Color };
@@ -23,6 +24,7 @@ type InternalState = {
   history: (Board | Pass)[];
   turn: Color;
   players: Player[];
+  undoRequested: UserId | undefined;
 };
 
 function checkTurn(state: InternalState, playerColor: Color): Response {
@@ -45,6 +47,7 @@ export class Impl implements Methods<InternalState> {
       history: [],
       turn: Color.Black,
       players: [],
+      undoRequested: undefined,
     };
   }
   joinGame(
@@ -114,7 +117,7 @@ export class Impl implements Methods<InternalState> {
         [request.move.x, request.move.y],
         {
           preventOverwrite: true,
-          preventSuicide: true,
+          preventSuicide: false,
           preventKo: true,
         }
       );
@@ -152,11 +155,45 @@ export class Impl implements Methods<InternalState> {
     }
     return Response.ok();
   }
+  undo(
+    state: InternalState,
+    userId: UserId,
+    ctx: Context,
+    request: IUndoRequest
+  ): Response {
+    const player = state.players.find((player) => player.id === userId);
+    if (player == null) {
+      return Response.error("Player is not in this game.");
+    }
+    const lastTurn = state.history.pop();
+    if (lastTurn == null) {
+      return Response.error("Nothing to undo.");
+    }
+    // the request from the first player is recorded
+    if (state.undoRequested === undefined) {
+      state.undoRequested = player.id;
+      return Response.ok();
+    }
+    if (state.undoRequested === userId) {
+      return Response.error("Undo already requested.");
+    }
+    // when the second player requests undo it's a confirmation and we perform
+    // the undo
+    if (isPass(lastTurn)) {
+      state.turn = lastTurn.color;
+    } else {
+      state.board = lastTurn;
+      state.turn = state.turn === Color.White ? Color.Black : Color.White;
+    }
+    state.undoRequested = undefined;
+    return Response.ok();
+  }
   getUserState(state: InternalState, userId: UserId): GameState {
     return {
       signMap: state.board.signMap,
       turn: state.turn,
       players: state.players,
+      undoRequested: state.undoRequested,
     };
   }
 }

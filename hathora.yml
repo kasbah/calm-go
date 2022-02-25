@@ -13,6 +13,7 @@ types:
     signMap: "int[][]"
     turn: "Color"
     players: "Player[]"
+    undoRequested: "UserId?"
 
 methods:
   joinGame:
@@ -21,6 +22,7 @@ methods:
   makeMove:
     move: Move
   pass:
+  undo:
 
 auth:
   anonymous: {}
