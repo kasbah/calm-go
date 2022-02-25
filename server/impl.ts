@@ -9,14 +9,34 @@ import {
   IJoinGameRequest,
   IPickColorRequest,
   IMakeMoveRequest,
+  IPassRequest,
 } from "../api/types";
+
+type Pass = { type: "pass"; color: Color };
+
+function isPass(obj: any): obj is Pass {
+  return obj.type === "pass";
+}
 
 type InternalState = {
   board: Board;
-  history: Board[];
+  history: (Board | Pass)[];
   turn: Color;
   players: Player[];
 };
+
+function checkTurn(state: InternalState, playerColor: Color): Response {
+  if (state.turn === Color.None) {
+    return Response.error("Game is not active.");
+  }
+  if (playerColor === Color.None) {
+    return Response.error("Player has not been assigned a color.");
+  }
+  if (playerColor !== state.turn) {
+    return Response.error("It's not the player's turn.");
+  }
+  return Response.ok();
+}
 
 export class Impl implements Methods<InternalState> {
   initialize(userId: UserId, ctx: Context): InternalState {
@@ -79,18 +99,13 @@ export class Impl implements Methods<InternalState> {
     ctx: Context,
     request: IMakeMoveRequest
   ): Response {
-    if (state.turn === Color.None) {
-      return Response.error("Game is not active.");
-    }
     const player = state.players.find((player) => player.id === userId);
     if (player == null) {
       return Response.error("Player is not in this game.");
     }
-    if (player.color === Color.None) {
-      return Response.error("Player has not been assigned a color.");
-    }
-    if (player.color !== state.turn) {
-      return Response.error("It's not the player's turn.");
+    const response = checkTurn(state, player.color);
+    if (response.type === "error") {
+      return response;
     }
     const sign = player.color === Color.White ? -1 : 1;
     try {
@@ -110,6 +125,32 @@ export class Impl implements Methods<InternalState> {
     } catch (e: any) {
       return Response.error(e.toString());
     }
+  }
+  pass(
+    state: InternalState,
+    userId: UserId,
+    ctx: Context,
+    request: IPassRequest
+  ): Response {
+    const player = state.players.find((player) => player.id === userId);
+    if (player == null) {
+      return Response.error("Player is not in this game.");
+    }
+    const response = checkTurn(state, player.color);
+    if (response.type === "error") {
+      return response;
+    }
+    state.history.push({ type: "pass", color: player.color });
+    state.turn = player.color === Color.White ? Color.Black : Color.White;
+    // if the last two moves were passes
+    if (
+      state.history.length >= 2 &&
+      isPass(state.history[state.history.length - 2])
+    ) {
+      // end the game
+      state.turn = Color.None;
+    }
+    return Response.ok();
   }
   getUserState(state: InternalState, userId: UserId): GameState {
     return {

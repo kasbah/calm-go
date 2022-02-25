@@ -20,6 +20,7 @@ methods:
     color: Color
   makeMove:
     move: Move
+  pass:
 
 auth:
   anonymous: {}
