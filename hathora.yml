@@ -9,7 +9,12 @@ types:
   Move:
     x: "int"
     y: "int"
+  GamePhase:
+    - "NotStarted"
+    - "InProgress"
+    - "Ended"
   GameState:
+    phase: "GamePhase"
     signMap: "int[][]"
     turn: "Color"
     players: "Player[]"
@@ -17,10 +22,12 @@ types:
 
 methods:
   joinGame:
+  setBoardSize:
+    size: "int"
   pickColor:
-    color: Color
+    color: "Color"
   makeMove:
-    move: Move
+    move: "Move"
   pass:
   undo:
 
