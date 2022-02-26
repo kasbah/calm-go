@@ -22,6 +22,7 @@ types:
 
 methods:
   joinGame:
+  leaveGame:
   setBoardSize:
     size: "int"
   pickColor:

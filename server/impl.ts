@@ -8,6 +8,7 @@ import {
   GameState,
   UserId,
   IJoinGameRequest,
+  ILeaveGameRequest,
   ISetBoardSizeRequest,
   IPickColorRequest,
   IMakeMoveRequest,
@@ -81,6 +82,19 @@ export class Impl implements Methods<InternalState> {
       }
     }
     state.players.push({ id: userId, color });
+    return Response.ok();
+  }
+  leaveGame(
+    state: InternalState,
+    userId: UserId,
+    ctx: Context,
+    request: ILeaveGameRequest
+  ): Response {
+    const playerLeaving = state.players.find((player) => player.id === userId);
+    if (playerLeaving == null) {
+      return Response.error("Player is not in this game.");
+    }
+    state.players = state.players.filter((player) => player.id !== userId);
     return Response.ok();
   }
   setBoardSize(
