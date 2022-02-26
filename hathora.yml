@@ -13,13 +13,17 @@ types:
   Captures:
     black: "int"
     white: "int"
+  Move:
+      x: "int"
+      y: "int"
   GameState:
     phase: "GamePhase"
     signMap: "int[][]"
     turn: "Color"
     players: "Player[]"
     undoRequested: "UserId?"
-    captures: Captures
+    captures: "Captures"
+    lastMove: "Move?"
 
 methods:
   joinGame:

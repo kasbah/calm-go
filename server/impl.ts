@@ -4,6 +4,7 @@ import { Response } from "../api/base";
 import {
   Color,
   Player,
+  Move,
   GamePhase,
   GameState,
   UserId,
@@ -29,6 +30,7 @@ type InternalState = {
   turn: Color;
   players: Player[];
   undoRequested: UserId | undefined;
+  lastMove: Move | undefined;
 };
 
 function checkTurn(state: InternalState, playerColor: Color): Response {
@@ -57,6 +59,7 @@ export class Impl implements Methods<InternalState> {
       turn: Color.Black,
       players: [{ id: userId, color: Color.None }],
       undoRequested: undefined,
+      lastMove: undefined,
     };
   }
   joinGame(
@@ -188,6 +191,7 @@ export class Impl implements Methods<InternalState> {
       state.board = newBoard;
       state.turn = player.color === Color.White ? Color.Black : Color.White;
       state.phase = GamePhase.InProgress;
+      state.lastMove = request;
       return Response.ok();
     } catch (e: any) {
       return Response.error(e.toString());
@@ -247,6 +251,19 @@ export class Impl implements Methods<InternalState> {
     if (isPass(lastTurn)) {
       state.turn = lastTurn.color;
     } else {
+      // figure out what the last move was now that we are undoing
+      const twoTurns = state.history.slice(-2);
+      let beforeLastTurn = twoTurns.pop();
+      if (isPass(beforeLastTurn)) {
+        beforeLastTurn = twoTurns.pop();
+      }
+      if (beforeLastTurn == null) {
+        state.lastMove = undefined;
+      } else {
+        const diffVerteces = lastTurn.diff(beforeLastTurn as Board);
+        state.lastMove = { x: diffVerteces![0][0], y: diffVerteces![0][1] };
+      }
+      // actually undo
       state.board = lastTurn;
       state.turn = state.turn === Color.White ? Color.Black : Color.White;
     }
@@ -269,6 +286,7 @@ export class Impl implements Methods<InternalState> {
       turn: state.turn,
       players: state.players,
       undoRequested: state.undoRequested,
+      lastMove: state.lastMove,
     };
   }
 }
