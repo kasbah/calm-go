@@ -1,7 +1,9 @@
 import React from "react";
-import { HathoraClient, UpdateArgs } from "../.hathora/client";
+import { useAppContext } from "./AppContext";
 
 function Home() {
+  const { client } = useAppContext();
+  console.log({client})
   return (
     <div className="flex h-screen flex-col ">
       <div className="flex justify-center">
