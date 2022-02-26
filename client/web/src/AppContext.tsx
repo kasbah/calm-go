@@ -5,13 +5,14 @@ import { HathoraClient } from "../../.hathora/client";
 
 const AppContext = createContext({
   user: null,
-  gamesStates: {},
-  connections: {},
   createGame: () => {},
+  getConnections: () => {},
+  gameStates: {},
 });
 
+const client: HathoraClient = new HathoraClient(import.meta.env.VITE_APP_ID);
+
 export default function AppContextProvider({ children }) {
-  const [client, setClient]: [HathoraClient, any] = useState(null);
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [connections, setConnections] = useState({});
@@ -19,8 +20,6 @@ export default function AppContextProvider({ children }) {
   const navigate = useNavigate();
 
   useEffect(async () => {
-    const client = new HathoraClient(import.meta.env.VITE_APP_ID);
-    setClient(client);
     let t = localStorage.getItem("token");
     let u;
     try {
@@ -37,13 +36,15 @@ export default function AppContextProvider({ children }) {
     setUser(u);
   }, []);
 
+  const onUpdate = ({ stateId, state }) => {
+    setGameStates((states) => ({ ...states, [stateId]: state }));
+  };
+
+  const onConnectionFailure = (e) => {
+    console.error("Connection failed:", e.message);
+  };
+
   const createGame = async () => {
-    const onUpdate = ({ stateId, state }) => {
-      setGameStates((states) => ({ ...states, [stateId]: state }));
-    };
-    const onConnectionFailure = (e) => {
-      console.error("Connection failed:", e.message);
-    };
     const connection = await client.connectNew(
       token,
       onUpdate,
@@ -53,11 +54,30 @@ export default function AppContextProvider({ children }) {
       ...connections,
       [connection.stateId]: connection,
     }));
-    navigate(`/game/${connection.stateId}/`);
+    navigate(`/game/${connection.stateId}`);
+  };
+
+  const getConnection = (stateId) => {
+    let connection = connections[stateId];
+    if (connection == null && token != null) {
+      connection = client.connectExisting(
+        token,
+        stateId,
+        onUpdate,
+        onConnectionFailure
+      );
+      setConnections((connections) => ({
+        ...connections,
+        [connection.stateId]: connection,
+      }));
+    }
+    return connection;
   };
 
   return (
-    <AppContext.Provider value={{ connections, createGame, gameStates, user }}>
+    <AppContext.Provider
+      value={{ user, createGame, getConnection, gameStates }}
+    >
       {children}
     </AppContext.Provider>
   );
