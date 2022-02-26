@@ -6,9 +6,6 @@ types:
   Player:
     id: "UserId"
     color: "Color"
-  Move:
-    x: "int"
-    y: "int"
   GamePhase:
     - "NotStarted"
     - "InProgress"
@@ -28,7 +25,8 @@ methods:
   pickColor:
     color: "Color"
   makeMove:
-    move: "Move"
+    x: "int"
+    y: "int"
   pass:
   undo:
 

@@ -167,7 +167,7 @@ export class Impl implements Methods<InternalState> {
       return response;
     }
     const sign = player.color === Color.White ? -1 : 1;
-    const vertex: Vertex = [request.move.x, request.move.y];
+    const vertex: Vertex = [request.x, request.y];
     const { pass, overwrite, ko } = state.board.analyzeMove(sign, vertex);
     if (pass) {
       return Response.error("Move is outside the board.");
