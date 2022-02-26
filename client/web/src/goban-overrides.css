@@ -1,0 +1,24 @@
+.shudan-goban-image {
+  background-image: none;
+}
+.shudan-goban-image::after {
+  background: none;
+}
+
+.shudan-stone-image.shudan-sign_-1 {
+  background-image: url("./custom_white_stone.png");
+}
+
+.shudan-goban {
+  --shudan-board-border-width: 0em;
+  --shudan-board-border-color: white;
+
+  --shudan-board-background-color: white;
+  --shudan-board-foreground-color: #333;
+
+  --shudan-black-background-color: white;
+  --shudan-black-foreground-color: white;
+
+  --shudan-white-background-color: white;
+  --shudan-white-foreground-color: white;
+}

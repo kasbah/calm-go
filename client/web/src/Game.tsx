@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { HathoraConnection } from "../../.hathora/client";
 import { Goban } from "@sabaki/shudan";
 import "@sabaki/shudan/css/goban.css";
+import "./goban-overrides.css"
 
 import { useAppContext } from "./AppContext";
 
