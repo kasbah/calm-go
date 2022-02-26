@@ -5,7 +5,7 @@ import { HathoraClient } from "../../.hathora/client";
 const AppContext = createContext({
   user: null,
   gamesStates: {},
-  connections: [],
+  connections: {},
   createGame: () => {},
 });
 
@@ -13,7 +13,7 @@ export default function AppContextProvider({ children }) {
   const [client, setClient]: [HathoraClient, any] = useState(null);
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
-  const [connections, setConnections] = useState([]);
+  const [connections, setConnections] = useState({});
   const [gameStates, setGameStates] = useState({});
 
   useEffect(async () => {
@@ -35,15 +35,10 @@ export default function AppContextProvider({ children }) {
     setUser(u);
   }, []);
 
-  useEffect(() => {
-    console.log("gameStates", gameStates);
-  }, [gameStates]);
-
   const createGame = async () => {
     const onUpdate = ({ stateId, state }) => {
       setGameStates((states) => ({ ...states, [stateId]: state }));
     };
-
     const onConnectionFailure = (e) => {
       console.error("Connection failed:", e.message);
     };
@@ -52,7 +47,10 @@ export default function AppContextProvider({ children }) {
       onUpdate,
       onConnectionFailure
     );
-    setConnections((connections) => connections.concat([connection]));
+    setConnections((connections) => ({
+      ...connections,
+      [connection.stateId]: connection,
+    }));
   };
 
   return (
