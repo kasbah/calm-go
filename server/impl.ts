@@ -54,7 +54,7 @@ export class Impl implements Methods<InternalState> {
       board: Board.fromDimensions(9),
       history: [],
       turn: Color.Black,
-      players: [],
+      players: [{ id: userId, color: Color.None }],
       undoRequested: undefined,
     };
   }
