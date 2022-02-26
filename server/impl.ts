@@ -1,4 +1,4 @@
-import Board from "@sabaki/go-board";
+import Board, { Vertex } from "@sabaki/go-board";
 import { Methods, Context } from "./.hathora/methods";
 import { Response } from "../api/base";
 import {
@@ -61,7 +61,7 @@ export class Impl implements Methods<InternalState> {
     }
     const playerJoined = state.players.find((player) => player.id === userId);
     if (playerJoined != null) {
-      return Response.error("You have already joined this game.");
+      return Response.error("Player has already joined this game.");
     }
     let color = Color.None;
     const oponent = state.players.find((player) => player.id !== userId);
@@ -111,16 +111,23 @@ export class Impl implements Methods<InternalState> {
       return response;
     }
     const sign = player.color === Color.White ? -1 : 1;
+    const vertex: Vertex = [request.move.x, request.move.y];
+    const {pass, overwrite, ko} = state.board.analyzeMove(sign, vertex);
+    if (pass) {
+      return Response.error("Move is outside the board.")
+    }
+    if (overwrite) {
+      return Response.error("Move is on an existing stone.")
+    }
+    if (ko) {
+      return Response.error("Move violates Ko rule.")
+    }
     try {
-      const newBoard = state.board.makeMove(
-        sign,
-        [request.move.x, request.move.y],
-        {
-          preventOverwrite: true,
-          preventSuicide: false,
-          preventKo: true,
-        }
-      );
+      const newBoard = state.board.makeMove(sign, vertex, {
+        preventOverwrite: true,
+        preventSuicide: false,
+        preventKo: true,
+      });
       state.history.push(state.board);
       state.board = newBoard;
       state.turn = player.color === Color.White ? Color.Black : Color.White;
