@@ -1,4 +1,5 @@
 import React, { createContext, useEffect, useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { HathoraClient } from "../../.hathora/client";
 
@@ -15,6 +16,7 @@ export default function AppContextProvider({ children }) {
   const [token, setToken] = useState(null);
   const [connections, setConnections] = useState({});
   const [gameStates, setGameStates] = useState({});
+  const navigate = useNavigate();
 
   useEffect(async () => {
     const client = new HathoraClient(import.meta.env.VITE_APP_ID);
@@ -51,6 +53,7 @@ export default function AppContextProvider({ children }) {
       ...connections,
       [connection.stateId]: connection,
     }));
+    navigate(`/game/${connection.stateId}/`);
   };
 
   return (
