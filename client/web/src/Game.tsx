@@ -6,6 +6,20 @@ import "@sabaki/shudan/css/goban.css";
 
 import { useAppContext } from "./AppContext";
 
+const defaultSignMap = [
+  [0, 0, 0, /* */ 0, 0, 0, /* */ 0, 0, 0],
+  [0, 0, 0, /* */ 0, 0, 0, /* */ 0, 0, 0],
+  [0, 0, 0, /* */ 0, 0, 0, /* */ 0, 0, 0],
+
+  [0, 0, 0, /* */ 0, 0, 0, /* */ 0, 0, 0],
+  [0, 0, 0, /* */ 0, 0, 0, /* */ 0, 0, 0],
+  [0, 0, 0, /* */ 0, 0, 0, /* */ 0, 0, 0],
+
+  [0, 0, 0, /* */ 0, 0, 0, /* */ 0, 0, 0],
+  [0, 0, 0, /* */ 0, 0, 0, /* */ 0, 0, 0],
+  [0, 0, 0, /* */ 0, 0, 0, /* */ 0, 0, 0],
+];
+
 function Game() {
   const { stateId } = useParams();
   const { gameStates, getConnection } = useAppContext();
@@ -20,13 +34,13 @@ function Game() {
   return (
     <div>
       <Goban
+        signMap={state?.signMap ?? defaultSignMap}
+        vertexSize={80}
         onVertexClick={(e, vertex) => {
           if (connection != null) {
             connection.makeMove({ x: vertex[0], y: vertex[1] });
           }
         }}
-        vertexSize={80}
-        signMap={state?.signMap}
       />
     </div>
   );
