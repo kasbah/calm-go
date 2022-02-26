@@ -1,24 +1,64 @@
 import React, { createContext, useEffect, useState, useContext } from "react";
+
 import { HathoraClient } from "../../.hathora/client";
 
 const AppContext = createContext({
-  client: null,
+  user: null,
+  gamesStates: {},
+  connections: [],
+  createGame: () => {},
 });
 
 export default function AppContextProvider({ children }) {
-  const [client, setClient] = useState(null);
+  const [client, setClient]: [HathoraClient, any] = useState(null);
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
+  const [connections, setConnections] = useState([]);
+  const [gameStates, setGameStates] = useState({});
+
   useEffect(async () => {
     const client = new HathoraClient(import.meta.env.VITE_APP_ID);
     setClient(client);
-    let token = localStorage.getItem("token");
-    if (token == null) {
-      token = await client.loginAnonymous();
-      localStorage.setItem("token", token);
+    let t = localStorage.getItem("token");
+    let u;
+    try {
+      u = HathoraClient.getUserFromToken(t);
+    } catch (e) {
+      u = null;
     }
-    const user = HathoraClient.getUserFromToken(token);
+    if (t == null || u == null) {
+      t = await client.loginAnonymous();
+      u = HathoraClient.getUserFromToken(t);
+      localStorage.setItem("token", t);
+    }
+    setToken(t);
+    setUser(u);
   }, []);
+
+  useEffect(() => {
+    console.log("gameStates", gameStates);
+  }, [gameStates]);
+
+  const createGame = async () => {
+    const onUpdate = ({ stateId, state }) => {
+      setGameStates((states) => ({ ...states, [stateId]: state }));
+    };
+
+    const onConnectionFailure = (e) => {
+      console.error("Connection failed:", e.message);
+    };
+    const connection = await client.connectNew(
+      token,
+      onUpdate,
+      onConnectionFailure
+    );
+    setConnections((connections) => connections.concat([connection]));
+  };
+
   return (
-    <AppContext.Provider value={{ client }}>{children}</AppContext.Provider>
+    <AppContext.Provider value={{ connections, createGame, gameStates, user }}>
+      {children}
+    </AppContext.Provider>
   );
 }
 

@@ -1,9 +1,9 @@
 import React from "react";
 import { useAppContext } from "./AppContext";
+import { HathoraClient } from "../../.hathora/client";
 
 function Home() {
-  const { client } = useAppContext();
-  console.log({client})
+  const { createGame } = useAppContext();
   return (
     <div className="flex h-screen flex-col ">
       <div className="flex justify-center">
@@ -12,7 +12,10 @@ function Home() {
         </h1>
       </div>
       <div className="flex h-48 place-items-center justify-center">
-        <button className="bg-transparent hover:border-gray-300 hover:text-gray-500 font-semibold py-2 px-4 border border-gray-700 text-gray-700">
+        <button
+          onClick={createGame}
+          className="bg-transparent hover:border-gray-300 hover:text-gray-500 font-semibold py-2 px-4 border border-gray-700 text-gray-700"
+        >
           Create a Game
         </button>
       </div>
