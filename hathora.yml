@@ -10,12 +10,16 @@ types:
     - "NotStarted"
     - "InProgress"
     - "Ended"
+  Captures:
+    black: "int"
+    white: "int"
   GameState:
     phase: "GamePhase"
     signMap: "int[][]"
     turn: "Color"
     players: "Player[]"
     undoRequested: "UserId?"
+    captures: Captures
 
 methods:
   joinGame:

@@ -262,6 +262,10 @@ export class Impl implements Methods<InternalState> {
     return {
       phase: state.phase,
       signMap: state.board.signMap,
+      captures: {
+        black: state.board.getCaptures(1),
+        white: state.board.getCaptures(-1),
+      },
       turn: state.turn,
       players: state.players,
       undoRequested: state.undoRequested,
