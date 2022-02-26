@@ -3,7 +3,8 @@ import { useParams } from "react-router-dom";
 import { HathoraConnection } from "../../.hathora/client";
 import { Goban } from "@sabaki/shudan";
 import "@sabaki/shudan/css/goban.css";
-import "./goban-overrides.css"
+import "./goban-overrides.css";
+import { Color } from "../../../api/types";
 
 import { useAppContext } from "./AppContext";
 
@@ -33,7 +34,7 @@ function Game() {
   });
   const state = gameStates[stateId];
   return (
-    <div>
+    <div className="flex">
       <Goban
         signMap={state?.signMap ?? defaultSignMap}
         vertexSize={80}
@@ -43,6 +44,20 @@ function Game() {
           }
         }}
       />
+      <div className="flex flex-col space-y-4 mt-24">
+        <button
+          onClick={() => connection?.joinGame({})}
+          className="bg-transparent hover:border-gray-300 hover:text-gray-500 font-semibold py-2 px-4 border border-gray-700 text-gray-700"
+        >
+          Join Game
+        </button>
+        <button
+          onClick={() => connection?.pickColor({ color: Color.Black })}
+          className="bg-transparent hover:border-gray-300 hover:text-gray-500 font-semibold py-2 px-4 border border-gray-700 text-gray-700"
+        >
+          Pick Black
+        </button>
+      </div>
     </div>
   );
 }
