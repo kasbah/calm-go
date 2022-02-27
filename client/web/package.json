@@ -2,6 +2,8 @@
   "dependencies": {
     "@sabaki/shudan": "^1.6.4",
     "@tailwindcss/forms": "^0.4.0",
+    "@types/react": "^17.0.39",
+    "prop-types": "^15.8.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router-dom": "^6.2.1",

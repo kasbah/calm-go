@@ -7,6 +7,10 @@ module.exports = {
   ),
   theme: {
     colors: {
+      charcoal: '#343837',
+      'ocean-blue': '#03719C',
+      'blue-green': '#0F8B8E',
+      butterscotch: '#FDB147',
       transparent: "transparent",
       gray: colors.gray,
       red: colors.rose,

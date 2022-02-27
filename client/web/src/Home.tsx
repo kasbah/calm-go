@@ -1,5 +1,6 @@
 import React from "react";
 import { useAppContext } from "./AppContext";
+import Button from "./components/Button";
 
 function Home() {
   const { createGame } = useAppContext();
@@ -11,12 +12,13 @@ function Home() {
         </h1>
       </div>
       <div className="flex h-48 place-items-center justify-center">
-        <button
+        <Button
+          size="large"
+          variant="secondary"
           onClick={createGame}
-          className="bg-transparent hover:border-gray-300 hover:text-gray-500 font-semibold py-2 px-4 border border-gray-700 text-gray-700"
         >
           Create a Game
-        </button>
+        </Button>
       </div>
     </div>
   );
