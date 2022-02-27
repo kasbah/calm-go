@@ -11,6 +11,7 @@ import { GamePhase } from "../../../api/types";
 import Button from "./components/Button";
 import Modal from "./components/Modal";
 import BoardSizeSelect from "./components/BoardSizeSelect";
+import ColorSelect from "./components/ColorSelect";
 import { VsDisplay } from "./components/PlayerDisplay";
 import { useAppContext } from "./AppContext";
 
@@ -60,7 +61,10 @@ function Game() {
       })
     ).then(setOponents);
   }, [`${players}`]);
-  const isUserPlaying = players.find((p) => p.id === user?.id) != null;
+  const userPlayer = players.find((p) => p.id === user?.id);
+  const userColor = userPlayer?.color;
+  const isUserPlaying = userPlayer != null;
+  const isGameStarted = state?.phase !== GamePhase.NotStarted;
   return (
     <div className="flex flex-col">
       <div className="flex justify-center">
@@ -92,12 +96,23 @@ function Game() {
             Join Game
           </Button>
         )}
-        {isUserPlaying && state?.phase === GamePhase.NotStarted && (
+        {isUserPlaying && !isGameStarted && (
           <BoardSizeSelect
             size={state?.signMap.length.toString() ?? "9"}
             onChange={(size) => {
               if (connection != null) {
                 connection.setBoardSize({ size });
+              }
+            }}
+          />
+        )}
+
+        {isUserPlaying && !isGameStarted && (
+          <ColorSelect
+            color={userColor}
+            onChange={({ color }) => {
+              if (connection != null) {
+                connection.pickColor({ color });
               }
             }}
           />
