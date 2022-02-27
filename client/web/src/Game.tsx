@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { HathoraConnection } from "../../.hathora/client";
 import { Goban } from "@sabaki/shudan";
 import "@sabaki/shudan/css/goban.css";
 import "./goban-overrides.css";
-import Button from "./components/Button";
-import { Color } from "../../../api/types";
 
+import Button from "./components/Button";
+import Modal from "./components/Modal";
+import { Color } from "../../../api/types";
 import { useAppContext } from "./AppContext";
 
 const defaultSignMap = [
@@ -27,6 +29,7 @@ function Game() {
   const { stateId } = useParams();
   const { gameStates, getConnection } = useAppContext();
   const [connection, setConnection]: [HathoraConnection, any] = useState(null);
+  const navigate = useNavigate();
   useEffect(() => {
     if (connection == null) {
       const c = getConnection(stateId);
@@ -57,10 +60,7 @@ function Game() {
         }}
       />
       <div className="flex flex-col space-y-4 mt-24">
-        <Button
-          variant="primary"
-          onClick={() => connection?.joinGame({})}
-        >
+        <Button variant="primary" onClick={() => connection?.joinGame({})}>
           Join Game
         </Button>
         <Button
@@ -69,12 +69,37 @@ function Game() {
         >
           Pick Black
         </Button>
-        <Button
-          variant="danger"
-          onClick={() => connection?.pickColor({ color: Color.Black })}
+        <Modal
+          trigger={({ open }) => (
+            <Button variant="danger" onClick={open}>
+              Leave
+            </Button>
+          )}
         >
-          Leave
-        </Button>
+          {({ close }) => (
+            <div className="space-y-4">
+              <p className="text-center">
+                Are you sure you want to leave this game?
+              </p>
+              <div className="flex space-x-4 justify-center">
+                <Button variant="secondary" onClick={close}>
+                  Cancel
+                </Button>
+                <Button
+                  variant="danger"
+                  onClick={() => {
+                    if (connection != null) {
+                      connection.leaveGame({});
+                      navigate("/");
+                    }
+                  }}
+                >
+                  Leave
+                </Button>
+              </div>
+            </div>
+          )}
+        </Modal>
       </div>
     </div>
   );
