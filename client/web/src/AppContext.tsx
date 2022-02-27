@@ -44,7 +44,7 @@ export default function AppContextProvider({ children }) {
     console.error("Connection failed:", e.message);
   };
 
-  const createGame = async () => {
+  const createGame = async (size) => {
     const connection = await client.connectNew(
       token,
       onUpdate,
@@ -54,6 +54,9 @@ export default function AppContextProvider({ children }) {
       ...connections,
       [connection.stateId]: connection,
     }));
+    if (size !== 9) {
+      connection.setBoardSize({size})
+    }
     navigate(`/game/${connection.stateId}`);
   };
 

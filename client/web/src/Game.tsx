@@ -8,6 +8,7 @@ import "./goban-overrides.css";
 
 import Button from "./components/Button";
 import Modal from "./components/Modal";
+import SizeSelect from "./components/SizeSelect";
 import { Color } from "../../../api/types";
 import { useAppContext } from "./AppContext";
 
@@ -70,6 +71,13 @@ function Game() {
         >
           Pick Black
         </Button>
+        <SizeSelect
+          onChange={(size) => {
+            if (connection != null) {
+              connection.setBoardSize({ size });
+            }
+          }}
+        />
         <Modal
           trigger={({ open }) => (
             <Button variant="danger" onClick={open}>
