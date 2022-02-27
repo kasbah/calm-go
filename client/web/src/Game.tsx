@@ -7,6 +7,7 @@ import { lookupUser, UserData } from "../../../api/base";
 import "@sabaki/shudan/css/goban.css";
 import "./goban-overrides.css";
 
+import { GamePhase } from "../../../api/types";
 import Button from "./components/Button";
 import Modal from "./components/Modal";
 import BoardSizeSelect from "./components/BoardSizeSelect";
@@ -91,14 +92,16 @@ function Game() {
             Join Game
           </Button>
         )}
-        <BoardSizeSelect
-          size={state?.signMap.length.toString() ?? "9"}
-          onChange={(size) => {
-            if (connection != null) {
-              connection.setBoardSize({ size });
-            }
-          }}
-        />
+        {isUserPlaying && state?.phase === GamePhase.NotStarted && (
+          <BoardSizeSelect
+            size={state?.signMap.length.toString() ?? "9"}
+            onChange={(size) => {
+              if (connection != null) {
+                connection.setBoardSize({ size });
+              }
+            }}
+          />
+        )}
 
         {isUserPlaying && (
           <Modal
