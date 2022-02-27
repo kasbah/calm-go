@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { HathoraConnection } from "../../.hathora/client";
@@ -45,6 +45,7 @@ function Game() {
         : {}
     )
   );
+  const cancelLeaveRef = useRef();
   return (
     <div className="flex">
       <Goban
@@ -75,32 +76,28 @@ function Game() {
               Leave
             </Button>
           )}
-          aria-label="Confirm exit"
-        >
-          {({ close }) => (
-            <div className="space-y-4">
-              <p className="text-center">
-                Are you sure you want to leave this game?
-              </p>
-              <div className="flex space-x-4 justify-center">
-                <Button variant="secondary" onClick={close}>
-                  Cancel
-                </Button>
-                <Button
-                  variant="danger"
-                  onClick={() => {
-                    if (connection != null) {
-                      connection.leaveGame({});
-                      navigate("/");
-                    }
-                  }}
-                >
-                  Leave
-                </Button>
-              </div>
-            </div>
+          cancelRef={cancelLeaveRef}
+          label="Confirm Exit"
+          description="Are you sure you want to leave this game?"
+          buttons={({ close }) => (
+            <>
+              <Button variant="secondary" onClick={close} ref={cancelLeaveRef}>
+                Cancel
+              </Button>
+              <Button
+                variant="danger"
+                onClick={() => {
+                  if (connection != null) {
+                    connection.leaveGame({});
+                    navigate("/");
+                  }
+                }}
+              >
+                Leave
+              </Button>
+            </>
           )}
-        </Modal>
+        />
       </div>
     </div>
   );
