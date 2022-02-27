@@ -171,7 +171,10 @@ export class Impl implements Methods<InternalState> {
     }
     const sign = player.color === Color.White ? -1 : 1;
     const vertex: Vertex = [request.x, request.y];
-    const { pass, overwrite, ko } = state.board.analyzeMove(sign, vertex);
+    const { pass, overwrite, ko, suicide } = state.board.analyzeMove(
+      sign,
+      vertex
+    );
     if (pass) {
       return Response.error("Move is outside the board.");
     }
@@ -181,10 +184,13 @@ export class Impl implements Methods<InternalState> {
     if (ko) {
       return Response.error("Move violates Ko rule.");
     }
+    if (suicide) {
+      return Response.error("Move is suicide.");
+    }
     try {
       const newBoard = state.board.makeMove(sign, vertex, {
         preventOverwrite: true,
-        preventSuicide: false,
+        preventSuicide: true,
         preventKo: true,
       });
       state.history.push(state.board);
