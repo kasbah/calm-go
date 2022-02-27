@@ -1,7 +1,7 @@
 import * as React from "react";
 import VisuallyHidden from "@reach/visually-hidden";
 
-export default function SizeSelect({ onChange, size }) {
+export default function BoardSizeSelect({ onChange, size }) {
   const [selectedSize, setSize] = React.useState(size);
   React.useEffect(() => {
     setSize(size);

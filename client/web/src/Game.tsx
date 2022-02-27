@@ -8,7 +8,7 @@ import "./goban-overrides.css";
 
 import Button from "./components/Button";
 import Modal from "./components/Modal";
-import SizeSelect from "./components/SizeSelect";
+import BoardSizeSelect from "./components/BoardSizeSelect";
 import { Color } from "../../../api/types";
 import { useAppContext } from "./AppContext";
 
@@ -50,7 +50,7 @@ function Game() {
   const cancelLeaveRef = useRef();
   return (
     <div className="flex flex-col">
-      <div className="flex justify-center">
+      <div className="flex justify-t-center">
         <BoundedGoban
           signMap={state?.signMap ?? defaultSignMap}
           markerMap={markerMap}
@@ -65,17 +65,8 @@ function Game() {
           }}
         />
       </div>
-      <div className="flex flex-col">
-        <Button variant="primary" onClick={() => connection?.joinGame({})}>
-          Join Game
-        </Button>
-        <Button
-          variant="secondary"
-          onClick={() => connection?.pickColor({ color: Color.Black })}
-        >
-          Pick Black
-        </Button>
-        <SizeSelect
+      <div className="flex flex-col space-y-10 ml-10 mr-10">
+        <BoardSizeSelect
           size={state?.signMap.length.toString() ?? "9"}
           onChange={(size) => {
             if (connection != null) {
@@ -85,7 +76,7 @@ function Game() {
         />
         <Modal
           trigger={({ open }) => (
-            <Button variant="danger" onClick={open}>
+            <Button variant="secondary" onClick={open}>
               Leave
             </Button>
           )}

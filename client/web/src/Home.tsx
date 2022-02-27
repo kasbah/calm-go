@@ -1,7 +1,7 @@
 import React from "react";
 import { useAppContext } from "./AppContext";
 import Button from "./components/Button";
-import SizeSelect from "./components/SizeSelect";
+import BoardSizeSelect from "./components/BoardSizeSelect";
 
 function Home() {
   const { createGame } = useAppContext();
@@ -14,7 +14,7 @@ function Home() {
         </h1>
       </div>
       <div className="flex h-screen flex-col space-y-20">
-        <SizeSelect size={boardSize} onChange={setBoardSize} />
+        <BoardSizeSelect size={boardSize} onChange={setBoardSize} />
         <div className="flex place-items-center justify-center">
           <Button
             size="large"
