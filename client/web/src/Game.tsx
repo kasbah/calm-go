@@ -31,18 +31,21 @@ const defaultSignMap = [
 
 function Game() {
   const windowSize = useWindowSize();
+  const cancelLeaveRef = useRef();
   const { stateId } = useParams();
   const { gameStates, getConnection, user } = useAppContext();
   const [connection, setConnection]: [HathoraConnection, any] = useState(null);
-  const [oponents, setOponents] = useState([]);
+  const [opponents, setOpponents] = useState([]);
   const navigate = useNavigate();
+  const state = gameStates[stateId];
+
   useEffect(() => {
     if (connection == null) {
       const c = getConnection(stateId);
       setConnection(c);
     }
   });
-  const state = gameStates[stateId];
+
   // for marking the last move with a dot
   const markerMap = state?.signMap.map((row, y) =>
     row.map((_, x) =>
@@ -51,20 +54,23 @@ function Game() {
         : {}
     )
   );
-  const players = state?.players ?? [];
-  const cancelLeaveRef = useRef();
+
+
+  const players = state?.players;
   useEffect(() => {
     Promise.all(
-      players.map(async ({ id, color }) => {
+      (players || []).map(async ({ id, color }) => {
         const oponent: UserData = await lookupUser(id);
         return { ...oponent, color };
       })
-    ).then(setOponents);
-  }, [`${players}`]);
-  const userPlayer = players.find((p) => p.id === user?.id);
+    ).then(setOpponents);
+  }, [players]);
+
+  const userPlayer = (players || []).find((p) => p.id === user?.id);
   const userColor = userPlayer?.color;
   const isUserPlaying = userPlayer != null;
   const isGameStarted = state?.phase !== GamePhase.NotStarted;
+
   return (
     <div className="flex flex-col">
       <div className="flex justify-center">
@@ -83,7 +89,7 @@ function Game() {
         />
       </div>
       <div className="flex flex-col space-y-10 ml-10 mr-10">
-        <VsDisplay oponents={oponents} userId={user?.id} />
+        <VsDisplay oponents={opponents} userId={user?.id} />
         {!isUserPlaying && (
           <Button
             variant="secondary"
@@ -110,7 +116,7 @@ function Game() {
         {isUserPlaying && !isGameStarted && (
           <ColorSelect
             color={userColor}
-            onChange={({ color }) => {
+            onChange={(color) => {
               if (connection != null) {
                 connection.pickColor({ color });
               }
