@@ -1,6 +1,5 @@
 import React from "react";
 import { useAppContext } from "./AppContext";
-import { HathoraClient } from "../../.hathora/client";
 
 function Home() {
   const { createGame } = useAppContext();

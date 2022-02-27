@@ -33,11 +33,22 @@ function Game() {
     }
   });
   const state = gameStates[stateId];
+  // for marking the last move with a dot
+  const markerMap = state?.signMap.map((row, y) =>
+    row.map((_, x) =>
+      x === state.lastMove?.x && y === state.lastMove?.y
+        ? { type: "point" }
+        : {}
+    )
+  );
   return (
     <div className="flex">
       <Goban
         signMap={state?.signMap ?? defaultSignMap}
+        markerMap={markerMap}
         vertexSize={80}
+        fuzzyStonePlacement={true}
+        animateStonePlacement={true}
         onVertexClick={(e, vertex) => {
           if (connection != null) {
             connection.makeMove({ x: vertex[0], y: vertex[1] });

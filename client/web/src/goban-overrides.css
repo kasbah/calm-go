@@ -19,6 +19,6 @@
   --shudan-black-background-color: white;
   --shudan-black-foreground-color: white;
 
-  --shudan-white-background-color: white;
-  --shudan-white-foreground-color: white;
+  --shudan-white-background-color: black;
+  --shudan-white-foreground-color: black;
 }
