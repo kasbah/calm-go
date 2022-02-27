@@ -75,6 +75,7 @@ function Game() {
               Leave
             </Button>
           )}
+          aria-label="Confirm exit"
         >
           {({ close }) => (
             <div className="space-y-4">
