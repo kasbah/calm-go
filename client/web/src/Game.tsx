@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useWindowSize } from "@reach/window-size";
 import { HathoraConnection } from "../../.hathora/client";
 import { BoundedGoban } from "@sabaki/shudan";
-import { getUserDisplayName, lookupUser, UserData } from "../../../api/base";
+import { lookupUser, UserData } from "../../../api/base";
 import "@sabaki/shudan/css/goban.css";
 import "./goban-overrides.css";
 
@@ -11,7 +11,6 @@ import Button from "./components/Button";
 import Modal from "./components/Modal";
 import BoardSizeSelect from "./components/BoardSizeSelect";
 import { VsDisplay } from "./components/PlayerDisplay";
-import { Color } from "../../../api/types";
 import { useAppContext } from "./AppContext";
 
 const defaultSignMap = [
@@ -50,16 +49,17 @@ function Game() {
         : {}
     )
   );
-  const playerIds = state?.players ?? [];
+  const players = state?.players ?? [];
   const cancelLeaveRef = useRef();
   useEffect(() => {
     Promise.all(
-      playerIds.map(async ({ id, color }) => {
-        const user: UserData = await lookupUser(id);
-        return { ...user, color };
+      players.map(async ({ id, color }) => {
+        const oponent: UserData = await lookupUser(id);
+        return { ...oponent, color };
       })
     ).then(setOponents);
-  }, [`${playerIds}`]);
+  }, [`${players}`]);
+  const isUserPlaying = players.find((p) => p.id === user?.id) != null;
   return (
     <div className="flex flex-col">
       <div className="flex justify-center">
@@ -79,6 +79,18 @@ function Game() {
       </div>
       <div className="flex flex-col space-y-10 ml-10 mr-10">
         <VsDisplay oponents={oponents} userId={user?.id} />
+        {!isUserPlaying && (
+          <Button
+            variant="secondary"
+            onClick={() => {
+              if (connection != null) {
+                connection.joinGame({});
+              }
+            }}
+          >
+            Join Game
+          </Button>
+        )}
         <BoardSizeSelect
           size={state?.signMap.length.toString() ?? "9"}
           onChange={(size) => {
@@ -87,34 +99,41 @@ function Game() {
             }
           }}
         />
-        <Modal
-          trigger={({ open }) => (
-            <Button variant="secondary" onClick={open}>
-              Leave
-            </Button>
-          )}
-          cancelRef={cancelLeaveRef}
-          label="Confirm Exit"
-          description="Are you sure you want to leave this game?"
-          buttons={({ close }) => (
-            <>
-              <Button variant="secondary" onClick={close} ref={cancelLeaveRef}>
-                Cancel
+
+        {isUserPlaying && (
+          <Modal
+            trigger={({ open }) => (
+              <Button variant="secondary" onClick={open}>
+                Leave Game
               </Button>
-              <Button
-                variant="danger"
-                onClick={() => {
-                  if (connection != null) {
-                    connection.leaveGame({});
-                    navigate("/");
-                  }
-                }}
-              >
-                Leave
-              </Button>
-            </>
-          )}
-        />
+            )}
+            cancelRef={cancelLeaveRef}
+            label="Confirm Exit"
+            description="Are you sure you want to leave this game?"
+            buttons={({ close }) => (
+              <>
+                <Button
+                  variant="secondary"
+                  onClick={close}
+                  ref={cancelLeaveRef}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="danger"
+                  onClick={() => {
+                    if (connection != null) {
+                      connection.leaveGame({});
+                      navigate("/");
+                    }
+                  }}
+                >
+                  Leave
+                </Button>
+              </>
+            )}
+          />
+        )}
       </div>
     </div>
   );
