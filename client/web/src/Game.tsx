@@ -72,6 +72,7 @@ function Game() {
           Pick Black
         </Button>
         <SizeSelect
+          size={state?.signMap.length.toString() ?? "9"}
           onChange={(size) => {
             if (connection != null) {
               connection.setBoardSize({ size });

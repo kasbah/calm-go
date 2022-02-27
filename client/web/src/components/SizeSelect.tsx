@@ -1,18 +1,21 @@
 import * as React from "react";
 import VisuallyHidden from "@reach/visually-hidden";
 
-export default function SizeSelect({ onChange }) {
-  const [size, setSize] = React.useState("9");
+export default function SizeSelect({ onChange, size }) {
+  const [selectedSize, setSize] = React.useState(size);
+  React.useEffect(() => {
+    setSize(size);
+  }, [size]);
   React.useEffect(() => {
     if (typeof onChange === "function") {
-      onChange(parseInt(size, 10));
+      onChange(selectedSize);
     }
-  }, [size]);
+  }, [selectedSize]);
   return (
-    <div className="flex space-x-6  justify-center">
-      <RadioInput value={"9"} selectedSize={size} onChange={setSize} />
-      <RadioInput value={"13"} selectedSize={size} onChange={setSize} />
-      <RadioInput value={"19"} selectedSize={size} onChange={setSize} />
+    <div className="flex space-x-6 justify-center">
+      <RadioInput value={"9"} selectedSize={selectedSize} onChange={setSize} />
+      <RadioInput value={"13"} selectedSize={selectedSize} onChange={setSize} />
+      <RadioInput value={"19"} selectedSize={selectedSize} onChange={setSize} />
     </div>
   );
 }
@@ -34,7 +37,11 @@ function RadioInput({ value, selectedSize, onChange }) {
           onChange={() => onChange(value)}
         />
       </VisuallyHidden>
-      <label key={id + "-label"} htmlFor={id}>{`${value} x ${value}`}</label>
+      <label
+        className="cursor-pointer"
+        key={id + "-label"}
+        htmlFor={id}
+      >{`${value} x ${value}`}</label>
     </div>
   );
 }

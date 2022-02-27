@@ -5,7 +5,7 @@ import SizeSelect from "./components/SizeSelect";
 
 function Home() {
   const { createGame } = useAppContext();
-  const [boardSize, setBoardSize] = React.useState(9);
+  const [boardSize, setBoardSize] = React.useState("9");
   return (
     <div className="flex h-screen flex-col space-y-20">
       <div className="flex justify-center">
@@ -14,12 +14,12 @@ function Home() {
         </h1>
       </div>
       <div className="flex h-screen flex-col space-y-20">
-        <SizeSelect onChange={setBoardSize} />
+        <SizeSelect size={boardSize} onChange={setBoardSize} />
         <div className="flex place-items-center justify-center">
           <Button
             size="large"
             variant="secondary"
-            onClick={() => createGame(boardSize)}
+            onClick={() => createGame(parseInt(boardSize, 10))}
           >
             Create a Game
           </Button>
