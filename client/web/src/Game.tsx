@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { useWindowSize } from "@reach/window-size";
 import { HathoraConnection } from "../../.hathora/client";
-import { Goban } from "@sabaki/shudan";
+import { BoundedGoban } from "@sabaki/shudan";
 import "@sabaki/shudan/css/goban.css";
 import "./goban-overrides.css";
 
@@ -27,6 +27,7 @@ const defaultSignMap = [
 ];
 
 function Game() {
+  const windowSize = useWindowSize();
   const { stateId } = useParams();
   const { gameStates, getConnection } = useAppContext();
   const [connection, setConnection]: [HathoraConnection, any] = useState(null);
@@ -48,20 +49,23 @@ function Game() {
   );
   const cancelLeaveRef = useRef();
   return (
-    <div className="flex">
-      <Goban
-        signMap={state?.signMap ?? defaultSignMap}
-        markerMap={markerMap}
-        vertexSize={80}
-        fuzzyStonePlacement={true}
-        animateStonePlacement={true}
-        onVertexClick={(e, vertex) => {
-          if (connection != null) {
-            connection.makeMove({ x: vertex[0], y: vertex[1] });
-          }
-        }}
-      />
-      <div className="flex flex-col space-y-4 mt-24">
+    <div className="flex flex-col">
+      <div className="flex justify-center">
+        <BoundedGoban
+          signMap={state?.signMap ?? defaultSignMap}
+          markerMap={markerMap}
+          maxWidth={windowSize.width}
+          maxHeight={windowSize.height}
+          fuzzyStonePlacement={true}
+          animateStonePlacement={true}
+          onVertexClick={(e, vertex) => {
+            if (connection != null) {
+              connection.makeMove({ x: vertex[0], y: vertex[1] });
+            }
+          }}
+        />
+      </div>
+      <div className="flex flex-col">
         <Button variant="primary" onClick={() => connection?.joinGame({})}>
           Join Game
         </Button>
