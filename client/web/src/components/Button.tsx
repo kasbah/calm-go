@@ -1,6 +1,5 @@
 import React, { forwardRef } from "react";
 import PropTypes from "prop-types";
-import { cls } from "../util";
 
 const classes = {
   base: "font-semibold border transition ease-in-out duration-300",
@@ -37,14 +36,11 @@ const Button = forwardRef(
       ref={ref}
       disabled={disabled}
       type={type}
-      className={cls(`
-                ${classes.base}
-                ${classes.size[size]}
-                ${classes.variant[variant]}
-                ${pill && classes.pill}
-                ${disabled && classes.disabled}
-                ${className}
-            `)}
+      className={`${classes.base} ${classes.size[size]} ${
+        classes.variant[variant]
+      } ${pill ? classes.pill : ""} ${
+        disabled ? classes.disabled : ""
+      } ${className}`}
       {...props}
     >
       {children}
@@ -53,7 +49,6 @@ const Button = forwardRef(
 );
 
 Button.propTypes = {
-  children: PropTypes.node.isRequired,
   submit: PropTypes.oneOf(["submit", "button"]),
   className: PropTypes.string,
   pill: PropTypes.bool,
