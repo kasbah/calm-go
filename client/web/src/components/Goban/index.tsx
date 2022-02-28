@@ -52,6 +52,8 @@ export default function Goban() {
   );
 
   useEffect(() => {
+    // appears as a grey dot when we use sign = 1
+    const ghostStone = { sign: 1 }
     const g = signMap.map((row, y) =>
       row.map((_, x) =>
         isUserPlaying &&
@@ -59,7 +61,7 @@ export default function Goban() {
         hoverVertex != null &&
         hoverVertex[0] === x &&
         hoverVertex[1] === y
-          ? { sign: userSign, type: "good" }
+          ? ghostStone
           : null
       )
     );

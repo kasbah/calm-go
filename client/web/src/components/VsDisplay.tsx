@@ -29,13 +29,17 @@ function PlayerDisplay({ player, isUser, alignRight = false }) {
     <div>
       <div className={`${shortName ?? "text-gray-300"} flex space-x-2`}>
         {!alignRight && <Circle />}
-        <div>{shortName ?? "(no one yet)"}</div>
+        <div className={`ml-2 mr-2 ${alignRight ? "text-right" : ""}`}>
+          {shortName ?? "(no one yet)"}
+          <div
+            className={`${
+              alignRight ? "text-right" : ""
+            } text-gray-300 text-sm`}
+          >
+            {isUser ? "(it's you)" : ""}
+          </div>
+        </div>
         {alignRight && <Circle />}
-      </div>
-      <div
-        className={`${alignRight ? "text-right" : ""} text-gray-300 text-sm`}
-      >
-        {isUser ? "(it's you)" : ""}
       </div>
     </div>
   );
