@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useWindowSize } from "@reach/window-size";
-import { HathoraConnection } from "../../.hathora/client";
 import { BoundedGoban } from "@sabaki/shudan";
 import "@sabaki/shudan/css/goban.css";
-import "./goban-overrides.css";
+import "./Goban.css";
+import { HathoraConnection } from "../../../../.hathora/client";
 
-import { Color } from "../../../api/types";
-import { useAppContext } from "./AppContext";
+import { Color } from "../../../../../api/types";
+import { useAppContext } from "../../AppContext";
 
 const defaultSignMap = [
   [0, 0, 0, /* */ 0, 0, 0, /* */ 0, 0, 0],

@@ -2,10 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { HathoraConnection } from "../../.hathora/client";
 import { lookupUser, UserData } from "../../../api/base";
-import "@sabaki/shudan/css/goban.css";
-import "./goban-overrides.css";
 
-import Goban from "./Goban"
+import Goban from "./components/Goban"
 import Button from "./components/Button";
 import Modal from "./components/Modal";
 import VsDisplay from "./components/VsDisplay";
