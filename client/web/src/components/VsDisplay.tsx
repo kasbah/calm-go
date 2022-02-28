@@ -24,11 +24,13 @@ function PlayerDisplay({ player, isUser, alignRight = false }) {
       : player?.color === Color.White
       ? "○"
       : "";
+  const Circle = () => <div className="text-xl">{circle}</div>;
   return (
     <div>
-      <div>{circle}</div>
-      <div className={shortName ?? "text-gray-300"}>
-        {shortName ?? "(no one yet)"}
+      <div className={`${shortName ?? "text-gray-300"} flex space-x-2`}>
+        {!alignRight && <Circle />}
+        <div>{shortName ?? "(no one yet)"}</div>
+        {alignRight && <Circle />}
       </div>
       <div
         className={`${alignRight ? "text-right" : ""} text-gray-300 text-sm`}
