@@ -10,8 +10,6 @@ import { GamePhase, Color } from "../../../api/types";
 import Goban from "./Goban"
 import Button from "./components/Button";
 import Modal from "./components/Modal";
-import BoardSizeSelect from "./components/BoardSizeSelect";
-import ColorSelect from "./components/ColorSelect";
 import { VsDisplay } from "./components/PlayerDisplay";
 import { useAppContext } from "./AppContext";
 
@@ -28,8 +26,6 @@ export default function Game() {
   const players = state?.players;
 
   const userPlayer = (players || []).find((p) => p.id === user?.id);
-  const isGameStarted = state?.phase !== GamePhase.NotStarted;
-  const userColor = userPlayer?.color;
   const isUserPlaying = userPlayer != null;
 
   useEffect(() => {
@@ -64,28 +60,6 @@ export default function Game() {
             Join Game
           </Button>
         )}
-        {isUserPlaying && !isGameStarted && (
-          <BoardSizeSelect
-            size={state?.signMap.length.toString() ?? "9"}
-            onChange={(size) => {
-              if (connection != null) {
-                connection.setBoardSize({ size });
-              }
-            }}
-          />
-        )}
-
-        {isUserPlaying && !isGameStarted && (
-          <ColorSelect
-            color={userColor}
-            onChange={(color) => {
-              if (connection != null) {
-                connection.pickColor({ color });
-              }
-            }}
-          />
-        )}
-
         {isUserPlaying && (
           <Modal
             trigger={({ open }) => (
