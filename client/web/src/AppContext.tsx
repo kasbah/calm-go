@@ -5,7 +5,7 @@ import { HathoraClient } from "../../.hathora/client";
 
 const AppContext = createContext({
   user: null,
-  createGame: (size) => {},
+  createGame: async ({ selectedColor, boardSize }) => {},
   getConnection: (stateId) => {},
   gameStates: {},
 });
@@ -44,7 +44,7 @@ export default function AppContextProvider({ children }) {
     console.error("Connection failed:", e.message);
   };
 
-  const createGame = async (size) => {
+  const createGame = async ({ selectedColor, boardSize }) => {
     const connection = await client.connectNew(
       token,
       onUpdate,
@@ -54,9 +54,8 @@ export default function AppContextProvider({ children }) {
       ...connections,
       [connection.stateId]: connection,
     }));
-    if (size !== 9) {
-      connection.setBoardSize({size})
-    }
+    connection.setBoardSize({ size: parseInt(boardSize, 10) });
+    connection.pickColor({color: selectedColor});
     navigate(`/game/${connection.stateId}`);
   };
 
