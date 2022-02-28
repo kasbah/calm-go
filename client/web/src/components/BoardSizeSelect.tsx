@@ -25,7 +25,7 @@ function RadioInput({ value, selectedSize, onChange }) {
   const checked = selectedSize === value;
   const borderStyle = checked ? "border-gray-500" : "border-white";
   return (
-    <div className={`border ${borderStyle} pl-1 pr-1 rounded-full text-xl`}>
+    <div className={`border ${borderStyle} pl-2 pr-2 rounded-full text-xl`}>
       <VisuallyHidden>
         <input
           type="radio"
