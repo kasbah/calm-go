@@ -46,7 +46,7 @@ export default function Goban() {
   const markerMap = signMap.map((row, y) =>
     row.map((_, x) =>
       x === state?.lastMove?.x && y === state?.lastMove?.y
-        ? { type: "point" }
+        ? { type: "circle" }
         : {}
     )
   );

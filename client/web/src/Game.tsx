@@ -3,12 +3,11 @@ import { useParams, useNavigate } from "react-router-dom";
 import { HathoraConnection } from "../../.hathora/client";
 import { lookupUser, UserData } from "../../../api/base";
 
-import Goban from "./components/Goban"
+import Goban from "./components/Goban";
 import Button from "./components/Button";
 import Modal from "./components/Modal";
 import VsDisplay from "./components/VsDisplay";
 import { useAppContext } from "./AppContext";
-
 
 export default function Game() {
   const cancelLeaveRef = useRef();
@@ -30,6 +29,7 @@ export default function Game() {
       setConnection(c);
     }
   });
+
   useEffect(() => {
     Promise.all(
       (players || []).map(async ({ id, color }) => {
