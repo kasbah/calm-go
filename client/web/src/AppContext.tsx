@@ -5,8 +5,8 @@ import { HathoraClient } from "../../.hathora/client";
 
 const AppContext = createContext({
   user: null,
-  createGame: () => {},
-  getConnections: () => {},
+  createGame: (size) => {},
+  getConnection: (stateId) => {},
   gameStates: {},
 });
 

@@ -2,12 +2,12 @@ import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useWindowSize } from "@reach/window-size";
 import { HathoraConnection } from "../../.hathora/client";
-import { BoundedGoban } from "@sabaki/shudan";
 import { lookupUser, UserData } from "../../../api/base";
 import "@sabaki/shudan/css/goban.css";
 import "./goban-overrides.css";
 
 import { GamePhase, Color } from "../../../api/types";
+import Goban from "./Goban"
 import Button from "./components/Button";
 import Modal from "./components/Modal";
 import BoardSizeSelect from "./components/BoardSizeSelect";
@@ -15,51 +15,22 @@ import ColorSelect from "./components/ColorSelect";
 import { VsDisplay } from "./components/PlayerDisplay";
 import { useAppContext } from "./AppContext";
 
-const defaultSignMap = [
-  [0, 0, 0, /* */ 0, 0, 0, /* */ 0, 0, 0],
-  [0, 0, 0, /* */ 0, 0, 0, /* */ 0, 0, 0],
-  [0, 0, 0, /* */ 0, 0, 0, /* */ 0, 0, 0],
 
-  [0, 0, 0, /* */ 0, 0, 0, /* */ 0, 0, 0],
-  [0, 0, 0, /* */ 0, 0, 0, /* */ 0, 0, 0],
-  [0, 0, 0, /* */ 0, 0, 0, /* */ 0, 0, 0],
-
-  [0, 0, 0, /* */ 0, 0, 0, /* */ 0, 0, 0],
-  [0, 0, 0, /* */ 0, 0, 0, /* */ 0, 0, 0],
-  [0, 0, 0, /* */ 0, 0, 0, /* */ 0, 0, 0],
-];
-
-function Game() {
-  const windowSize = useWindowSize();
+export default function Game() {
   const cancelLeaveRef = useRef();
   const { stateId } = useParams();
   const { gameStates, getConnection, user } = useAppContext();
   const [connection, setConnection]: [HathoraConnection, any] = useState(null);
   const [opponents, setOpponents] = useState([]);
-  const [hoverVertex, setHoverVertex] = useState(null);
-  const [ghostStoneMap, setGhostStoneMap] = useState([]);
 
   const navigate = useNavigate();
   const state = gameStates[stateId];
-  const signMap = state?.signMap || defaultSignMap;
   const players = state?.players;
 
   const userPlayer = (players || []).find((p) => p.id === user?.id);
   const isGameStarted = state?.phase !== GamePhase.NotStarted;
   const userColor = userPlayer?.color;
-  const userSign =
-    userColor === Color.White ? 1 : userColor === Color.Black ? -1 : 0;
   const isUserPlaying = userPlayer != null;
-  const isUserTurn = state?.turn === userColor
-
-  // for marking the last move with a dot
-  const markerMap = signMap.map((row, y) =>
-    row.map((_, x) =>
-      x === state?.lastMove?.x && y === state?.lastMove?.y
-        ? { type: "point" }
-        : {}
-    )
-  );
 
   useEffect(() => {
     if (connection == null) {
@@ -67,22 +38,6 @@ function Game() {
       setConnection(c);
     }
   });
-
-  useEffect(() => {
-    const g = signMap.map((row, y) =>
-      row.map((_, x) =>
-        isUserPlaying &&
-        isUserTurn &&
-        hoverVertex != null &&
-        hoverVertex[0] === x &&
-        hoverVertex[1] === y
-          ? { sign: userSign, type: "good" }
-          : null
-      )
-    );
-    setGhostStoneMap(g);
-  }, [hoverVertex, signMap]);
-
   useEffect(() => {
     Promise.all(
       (players || []).map(async ({ id, color }) => {
@@ -94,33 +49,7 @@ function Game() {
 
   return (
     <div className="flex flex-col">
-      <div className="flex justify-center">
-        <BoundedGoban
-          signMap={signMap}
-          ghostStoneMap={ghostStoneMap}
-          markerMap={markerMap}
-          maxWidth={windowSize.width}
-          maxHeight={windowSize.height}
-          fuzzyStonePlacement={true}
-          animateStonePlacement={true}
-          onVertexMouseEnter={(e, vertex) => {
-            setHoverVertex(vertex);
-          }}
-          onVertexMouseLeave={(e, vertex) => {
-            setHoverVertex((v) => {
-              if (v[0] === vertex[0] && v[1] === vertex[1]) {
-                return null;
-              }
-              return v;
-            });
-          }}
-          onVertexClick={(e, vertex) => {
-            if (connection != null) {
-              connection.makeMove({ x: vertex[0], y: vertex[1] });
-            }
-          }}
-        />
-      </div>
+      <Goban />
       <div className="flex flex-col space-y-10 ml-10 mr-10">
         <VsDisplay oponents={opponents} userId={user?.id} />
         {!isUserPlaying && (
@@ -195,5 +124,3 @@ function Game() {
     </div>
   );
 }
-
-export default Game;
