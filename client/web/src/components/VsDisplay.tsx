@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Color } from "../../../../api/types";
 
-export function VsDisplay({ oponents, userId }) {
+export default function VsDisplay({ oponents, userId }) {
   const userIndex = oponents.findIndex((o) => o.id === userId);
   return (
     <div className="flex w-full justify-evenly">
@@ -16,7 +16,7 @@ export function VsDisplay({ oponents, userId }) {
   );
 }
 
-export function PlayerDisplay({ player, isUser, alignRight = false }) {
+function PlayerDisplay({ player, isUser, alignRight = false }) {
   const shortName = player?.name.split("-").slice(1, 3).join("-");
   const circle =
     player?.color === Color.Black
