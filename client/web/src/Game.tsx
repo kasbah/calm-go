@@ -44,52 +44,54 @@ export default function Game() {
       <Goban />
       <div className="flex flex-col space-y-10 ml-10 mr-10">
         <VsDisplay oponents={opponents} userId={user?.id} />
-        {!isUserPlaying && (
-          <Button
-            variant="secondary"
-            onClick={() => {
-              if (connection != null) {
-                connection.joinGame({});
-              }
-            }}
-          >
-            Join Game
-          </Button>
-        )}
-        {isUserPlaying && (
-          <Modal
-            trigger={({ open }) => (
-              <Button variant="secondary" onClick={open}>
-                Leave Game
-              </Button>
-            )}
-            cancelRef={cancelLeaveRef}
-            label="Confirm Exit"
-            description="Are you sure you want to leave this game?"
-            buttons={({ close }) => (
-              <>
-                <Button
-                  variant="secondary"
-                  onClick={close}
-                  ref={cancelLeaveRef}
-                >
-                  Cancel
+        <div className="width-full text-center justify-center">
+          {!isUserPlaying && (
+            <Button
+              variant="secondary"
+              onClick={() => {
+                if (connection != null) {
+                  connection.joinGame({});
+                }
+              }}
+            >
+              Join Game
+            </Button>
+          )}
+          {isUserPlaying && (
+            <Modal
+              trigger={({ open }) => (
+                <Button variant="secondary" onClick={open}>
+                  Leave Game
                 </Button>
-                <Button
-                  variant="danger"
-                  onClick={() => {
-                    if (connection != null) {
-                      connection.leaveGame({});
-                      navigate("/");
-                    }
-                  }}
-                >
-                  Leave
-                </Button>
-              </>
-            )}
-          />
-        )}
+              )}
+              cancelRef={cancelLeaveRef}
+              label="Confirm Exit"
+              description="Are you sure you want to leave this game?"
+              buttons={({ close }) => (
+                <>
+                  <Button
+                    variant="secondary"
+                    onClick={close}
+                    ref={cancelLeaveRef}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="danger"
+                    onClick={() => {
+                      if (connection != null) {
+                        connection.leaveGame({});
+                        navigate("/");
+                      }
+                    }}
+                  >
+                    Leave
+                  </Button>
+                </>
+              )}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

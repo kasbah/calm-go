@@ -2,7 +2,7 @@ import React, { forwardRef } from "react";
 import PropTypes from "prop-types";
 
 const classes = {
-  base: "font-semibold border transition ease-in-out duration-300",
+  base: "font-semibold border transition ease-in-out duration-300 w-full max-w-md",
   disabled: "opacity-50 cursor-not-allowed",
   pill: "rounded-full",
   size: {
