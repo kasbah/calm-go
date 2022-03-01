@@ -7,6 +7,7 @@ import Goban from "./components/Goban";
 import Button from "./components/Button";
 import Modal from "./components/Modal";
 import VsDisplay from "./components/VsDisplay";
+import PlayerTextDisplay from "./components/PlayerTextDisplay";
 import { useAppContext } from "./AppContext";
 
 export default function Game() {
@@ -14,7 +15,6 @@ export default function Game() {
   const { stateId } = useParams();
   const { gameStates, getConnection, user } = useAppContext();
   const [connection, setConnection]: [HathoraConnection, any] = useState(null);
-  const [opponents, setOpponents] = useState([]);
 
   const navigate = useNavigate();
   const state = gameStates[stateId];
@@ -30,20 +30,11 @@ export default function Game() {
     }
   });
 
-  useEffect(() => {
-    Promise.all(
-      (players || []).map(async ({ id, color }) => {
-        const oponent: UserData = await lookupUser(id);
-        return { ...oponent, color };
-      })
-    ).then(setOpponents);
-  }, [players]);
-
   return (
     <div className="flex flex-col">
       <Goban />
-      <div className="flex flex-col space-y-10 ml-10 mr-10 mb-10">
-        {!isUserPlaying && <VsDisplay opponents={opponents} userId={user?.id} />}
+      <div className="flex flex-col space-y-10 ml-10 mt-4 mr-10 mb-10">
+        <PlayerTextDisplay player={userPlayer} turn={state?.turn} />
         <div className="width-full text-center justify-center">
           {!isUserPlaying && (
             <Button
