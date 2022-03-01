@@ -42,7 +42,7 @@ export default function Game() {
   return (
     <div className="flex flex-col">
       <Goban />
-      <div className="flex flex-col space-y-10 ml-10 mr-10">
+      <div className="flex flex-col space-y-10 ml-10 mr-10 mb-10">
         <VsDisplay oponents={opponents} userId={user?.id} />
         <div className="width-full text-center justify-center">
           {!isUserPlaying && (

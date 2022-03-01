@@ -4,14 +4,16 @@ import { Color } from "../../../../api/types";
 export default function VsDisplay({ oponents, userId }) {
   const userIndex = oponents.findIndex((o) => o.id === userId);
   return (
-    <div className="flex w-full justify-evenly">
-      <PlayerDisplay player={oponents?.[0]} isUser={userIndex === 0} />
-      <div className="text-xl">vs</div>
-      <PlayerDisplay
-        alignRight
-        player={oponents?.[1]}
-        isUser={userIndex === 1}
-      />
+    <div className="w-full flex justify-center">
+      <div className="flex w-full justify-evenly max-w-4xl">
+        <PlayerDisplay player={oponents?.[0]} isUser={userIndex === 0} />
+        <div className="text-xl">vs</div>
+        <PlayerDisplay
+          alignRight
+          player={oponents?.[1]}
+          isUser={userIndex === 1}
+        />
+      </div>
     </div>
   );
 }
