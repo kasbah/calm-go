@@ -13,7 +13,7 @@ export default function PlayerTextDisplay({ player, turn }) {
       {player && (
         <div>
           <span>{`${playerTurnText}`}</span>
-          <span className="text-gray-500 text-sm italic">{` You are playing ${colorText}.`}</span>
+          <span className="text-gray-500 italic">{` You are playing ${colorText}.`}</span>
         </div>
       )}
     </div>
