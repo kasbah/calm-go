@@ -6,8 +6,8 @@ import ColorSelect from "./components/ColorSelect";
 import { Color } from "../../../api/types";
 
 function Home() {
-  const { createGame } = useAppContext();
-  const [boardSize, setBoardSize] = React.useState("9");
+  const { createGame, preferredBoardSize } = useAppContext();
+  const [boardSize, setBoardSize] = React.useState(preferredBoardSize);
   const [selectedColor, setSelectedColor] = React.useState(Color.Black);
   return (
     <div className="flex h-screen flex-col space-y-20">
@@ -23,7 +23,7 @@ function Home() {
           <Button
             size="large"
             variant="secondary"
-            onClick={() => createGame({boardSize, selectedColor})}
+            onClick={() => createGame({ boardSize, selectedColor })}
           >
             Create a Game
           </Button>

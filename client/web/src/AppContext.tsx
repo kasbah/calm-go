@@ -8,6 +8,7 @@ const AppContext = createContext({
   createGame: async ({ selectedColor, boardSize }) => {},
   getConnection: (stateId) => {},
   gameStates: {},
+  preferredBoardSize: "9",
 });
 
 const client: HathoraClient = new HathoraClient(import.meta.env.VITE_APP_ID);
@@ -17,6 +18,7 @@ export default function AppContextProvider({ children }) {
   const [token, setToken] = useState(null);
   const [connections, setConnections] = useState({});
   const [gameStates, setGameStates] = useState({});
+  const [preferredBoardSize, setPreferredBoardSize] = useState("9");
   const navigate = useNavigate();
 
   useEffect(async () => {
@@ -36,6 +38,15 @@ export default function AppContextProvider({ children }) {
     setUser(u);
   }, []);
 
+  useEffect(() => {
+    const s = localStorage.getItem("preferredBoardSize");
+    setPreferredBoardSize(s);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("preferredBoardSize", preferredBoardSize);
+  }, [preferredBoardSize]);
+
   const onUpdate = ({ stateId, state }) => {
     setGameStates((states) => ({ ...states, [stateId]: state }));
   };
@@ -54,8 +65,9 @@ export default function AppContextProvider({ children }) {
       ...connections,
       [connection.stateId]: connection,
     }));
+    setPreferredBoardSize(boardSize)
     connection.setBoardSize({ size: parseInt(boardSize, 10) });
-    connection.pickColor({color: selectedColor});
+    connection.pickColor({ color: selectedColor });
     navigate(`/game/${connection.stateId}`);
   };
 
@@ -78,7 +90,7 @@ export default function AppContextProvider({ children }) {
 
   return (
     <AppContext.Provider
-      value={{ user, createGame, getConnection, gameStates }}
+      value={{ user, createGame, getConnection, gameStates, preferredBoardSize }}
     >
       {children}
     </AppContext.Provider>
