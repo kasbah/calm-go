@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { HathoraConnection } from "../../.hathora/client";
 
+import { GamePhase } from "../../../api/types";
 import Goban from "./components/Goban";
 import Button from "./components/Button";
 import Modal from "./components/Modal";
@@ -20,7 +21,8 @@ export default function Game() {
 
   const userPlayer = (players || []).find((p) => p.id === user?.id);
   const isUserPlaying = userPlayer != null;
-  const hasRequestedUndo = state?.undoRequested != null && state?.undoRequested == user?.id
+  const hasRequestedUndo =
+    state?.undoRequested != null && state?.undoRequested == user?.id;
 
   useEffect(() => {
     if (connection == null) {
@@ -33,20 +35,24 @@ export default function Game() {
     <div className="flex flex-col">
       <Goban />
       <div className="flex flex-col space-y-10 ml-10 mr-10 mb-10">
-        <PlayerTextDisplay player={userPlayer} turn={state?.turn} />
+        <PlayerTextDisplay
+          player={userPlayer}
+          turn={state?.turn}
+          hasRequestedUndo={hasRequestedUndo}
+        />
         <div className="width-full text-center justify-center space-y-2">
-          {isUserPlaying && (
+          {isUserPlaying && state?.phase !== GamePhase.NotStarted && (
             <Button
-              disabled={hasRequestedUndo}
               variant="secondary"
-              className={hasRequestedUndo && "italic text-sm"}
+              className={hasRequestedUndo ? "italic text-sm" : ""}
               onClick={() => {
+                console.log("Undo");
                 if (connection != null) {
                   connection.undo({});
                 }
               }}
             >
-              {hasRequestedUndo ? 'Undo requested' : 'Undo'}
+              {hasRequestedUndo ? "Cancel Undo Request" : "Undo"}
             </Button>
           )}
           {!isUserPlaying && (
@@ -60,40 +66,6 @@ export default function Game() {
             >
               Join Game
             </Button>
-          )}
-          {isUserPlaying && (
-            <Modal
-              trigger={({ open }) => (
-                <Button variant="secondary" onClick={open}>
-                  Leave Game
-                </Button>
-              )}
-              cancelRef={cancelLeaveRef}
-              label="Confirm Exit"
-              description="Are you sure you want to leave this game?"
-              buttons={({ close }) => (
-                <>
-                  <Button
-                    variant="secondary"
-                    onClick={close}
-                    ref={cancelLeaveRef}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    variant="danger"
-                    onClick={() => {
-                      if (connection != null) {
-                        connection.leaveGame({});
-                        navigate("/");
-                      }
-                    }}
-                  >
-                    Leave
-                  </Button>
-                </>
-              )}
-            />
           )}
         </div>
       </div>
