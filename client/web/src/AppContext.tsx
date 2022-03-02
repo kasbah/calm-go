@@ -31,9 +31,9 @@ export default function AppContextProvider({ children }) {
       u = null;
     }
     if (token == null || u == null) {
-      token = await client.loginAnonymous();
+      const t = await client.loginAnonymous();
       u = HathoraClient.getUserFromToken(token);
-      localStorage.setItem("token", token);
+      localStorage.setItem("token", t);
     }
     setUser(u);
   }, []);

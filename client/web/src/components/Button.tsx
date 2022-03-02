@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 const classes = {
   base: "font-semibold border transition ease-in-out duration-300 w-full max-w-md",
-  disabled: "opacity-50 cursor-not-allowed",
+  disabled: "opacity-50",
   pill: "rounded-full",
   size: {
     small: "px-2 py-1 text-sm",
@@ -40,7 +40,7 @@ const Button = forwardRef(
         classes.variant[variant]
       } ${pill ? classes.pill : ""} ${
         disabled ? classes.disabled : ""
-      } ${className}`}
+      } ${className || ''}`}
       {...props}
     >
       {children}

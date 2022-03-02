@@ -20,6 +20,7 @@ export default function Game() {
 
   const userPlayer = (players || []).find((p) => p.id === user?.id);
   const isUserPlaying = userPlayer != null;
+  const hasRequestedUndo = state?.undoRequested != null && state?.undoRequested == user?.id
 
   useEffect(() => {
     if (connection == null) {
@@ -31,9 +32,23 @@ export default function Game() {
   return (
     <div className="flex flex-col">
       <Goban />
-      <div className="flex flex-col space-y-10 ml-10 mt-4 mr-10 mb-10">
+      <div className="flex flex-col space-y-10 ml-10 mr-10 mb-10">
         <PlayerTextDisplay player={userPlayer} turn={state?.turn} />
-        <div className="width-full text-center justify-center">
+        <div className="width-full text-center justify-center space-y-2">
+          {isUserPlaying && (
+            <Button
+              disabled={hasRequestedUndo}
+              variant="secondary"
+              className={hasRequestedUndo && "italic text-sm"}
+              onClick={() => {
+                if (connection != null) {
+                  connection.undo({});
+                }
+              }}
+            >
+              {hasRequestedUndo ? 'Undo requested' : 'Undo'}
+            </Button>
+          )}
           {!isUserPlaying && (
             <Button
               variant="secondary"
