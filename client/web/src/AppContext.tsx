@@ -5,6 +5,7 @@ import { HathoraClient } from "../../.hathora/client";
 
 const AppContext = createContext({
   user: null,
+  userName: null,
   createGame: async ({ selectedColor, boardSize }) => {},
   getConnection: (stateId) => {},
   gameStates: {},
@@ -15,26 +16,25 @@ const client: HathoraClient = new HathoraClient(import.meta.env.VITE_APP_ID);
 
 export default function AppContextProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
   const [connections, setConnections] = useState({});
   const [gameStates, setGameStates] = useState({});
   const [preferredBoardSize, setPreferredBoardSize] = useState("9");
+  const [userName, setUserName] = useState(null);
   const navigate = useNavigate();
 
   useEffect(async () => {
-    let t = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
     let u;
     try {
-      u = HathoraClient.getUserFromToken(t);
+      u = HathoraClient.getUserFromToken(token);
     } catch (e) {
       u = null;
     }
-    if (t == null || u == null) {
-      t = await client.loginAnonymous();
-      u = HathoraClient.getUserFromToken(t);
-      localStorage.setItem("token", t);
+    if (token == null || u == null) {
+      token = await client.loginAnonymous();
+      u = HathoraClient.getUserFromToken(token);
+      localStorage.setItem("token", token);
     }
-    setToken(t);
     setUser(u);
   }, []);
 
@@ -44,8 +44,21 @@ export default function AppContextProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("preferredBoardSize", preferredBoardSize);
+    if (preferredBoardSize != null) {
+      localStorage.setItem("preferredBoardSize", preferredBoardSize);
+    }
   }, [preferredBoardSize]);
+
+  useEffect(() => {
+    const name = localStorage.getItem("userName");
+    setUserName(name);
+  }, []);
+
+  useEffect(() => {
+    if (userName != null) {
+      localStorage.setItem("userName", userName);
+    }
+  }, [userName]);
 
   const onUpdate = ({ stateId, state }) => {
     setGameStates((states) => ({ ...states, [stateId]: state }));
@@ -55,7 +68,8 @@ export default function AppContextProvider({ children }) {
     console.error("Connection failed:", e.message);
   };
 
-  const createGame = async ({ selectedColor, boardSize }) => {
+  const createGame = async ({ userName, selectedColor, boardSize }) => {
+    const token = localStorage.getItem("token");
     const connection = await client.connectNew(
       token,
       onUpdate,
@@ -65,13 +79,15 @@ export default function AppContextProvider({ children }) {
       ...connections,
       [connection.stateId]: connection,
     }));
-    setPreferredBoardSize(boardSize)
+    setUserName(userName);
+    setPreferredBoardSize(boardSize);
     connection.setBoardSize({ size: parseInt(boardSize, 10) });
     connection.pickColor({ color: selectedColor });
     navigate(`/game/${connection.stateId}`);
   };
 
   const getConnection = (stateId) => {
+    const token = localStorage.getItem("token");
     let connection = connections[stateId];
     if (connection == null && token != null) {
       connection = client.connectExisting(
@@ -90,7 +106,14 @@ export default function AppContextProvider({ children }) {
 
   return (
     <AppContext.Provider
-      value={{ user, createGame, getConnection, gameStates, preferredBoardSize }}
+      value={{
+        user,
+        userName,
+        createGame,
+        getConnection,
+        gameStates,
+        preferredBoardSize,
+      }}
     >
       {children}
     </AppContext.Provider>
