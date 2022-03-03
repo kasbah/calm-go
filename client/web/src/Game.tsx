@@ -11,21 +11,25 @@ import { useAppContext } from "./AppContext";
 export default function Game() {
   const { stateId } = useParams();
   const { gameStates, getConnection, user } = useAppContext();
-  const [connection, setConnection]: [HathoraConnection, any] = useState(null);
+  let connection: HathoraConnection | undefined;
 
   const state = gameStates[stateId];
   const players = state?.players;
 
   const userPlayer = (players || []).find((p) => p.id === user?.id);
-  const opponent = userPlayer ? (players || []).find((p) => p.id !== user?.id) : null;
+  const opponent = userPlayer
+    ? (players || []).find((p) => p.id !== user?.id)
+    : null;
   const isUserPlaying = userPlayer != null;
   const hasRequestedUndo =
     state?.undoRequested != null && state?.undoRequested == user?.id;
 
   useEffect(() => {
     if (connection == null) {
-      const c = getConnection(stateId);
-      setConnection(c);
+      connection = getConnection(stateId);
+      if (!isUserPlaying) {
+        connection.joinGame({});
+      }
     }
   });
 
