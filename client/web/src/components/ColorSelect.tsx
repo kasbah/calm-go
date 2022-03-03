@@ -4,7 +4,7 @@ import { Color } from "../../../../api/types";
 
 export default function ColorSelect({ color, onChange }) {
   return (
-    <div className="flex space-x-6 justify-left">
+    <div className="flex space-x-6 justify-center">
       <RadioInput
         value={Color.Black}
         label="Black"

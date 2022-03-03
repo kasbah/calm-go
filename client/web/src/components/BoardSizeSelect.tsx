@@ -12,7 +12,7 @@ export default function BoardSizeSelect({ onChange, size }) {
     }
   }, [selectedSize]);
   return (
-    <div className="flex space-x-6 justify-left">
+    <div className="flex space-x-6 justify-center">
       <RadioInput value={"9"} selectedSize={selectedSize} onChange={setSize} />
       <RadioInput value={"13"} selectedSize={selectedSize} onChange={setSize} />
       <RadioInput value={"19"} selectedSize={selectedSize} onChange={setSize} />

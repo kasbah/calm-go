@@ -6,7 +6,6 @@ import ColorSelect from "./components/ColorSelect";
 import { Color } from "../../../api/types";
 
 function Home() {
-  const userNameInputRef = React.useRef();
   const { user, userName, createGame, preferredBoardSize } = useAppContext();
   const [name, setName] = React.useState(userName);
   const [boardSize, setBoardSize] = React.useState(preferredBoardSize);
@@ -17,11 +16,6 @@ function Home() {
       createGame({ userName: event.target.value, boardSize, selectedColor });
     }
   };
-
-  React.useEffect(() => {
-    userNameInputRef.current.focus();
-    userNameInputRef.current.addEventListener("keydown", handleKeyDown);
-  }, []);
 
   React.useEffect(() => {
     setName(userName)
@@ -39,20 +33,6 @@ function Home() {
           <div className="flex flex-col justify-left space-y-12">
             <BoardSizeSelect size={boardSize} onChange={setBoardSize} />
             <ColorSelect color={selectedColor} onChange={setSelectedColor} />
-            <div>
-              <label className="mr-2" htmlFor="user-name">
-                Your name:
-              </label>
-              <input
-                ref={userNameInputRef}
-                className="border-gray-200"
-                onChange={(e) => setName(e.target.value)}
-                type="text"
-                placeholder={user?.name}
-                value={name || ""}
-                name="user-name"
-              />
-            </div>
             <div className="flex place-items-center justify-center">
               <Button
                 size="large"
