@@ -20,7 +20,7 @@ import {
 type Pass = { type: "pass"; color: Color };
 
 function isPass(obj: any): obj is Pass {
-  return obj.type === "pass";
+  return obj != null && obj.type === "pass";
 }
 
 type InternalState = {
@@ -245,7 +245,7 @@ export class Impl implements Methods<InternalState> {
       return Response.error("Nothing to undo.");
     }
     // the request from the first player is recorded
-    if (state.undoRequested === undefined) {
+    if (state.players.length === 2 && state.undoRequested === undefined) {
       state.undoRequested = player.id;
       return Response.ok();
     }
