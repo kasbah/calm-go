@@ -55,6 +55,16 @@ export default function Game() {
               {hasRequestedUndo ? "Cancel Undo Request" : "Undo"}
             </Button>
           )}
+          {isUserPlaying && state?.players.length === 1 && (
+            <Button
+              variant="secondary"
+              onClick={() => {
+                navigator.clipboard.writeText(window.location);
+              }}
+            >
+              Copy Link
+            </Button>
+          )}
           {!isUserPlaying && (
             <Button
               variant="secondary"
