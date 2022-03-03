@@ -1,21 +1,18 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { HathoraConnection } from "../../.hathora/client";
 
 import { GamePhase } from "../../../api/types";
 import Goban from "./components/Goban";
 import Button from "./components/Button";
-import Modal from "./components/Modal";
 import PlayerTextDisplay from "./components/PlayerTextDisplay";
 import { useAppContext } from "./AppContext";
 
 export default function Game() {
-  const cancelLeaveRef = useRef();
   const { stateId } = useParams();
   const { gameStates, getConnection, user } = useAppContext();
   const [connection, setConnection]: [HathoraConnection, any] = useState(null);
 
-  const navigate = useNavigate();
   const state = gameStates[stateId];
   const players = state?.players;
 
