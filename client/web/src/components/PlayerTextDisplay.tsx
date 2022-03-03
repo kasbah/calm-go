@@ -1,13 +1,22 @@
 import * as React from "react";
-import { Color } from "../../../../api/types";
+import { Color, GamePhase } from "../../../../api/types";
 
-export default function PlayerTextDisplay({ player, turn, hasRequestedUndo }) {
+export default function PlayerTextDisplay({
+  player,
+  turn,
+  hasRequestedUndo,
+  opponent,
+  gamePhase,
+}) {
   const colorText = player?.color === Color.White ? "white" : "black";
-  const opponentColor = player?.color === Color.White ? "black" : "white";
+  const oppositeColor = player?.color === Color.White ? "black" : "white";
+  const opponentText = opponent == null ? "You have no opponent yet." : "";
   const playerTurnText =
-    player?.color === turn
+    gamePhase === GamePhase.NotStarted
+      ? "The game has not started."
+      : player?.color === turn
       ? "It's your turn."
-      : `It's ${opponentColor}'s turn.`;
+      : `It's ${oppositeColor}'s turn.`;
   return (
     <div className="w-full flex justify-center">
       <div className="flex flex-col">
@@ -16,6 +25,9 @@ export default function PlayerTextDisplay({ player, turn, hasRequestedUndo }) {
             <span>{`${playerTurnText}`}</span>
             <span className="text-gray-500 italic">{` You are playing ${colorText}.`}</span>
           </div>
+        )}
+        {opponent == null && (
+          <div className="italic text-center">{opponentText}</div>
         )}
         {hasRequestedUndo && (
           <div>

@@ -17,6 +17,7 @@ export default function Game() {
   const players = state?.players;
 
   const userPlayer = (players || []).find((p) => p.id === user?.id);
+  const opponent = userPlayer ? (players || []).find((p) => p.id !== user?.id) : null;
   const isUserPlaying = userPlayer != null;
   const hasRequestedUndo =
     state?.undoRequested != null && state?.undoRequested == user?.id;
@@ -34,6 +35,8 @@ export default function Game() {
       <div className="flex flex-col space-y-10 ml-10 mr-10 mb-10">
         <PlayerTextDisplay
           player={userPlayer}
+          opponent={opponent}
+          gamePhase={state?.phase}
           turn={state?.turn}
           hasRequestedUndo={hasRequestedUndo}
         />
