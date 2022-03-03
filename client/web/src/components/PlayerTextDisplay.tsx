@@ -9,11 +9,13 @@ export default function PlayerTextDisplay({
   gamePhase,
 }) {
   const colorText = player?.color === Color.White ? "white" : "black";
-  const oppositeColor = player?.color === Color.White ? "black" : "white";
+  const oppositeColor = player?.color === Color.White ? "Black" : "White";
   const opponentText = opponent == null ? "You have no opponent yet." : "";
   const playerTurnText =
-    gamePhase === GamePhase.NotStarted
-      ? "The game has not started."
+    opponent == null
+      ? "You have no opponent yet."
+      : gamePhase === GamePhase.NotStarted
+      ? `${oppositeColor} has joined the game.`
       : player?.color === turn
       ? "It's your turn."
       : `It's ${oppositeColor}'s turn.`;
@@ -25,9 +27,6 @@ export default function PlayerTextDisplay({
             <span>{`${playerTurnText}`}</span>
             <span className="text-gray-500 italic">{` You are playing ${colorText}.`}</span>
           </div>
-        )}
-        {opponent == null && (
-          <div className="italic text-center">{opponentText}</div>
         )}
         {hasRequestedUndo && (
           <div>
