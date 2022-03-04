@@ -240,7 +240,7 @@ export class Impl implements Methods<InternalState> {
     if (player == null) {
       return Response.error("Player is not in this game.");
     }
-    const lastTurn = state.history.pop();
+    const lastTurn = state.history[state.history.length - 1];
     if (lastTurn == null) {
       return Response.error("Nothing to undo.");
     }
@@ -257,28 +257,36 @@ export class Impl implements Methods<InternalState> {
     if (isPass(lastTurn)) {
       state.turn = lastTurn.color;
     } else {
-      // figure out what the last move was now that we are undoing
-      const twoTurns = state.history.slice(-2);
-      let beforeLastTurn = twoTurns.pop();
-      if (isPass(beforeLastTurn)) {
-        beforeLastTurn = twoTurns.pop();
+      // if it wasn't a pass it get's a bit more complicated to restore the "lastMove" marker
+      // especially in the case when a pass (or multiple passes) is followed by a move (followed by the undo we are performing).
+      // we have to find the previous actual stone placed, so have to skip all passes.
+      // we look at a max of three turns (since three passes in a row would mean the game ended, so couldn't have happened)
+      // we check for passes and restore the lastMove marker to the first non-pass move within that
+      const threeTurns = state.history.slice(-4, -1);
+      let beforeLastTurn = threeTurns.pop();
+      // keep looking for a move that wasn't a pass
+      while (beforeLastTurn != null && isPass(beforeLastTurn)) {
+        beforeLastTurn = threeTurns.pop();
       }
       if (beforeLastTurn == null) {
+        // if it was the start of the move remove the lastMove marker
         state.lastMove = undefined;
       } else {
+        // if we have a move use the diff to establish the lastMove marker
         const diffVerteces = lastTurn.diff(beforeLastTurn as Board);
         state.lastMove = { x: diffVerteces![0][0], y: diffVerteces![0][1] };
       }
-      // actually undo
-      state.board = lastTurn;
       state.turn = state.turn === Color.White ? Color.Black : Color.White;
+      state.board = lastTurn;
     }
+    // actually undo
+    state.history.pop();
+    state.undoRequested = undefined;
     if (state.history.length === 0) {
       state.phase = GamePhase.NotStarted;
     } else {
       state.phase = GamePhase.InProgress;
     }
-    state.undoRequested = undefined;
     return Response.ok();
   }
   getUserState(state: InternalState, userId: UserId): GameState {
