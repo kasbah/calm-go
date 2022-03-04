@@ -48,17 +48,15 @@ export default function Game() {
         />
         <div className="width-full text-center justify-center space-y-2">
           {!isUserTurn && (
-            <Button
-              variant="secondary"
-              className={hasRequestedUndo ? "italic text-sm" : ""}
-              onClick={() => {
+            <UndoButton
+              hasRequestedUndo={hasRequestedUndo}
+              performUndo={() => {
+                console.log("undo");
                 if (connection != null) {
                   connection.undo({});
                 }
               }}
-            >
-              {hasRequestedUndo ? "Cancel Undo Request" : "Undo"}
-            </Button>
+            />
           )}
           {isUserPlaying && state?.players.length === 1 && (
             <Button
@@ -85,5 +83,17 @@ export default function Game() {
         </div>
       </div>
     </div>
+  );
+}
+
+function UndoButton({ hasRequestedUndo, performUndo }) {
+  return (
+    <Button
+      variant="secondary"
+      className={hasRequestedUndo ? "italic text-sm" : ""}
+      onClick={performUndo}
+    >
+      {hasRequestedUndo ? "Cancel Undo Request" : "Undo"}
+    </Button>
   );
 }
