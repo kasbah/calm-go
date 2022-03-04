@@ -198,6 +198,7 @@ export class Impl implements Methods<InternalState> {
       state.turn = player.color === Color.White ? Color.Black : Color.White;
       state.phase = GamePhase.InProgress;
       state.lastMove = request;
+      state.undoRequested = undefined;
       return Response.ok();
     } catch (e: any) {
       return Response.error(e.toString());
