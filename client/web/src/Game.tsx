@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { HathoraConnection } from "../../.hathora/client";
 
-import { GamePhase } from "../../../api/types";
+import { GamePhase, Color } from "../../../api/types";
 import Goban from "./components/Goban";
 import Button from "./components/Button";
 import PlayerTextDisplay from "./components/PlayerTextDisplay";
@@ -23,6 +23,8 @@ export default function Game() {
   const isUserPlaying = userPlayer != null;
   const hasRequestedUndo =
     state?.undoRequested != null && state?.undoRequested == user?.id;
+
+  const isUserTurn = state?.turn === userPlayer?.color;
 
   useEffect(() => {
     if (connection == null) {
@@ -45,12 +47,11 @@ export default function Game() {
           hasRequestedUndo={hasRequestedUndo}
         />
         <div className="width-full text-center justify-center space-y-2">
-          {isUserPlaying && state?.phase !== GamePhase.NotStarted && (
+          {!isUserTurn && (
             <Button
               variant="secondary"
               className={hasRequestedUndo ? "italic text-sm" : ""}
               onClick={() => {
-                console.log("Undo");
                 if (connection != null) {
                   connection.undo({});
                 }
