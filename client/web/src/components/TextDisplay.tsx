@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as numberToWords from "number-to-words";
 import { Color, GamePhase } from "../../../../api/types";
 
 export default function TextDisplay({
@@ -10,6 +11,7 @@ export default function TextDisplay({
   turn,
   hasRequestedUndo,
   requestUndo,
+  captures,
 }) {
   const [linkCopied, setLinkCopied] = React.useState(false);
   React.useEffect(() => {
@@ -21,9 +23,16 @@ export default function TextDisplay({
   const isUserTurn = userPlayer?.color === turn;
   const isPlaying = userPlayer != null;
   const colorText = userPlayer?.color === Color.White ? "white" : "black";
+  const opponentColor =
+    userPlayer?.color === Color.White ? Color.Black : Color.White;
+  const opponentColorText = opponentColor === Color.White ? "White" : "Black";
   const turnText = isUserTurn
     ? "It's your turn."
     : `It's ${turnString.toLowerCase()}'s turn.`;
+  const opponentCaptures =
+    isLoaded && captures[opponentColorText.toLowerCase()];
+  const playerCaptures = isLoaded && captures[colorText];
+
   return (
     <div className="w-full flex justify-center text-center">
       {isLoaded && (
@@ -68,6 +77,35 @@ export default function TextDisplay({
                 : " You are not playing."}
             </span>
           </div>
+          {isPlaying && players.length === 2 && (
+            <div>
+              <div className="text-gray-500">
+                {opponentColorText}
+                {" has captured "}
+                {opponentCaptures === 0 ? (
+                  "no stones yet."
+                ) : (
+                  <>
+                    <span className="text-black">
+                      {numberToWords.toWords(opponentCaptures)}
+                    </span>
+                    {" stones."}
+                  </>
+                )}
+                {" You have captured "}
+                {playerCaptures === 0 ? (
+                  "no stones yet."
+                ) : (
+                  <>
+                    <span className="text-black">
+                      {numberToWords.toWords(playerCaptures)}
+                    </span>
+                    {" stones."}
+                  </>
+                )}
+              </div>
+            </div>
+          )}
           <div>
             {gamePhase != GamePhase.NotStarted && isPlaying && !isUserTurn ? (
               hasRequestedUndo ? (

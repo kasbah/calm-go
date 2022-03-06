@@ -54,6 +54,7 @@ export default function Game() {
           turn={state?.turn}
           hasRequestedUndo={hasRequestedUndo}
           requestUndo={sendUndo}
+          captures={state?.captures}
         />
         <div className="width-full text-center justify-center space-y-2">
           <UndoRequestedDialog
