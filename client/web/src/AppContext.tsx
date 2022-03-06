@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { HathoraClient } from "../../.hathora/client";
 
-const APP_ID = import.meta.env.VITE_APP_ID
+const APP_ID = import.meta.env.VITE_APP_ID;
 
 const AppContext = createContext({
   user: null,
@@ -14,11 +14,12 @@ const AppContext = createContext({
   preferredBoardSize: "9",
 });
 
+const connections = {}
+
 const client: HathoraClient = new HathoraClient(APP_ID);
 
 export default function AppContextProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [connections, setConnections] = useState({});
   const [gameStates, setGameStates] = useState({});
   const [preferredBoardSize, setPreferredBoardSize] = useState("9");
   const [userName, setUserName] = useState(null);
@@ -77,10 +78,7 @@ export default function AppContextProvider({ children }) {
       onUpdate,
       onConnectionFailure
     );
-    setConnections((connections) => ({
-      ...connections,
-      [connection.stateId]: connection,
-    }));
+    connections[connection.stateId] = connection;
     setUserName(userName);
     setPreferredBoardSize(boardSize);
     connection.setBoardSize({ size: parseInt(boardSize, 10) });
@@ -98,10 +96,7 @@ export default function AppContextProvider({ children }) {
         onUpdate,
         onConnectionFailure
       );
-      setConnections((connections) => ({
-        ...connections,
-        [connection.stateId]: connection,
-      }));
+      connections[stateId] = connection;
     }
     return connection;
   };
