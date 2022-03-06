@@ -51,7 +51,6 @@ export default function Game() {
             <UndoButton
               hasRequestedUndo={hasRequestedUndo}
               performUndo={() => {
-                console.log("undo");
                 if (connection != null) {
                   connection.undo({});
                 }

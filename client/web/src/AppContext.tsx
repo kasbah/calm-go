@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 import { HathoraClient } from "../../.hathora/client";
 
+const APP_ID = import.meta.env.VITE_APP_ID
+
 const AppContext = createContext({
   user: null,
   userName: null,
@@ -12,7 +14,7 @@ const AppContext = createContext({
   preferredBoardSize: "9",
 });
 
-const client: HathoraClient = new HathoraClient(import.meta.env.VITE_APP_ID);
+const client: HathoraClient = new HathoraClient(APP_ID);
 
 export default function AppContextProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -23,17 +25,17 @@ export default function AppContextProvider({ children }) {
   const navigate = useNavigate();
 
   useEffect(async () => {
-    const token = localStorage.getItem("token");
+    let token = localStorage.getItem(APP_ID);
     let u;
+    if (token == null) {
+      token = await client.loginAnonymous();
+      u = HathoraClient.getUserFromToken(token);
+      localStorage.setItem(APP_ID, token);
+    }
     try {
       u = HathoraClient.getUserFromToken(token);
     } catch (e) {
       u = null;
-    }
-    if (token == null || u == null) {
-      const t = await client.loginAnonymous();
-      u = HathoraClient.getUserFromToken(token);
-      localStorage.setItem("token", t);
     }
     setUser(u);
   }, []);
@@ -69,7 +71,7 @@ export default function AppContextProvider({ children }) {
   };
 
   const createGame = async ({ userName, selectedColor, boardSize }) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem(APP_ID);
     const connection = await client.connectNew(
       token,
       onUpdate,
@@ -87,7 +89,7 @@ export default function AppContextProvider({ children }) {
   };
 
   const getConnection = (stateId) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem(APP_ID);
     let connection = connections[stateId];
     if (connection == null && token != null) {
       connection = client.connectExisting(
