@@ -55,6 +55,11 @@ export default function Game() {
           hasRequestedUndo={hasRequestedUndo}
           requestUndo={sendUndo}
           captures={state?.captures}
+          pass={() => {
+            if (connection != null) {
+              connection.pass({});
+            }
+          }}
         />
         <div className="width-full text-center justify-center space-y-2">
           <UndoRequestedDialog

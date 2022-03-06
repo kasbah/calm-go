@@ -12,6 +12,7 @@ export default function TextDisplay({
   hasRequestedUndo,
   requestUndo,
   captures,
+  pass,
 }) {
   const [linkCopied, setLinkCopied] = React.useState(false);
   React.useEffect(() => {
@@ -75,6 +76,22 @@ export default function TextDisplay({
               {isPlaying
                 ? ` You are playing ${colorText}.`
                 : " You are not playing."}
+              {isUserTurn && (
+                <>
+                  {" You may "}
+                  <a
+                    className="font-bold"
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      pass();
+                    }}
+                  >
+                    {"pass"}
+                  </a>
+                  {"."}
+                </>
+              )}
             </span>
           </div>
           {isPlaying && players.length === 2 && (
