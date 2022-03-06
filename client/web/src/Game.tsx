@@ -27,11 +27,9 @@ export default function Game() {
   const isUserTurn = state?.turn === userPlayer?.color;
 
   useEffect(() => {
-    if (connection == null) {
-      connection = getConnection(stateId);
-      if (!isUserPlaying) {
-        connection.joinGame({});
-      }
+    connection = getConnection(stateId);
+    if (!isUserPlaying && state?.players.length !== 2 && connection != null) {
+      connection.joinGame({});
     }
   });
 
