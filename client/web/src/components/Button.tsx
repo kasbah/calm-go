@@ -2,7 +2,7 @@ import React, { forwardRef } from "react";
 import PropTypes from "prop-types";
 
 const classes = {
-  base: "font-semibold border transition ease-in-out duration-300 w-full max-w-md",
+  base: "font-semibold border transition ease-in-out duration-300 w-full max-w-md focus-visible:outline-none",
   disabled: "opacity-50",
   pill: "rounded-full",
   size: {
@@ -13,7 +13,7 @@ const classes = {
   variant: {
     primary: "bg-blue-green text-white hover:bg-white hover:text-charcoal",
     secondary:
-      "border-gray-700 text-gray-700 hover:border-gray-300 hover:text-gray-500 ",
+      "border-gray-700 text-gray-700 hover:border-gray-300 hover:text-gray-500",
     danger: "bg-butterscotch text-white hover:bg-white hover:text-charcoal",
   },
 };
