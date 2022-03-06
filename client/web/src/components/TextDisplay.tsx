@@ -25,9 +25,9 @@ export default function TextDisplay({
     ? "It's your turn."
     : `It's ${turnString.toLowerCase()}'s turn.`;
   return (
-    <div className="w-full flex justify-center text-center mt-10">
+    <div className="w-full flex justify-center text-center">
       {isLoaded && (
-        <div className="flex flex-col">
+        <div className="flex flex-col space-y-10">
           <div>
             {isPlaying && players.length !== 2 && (
               <span>
