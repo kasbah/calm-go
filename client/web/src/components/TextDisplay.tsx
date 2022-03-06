@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Color, GamePhase } from "../../../../api/types";
 
-export default function PlayerTextDisplay({
+export default function TextDisplay({
   player,
   turn,
   hasRequestedUndo,

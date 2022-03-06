@@ -5,7 +5,7 @@ import { HathoraConnection } from "../../.hathora/client";
 import { GamePhase, Color } from "../../../api/types";
 import Goban from "./components/Goban";
 import Button from "./components/Button";
-import PlayerTextDisplay from "./components/PlayerTextDisplay";
+import TextDisplay from "./components/TextDisplay";
 import { useAppContext } from "./AppContext";
 
 export default function Game() {
@@ -37,7 +37,7 @@ export default function Game() {
     <div className="flex flex-col">
       <Goban />
       <div className="flex flex-col space-y-10 ml-10 mr-10 mb-10">
-        <PlayerTextDisplay
+        <TextDisplay
           player={userPlayer}
           opponent={opponent}
           gamePhase={state?.phase}
