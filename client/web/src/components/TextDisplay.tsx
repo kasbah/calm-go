@@ -8,33 +8,49 @@ export default function TextDisplay({
   gamePhase,
   turn,
   hasRequestedUndo,
+  requestUndo,
 }) {
-  const colorText =
-    userPlayer && (userPlayer.color === Color.White ? "white" : "black");
   const turnString = turn === Color.Black ? "Black" : "White";
-  const turnText =
-    userPlayer?.color === turn
-      ? "It's your turn."
-      : `It's ${turnString.toLowerCase()}'s turn.`;
+  const isUserTurn = userPlayer?.color === turn;
+  const isPlaying = userPlayer != null;
+  const colorText = userPlayer?.color === Color.White ? "white" : "black";
+  const turnText = isUserTurn
+    ? "It's your turn."
+    : `It's ${turnString.toLowerCase()}'s turn.`;
   return (
-    <div className="w-full flex justify-center">
+    <div className="w-full flex justify-center text-center">
       {isLoaded && (
         <div className="flex flex-col">
           <div>
             <span>{`${turnText}`}</span>
             <span className="text-gray-500 italic">
-              {colorText
+              {isPlaying
                 ? ` You are playing ${colorText}.`
                 : " You are not playing."}
             </span>
           </div>
-          {hasRequestedUndo && (
-            <div>
-              <span className="italic">
-                You have requested to undo the last move.
-              </span>
-            </div>
-          )}
+          <div>
+            {isPlaying && !isUserTurn ? (
+              hasRequestedUndo ? (
+                <span>{"You have requested to undo the last move."}</span>
+              ) : (
+                <span className="text-gray-500 italic">
+                  You may
+                  <a
+                    href="#"
+                    className="font-bold"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      requestUndo();
+                    }}
+                  >
+                    {" request to undo "}
+                  </a>
+                  your last move.
+                </span>
+              )
+            ) : null}
+          </div>
         </div>
       )}
     </div>

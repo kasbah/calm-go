@@ -45,18 +45,13 @@ export default function Game() {
           gamePhase={state?.phase}
           turn={state?.turn}
           hasRequestedUndo={hasRequestedUndo}
+          requestUndo={() => {
+            if (connection != null) {
+              connection.undo({});
+            }
+          }}
         />
         <div className="width-full text-center justify-center space-y-2">
-          {isUserPlaying && !isUserTurn && (
-            <UndoButton
-              hasRequestedUndo={hasRequestedUndo}
-              performUndo={() => {
-                if (connection != null) {
-                  connection.undo({});
-                }
-              }}
-            />
-          )}
           {isUserPlaying && state?.players.length === 1 && (
             <Button
               variant="secondary"
