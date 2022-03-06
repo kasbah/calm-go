@@ -61,6 +61,11 @@ export default function Game() {
             hasRequestedUndo={hasRequestedUndo}
             undoRequested={state?.undoRequested}
             performUndo={sendUndo}
+            rejectUndo={() => {
+              if (connection != null) {
+                connection.rejectUndo({});
+              }
+            }}
           />
         </div>
       </div>
@@ -73,27 +78,19 @@ function UndoRequestedDialog({
   hasRequestedUndo,
   undoRequested,
   performUndo,
+  rejectUndo,
 }) {
-  const [isDismissed, setIsDismissed] = useState(false);
-  useEffect(() => {
-    setIsDismissed(false);
-  }, [undoRequested]);
   const acceptRef = useRef();
   return (
     <Dialog
-      isOpen={
-        !isDismissed &&
-        isUserPlaying &&
-        !hasRequestedUndo &&
-        undoRequested != null
-      }
+      isOpen={isUserPlaying && !hasRequestedUndo && undoRequested != null}
       label="Undo Requested"
       description="Your opponent has requested to undo the last move."
-      onDismiss={() => setIsDismissed(true)}
+      onDismiss={rejectUndo}
       leastDestructiveRef={acceptRef}
       buttons={
         <>
-          <Button variant="danger" onClick={() => setIsDismissed(true)}>
+          <Button variant="danger" onClick={rejectUndo}>
             Reject
           </Button>
           <Button variant="secondary" ref={acceptRef} onClick={performUndo}>

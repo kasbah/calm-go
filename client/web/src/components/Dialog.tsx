@@ -35,7 +35,10 @@ export default function Dialog({
         leastDestructiveRef={leastDestructiveRef}
       >
         <AlertDialogContent
-          style={{ boxShadow: "0px 10px 50px hsla(0, 0%, 0%, 0.33)" }}
+          style={{
+            width: "80vw",
+            boxShadow: "0px 10px 50px hsla(0, 0%, 0%, 0.33)",
+          }}
         >
           <VisuallyHidden>
             <AlertDialogLabel>{label}</AlertDialogLabel>

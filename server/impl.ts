@@ -292,6 +292,15 @@ export class Impl implements Methods<InternalState> {
     }
     return Response.ok();
   }
+  rejectUndo(
+    state: InternalState,
+    userId: UserId,
+    ctx: Context,
+    request: IUndoRequest
+  ): Response {
+    state.undoRequested = undefined;
+    return Response.ok();
+  }
   getUserState(state: InternalState, userId: UserId): GameState {
     return {
       createdBy: state.createdBy,

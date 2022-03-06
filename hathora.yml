@@ -38,6 +38,7 @@ methods:
     y: "int"
   pass:
   undo:
+  rejectUndo:
 
 auth:
   anonymous: {}
