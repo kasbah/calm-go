@@ -18,7 +18,7 @@ export default function PlayerTextDisplay({
       ? `${oppositeColor} has joined the game.`
       : player?.color === turn
       ? "It's your turn."
-      : `It's ${oppositeColor}'s turn.`;
+      : `It's ${oppositeColor.toLowerCase()}'s turn.`;
   return (
     <div className="w-full flex justify-center">
       <div className="flex flex-col">
