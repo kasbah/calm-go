@@ -47,7 +47,9 @@ export default function Dialog({
             <AlertDialogDescription className="text-center">
               {description}
             </AlertDialogDescription>
-            <div className="flex space-x-4 justify-center">{buttons}</div>
+            <div className="flex justify-center">
+              <div className="flex space-x-4 max-w-2xl">{buttons}</div>
+            </div>
           </div>
         </AlertDialogContent>
       </AlertDialogOverlay>
