@@ -17,6 +17,7 @@ types:
       x: "int"
       y: "int"
   GameState:
+    createdBy: "UserId"
     phase: "GamePhase"
     signMap: "int[][]"
     turn: "Color"

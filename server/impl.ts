@@ -24,6 +24,7 @@ function isPass(obj: any): obj is Pass {
 }
 
 type InternalState = {
+  createdBy: UserId;
   phase: GamePhase;
   board: Board;
   history: (Board | Pass)[];
@@ -53,6 +54,7 @@ function checkTurn(state: InternalState, playerColor: Color): Response {
 export class Impl implements Methods<InternalState> {
   initialize(userId: UserId, ctx: Context): InternalState {
     return {
+      createdBy: userId,
       phase: GamePhase.NotStarted,
       board: Board.fromDimensions(9),
       history: [],
@@ -292,6 +294,7 @@ export class Impl implements Methods<InternalState> {
   }
   getUserState(state: InternalState, userId: UserId): GameState {
     return {
+      createdBy: state.createdBy,
       phase: state.phase,
       signMap: state.board.signMap,
       captures: {
