@@ -79,28 +79,30 @@ export default function TextDisplay({
           </div>
           {isPlaying && players.length === 2 && (
             <div>
-              <div className="text-gray-500">
+              <div className="text-gray-500 italic">
                 {opponentColorText}
-                {" has captured "}
                 {opponentCaptures === 0 ? (
-                  "no stones yet."
+                  " has not captured any stones yet."
                 ) : (
                   <>
-                    <span className="text-black">
+                    {" has captured "}
+                    <span className="text-black not-italic">
                       {numberToWords.toWords(opponentCaptures)}
                     </span>
-                    {" stones."}
+                    {` stone${opponentCaptures > 1 ? "s" : ""}.`}
                   </>
                 )}
-                {" You have captured "}
                 {playerCaptures === 0 ? (
-                  "no stones yet."
+                  ` You have not captured any stones yet${
+                    opponentCaptures === 0 ? " either." : "."
+                  }`
                 ) : (
                   <>
-                    <span className="text-black">
+                    {" You have captured "}
+                    <span className="text-black not-italic">
                       {numberToWords.toWords(playerCaptures)}
                     </span>
-                    {" stones."}
+                    {` stone${playerCaptures > 1 ? "s" : ""}.`}
                   </>
                 )}
               </div>
