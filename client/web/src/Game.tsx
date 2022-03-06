@@ -16,6 +16,7 @@ export default function Game() {
   const state = gameStates[stateId];
   const players = state?.players;
 
+  const isLoaded = state != null;
   const userPlayer = (players || []).find((p) => p.id === user?.id);
   const opponent = userPlayer
     ? (players || []).find((p) => p.id !== user?.id)
@@ -38,14 +39,15 @@ export default function Game() {
       <Goban />
       <div className="flex flex-col space-y-10 ml-10 mr-10 mb-10">
         <TextDisplay
-          player={userPlayer}
-          opponent={opponent}
+          isLoaded={isLoaded}
+          players={state?.players}
+          userPlayer={userPlayer}
           gamePhase={state?.phase}
           turn={state?.turn}
           hasRequestedUndo={hasRequestedUndo}
         />
         <div className="width-full text-center justify-center space-y-2">
-          {!isUserTurn && (
+          {isUserPlaying && !isUserTurn && (
             <UndoButton
               hasRequestedUndo={hasRequestedUndo}
               performUndo={() => {
@@ -63,18 +65,6 @@ export default function Game() {
               }}
             >
               Copy Link
-            </Button>
-          )}
-          {!isUserPlaying && (
-            <Button
-              variant="secondary"
-              onClick={() => {
-                if (connection != null) {
-                  connection.joinGame({});
-                }
-              }}
-            >
-              Join Game
             </Button>
           )}
         </div>
