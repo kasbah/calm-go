@@ -47,6 +47,7 @@ export default function Game() {
       <div className="flex flex-col space-y-10 ml-10 mr-10 mb-10">
         <TextDisplay
           isLoaded={isLoaded}
+          isCreator={state?.createdBy === userPlayer}
           players={state?.players}
           userPlayer={userPlayer}
           gamePhase={state?.phase}
@@ -55,16 +56,6 @@ export default function Game() {
           requestUndo={sendUndo}
         />
         <div className="width-full text-center justify-center space-y-2">
-          {isUserPlaying && state?.players.length === 1 && (
-            <Button
-              variant="secondary"
-              onClick={() => {
-                navigator.clipboard.writeText(window.location);
-              }}
-            >
-              Copy Link
-            </Button>
-          )}
           <UndoRequestedDialog
             isUserPlaying={isUserPlaying}
             hasRequestedUndo={hasRequestedUndo}
