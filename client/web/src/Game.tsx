@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { HathoraConnection } from "../../.hathora/client";
 
@@ -7,6 +7,7 @@ import Goban from "./components/Goban";
 import Button from "./components/Button";
 import TextDisplay from "./components/TextDisplay";
 import { useAppContext } from "./AppContext";
+import Dialog from "./components/Dialog";
 
 export default function Game() {
   const { stateId } = useParams();
@@ -34,6 +35,12 @@ export default function Game() {
     }
   });
 
+  const sendUndo = () => {
+    if (connection != null) {
+      connection.undo({});
+    }
+  };
+
   return (
     <div className="flex flex-col">
       <Goban />
@@ -45,11 +52,7 @@ export default function Game() {
           gamePhase={state?.phase}
           turn={state?.turn}
           hasRequestedUndo={hasRequestedUndo}
-          requestUndo={() => {
-            if (connection != null) {
-              connection.undo({});
-            }
-          }}
+          requestUndo={sendUndo}
         />
         <div className="width-full text-center justify-center space-y-2">
           {isUserPlaying && state?.players.length === 1 && (
@@ -62,9 +65,52 @@ export default function Game() {
               Copy Link
             </Button>
           )}
+          <UndoRequestedDialog
+            isUserPlaying={isUserPlaying}
+            hasRequestedUndo={hasRequestedUndo}
+            undoRequested={state?.undoRequested}
+            performUndo={sendUndo}
+          />
         </div>
       </div>
     </div>
+  );
+}
+
+function UndoRequestedDialog({
+  isUserPlaying,
+  hasRequestedUndo,
+  undoRequested,
+  performUndo,
+}) {
+  const [isDismissed, setIsDismissed] = useState(false);
+  useEffect(() => {
+    setIsDismissed(false);
+  }, [undoRequested]);
+  const acceptRef = useRef();
+  return (
+    <Dialog
+      isOpen={
+        !isDismissed &&
+        isUserPlaying &&
+        !hasRequestedUndo &&
+        undoRequested != null
+      }
+      label="Undo Requested"
+      description="Your opponent has requested to undo the last move."
+      onDismiss={() => setIsDismissed(true)}
+      leastDestructiveRef={acceptRef}
+      buttons={
+        <>
+          <Button variant="danger" onClick={() => setIsDismissed(true)}>
+            Reject
+          </Button>
+          <Button variant="secondary" ref={acceptRef} onClick={performUndo}>
+            Accept
+          </Button>
+        </>
+      }
+    />
   );
 }
 
