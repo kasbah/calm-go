@@ -260,23 +260,24 @@ export class Impl implements Methods<InternalState> {
     if (isPass(lastTurn)) {
       state.turn = lastTurn.color;
     } else {
-      // if it wasn't a pass it get's a bit more complicated to restore the "lastMove" marker
-      // especially in the case when a pass (or multiple passes) is followed by a move (followed by the undo we are performing).
-      // we have to find the previous actual stone placed, so have to skip all passes.
-      // we look at a max of three turns (since three passes in a row would mean the game ended, so couldn't have happened)
-      // we check for passes and restore the lastMove marker to the first non-pass move within that
-      const threeTurns = state.history.slice(-4, -1);
-      let beforeLastTurn = threeTurns.pop();
-      // keep looking for a move that wasn't a pass
-      while (beforeLastTurn != null && isPass(beforeLastTurn)) {
-        beforeLastTurn = threeTurns.pop();
-      }
-      if (beforeLastTurn == null) {
-        // if it was the start of the move remove the lastMove marker
+      // if it wasn't a pass it get's a bit more complicated to restore the
+      // "lastMove" marker especially in the case when a pass (or multiple
+      // passes) is followed by a move (followed by the undo we are
+      // performing). we have to find the previous actual stone placed, so have
+      // to skip all passes. we look at a max of three turns (since three
+      // passes in a row would mean the game ended guaranteed, so couldn't have
+      // happened) we check for passes and restore the lastMove marker to the
+      // first non-pass move within that
+      const moveBeforeLast = state.history
+        .slice(-4, -1)
+        .filter((m) => !isPass(m))
+        .pop();
+      if (moveBeforeLast == null) {
+        // it must have been the start of the games, remove the lastMove marker
         state.lastMove = undefined;
       } else {
-        // if we have a move use the diff to establish the lastMove marker
-        const diffVerteces = lastTurn.diff(beforeLastTurn as Board);
+        // if we have a move use a diff to establish the lastMove marker
+        const diffVerteces = lastTurn.diff(moveBeforeLast as Board);
         state.lastMove = { x: diffVerteces![0][0], y: diffVerteces![0][1] };
       }
       state.turn = state.turn === Color.White ? Color.Black : Color.White;
