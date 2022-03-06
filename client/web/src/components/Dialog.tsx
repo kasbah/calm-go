@@ -35,6 +35,7 @@ export default function Dialog({
         leastDestructiveRef={leastDestructiveRef}
       >
         <AlertDialogContent
+          className="max-w-2xl"
           style={{
             width: "80vw",
             boxShadow: "0px 10px 50px hsla(0, 0%, 0%, 0.33)",
