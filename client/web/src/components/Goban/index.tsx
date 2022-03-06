@@ -30,30 +30,41 @@ export default function Goban() {
   const [connection, setConnection]: [HathoraConnection, any] = useState(null);
   const [hoverVertex, setHoverVertex] = useState(null);
   const [ghostStoneMap, setGhostStoneMap] = useState([]);
-
   const state = gameStates[stateId];
-  const signMap = state?.signMap || defaultSignMap;
+  const stateSignMap = state?.signMap;
+  const [signMap, setSignMap] = useState(stateSignMap || defaultSignMap);
+  const stateLastMove = state?.lastMove;
+  const [lastMove, setLastMove] = useState(state?.lastMove);
+
   const players = state?.players;
+
+  React.useEffect(() => {
+    if (stateSignMap != null) {
+      setSignMap(stateSignMap);
+    }
+  }, [stateSignMap]);
+
+  React.useEffect(() => {
+    setLastMove(stateLastMove);
+  }, [stateLastMove]);
 
   const userPlayer = (players || []).find((p) => p.id === user?.id);
   const userColor = userPlayer?.color;
   const userSign =
-    userColor === Color.White ? 1 : userColor === Color.Black ? -1 : 0;
+    userColor === Color.White ? -1 : userColor === Color.Black ? 1 : 0;
   const isUserPlaying = userPlayer != null;
   const isUserTurn = state?.turn === userColor;
 
   // for marking the last move with a dot
   const markerMap = signMap.map((row, y) =>
     row.map((_, x) =>
-      x === state?.lastMove?.x && y === state?.lastMove?.y
-        ? { type: "circle" }
-        : {}
+      x === lastMove?.x && y === lastMove?.y ? { type: "circle" } : {}
     )
   );
 
   useEffect(() => {
     // appears as a grey dot when we use sign = 1
-    const ghostStone = { sign: 1 }
+    const ghostStone = { sign: 1 };
     const g = signMap.map((row, y) =>
       row.map((_, x) =>
         isUserPlaying &&
@@ -97,8 +108,15 @@ export default function Goban() {
           });
         }}
         onVertexClick={(e, vertex) => {
-          if (connection != null) {
+          if (connection != null && isUserTurn) {
             connection.makeMove({ x: vertex[0], y: vertex[1] });
+            setSignMap((signMap) => {
+              if (signMap[vertex[1]][vertex[0]] === 0) {
+                signMap[vertex[1]][vertex[0]] = userSign;
+                setLastMove({ x: vertex[0], y: vertex[1] });
+              }
+              return signMap;
+            });
           }
         }}
       />
