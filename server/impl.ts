@@ -303,6 +303,19 @@ export class Impl implements Methods<InternalState> {
     return Response.ok();
   }
   getUserState(state: InternalState, userId: UserId): GameState {
+    const lastMove = state.history[state.history.length - 1];
+    const moveBeforeLast = state.history[state.history.length - 2];
+    const threeMovesAgo = state.history[state.history.length - 3];
+    const passes = [];
+    if (isPass(lastMove)) {
+      passes.push(lastMove);
+      if (isPass(moveBeforeLast)) {
+        passes.push(moveBeforeLast);
+        if (isPass(threeMovesAgo)) {
+          passes.push(threeMovesAgo);
+        }
+      }
+    }
     return {
       createdBy: state.createdBy,
       phase: state.phase,
@@ -315,6 +328,7 @@ export class Impl implements Methods<InternalState> {
       players: state.players,
       undoRequested: state.undoRequested,
       lastMove: state.lastMove,
+      passes: passes.map(({ color }) => color),
     };
   }
 }

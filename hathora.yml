@@ -25,6 +25,7 @@ types:
     undoRequested: "UserId?"
     captures: "Captures"
     lastMove: "Move?"
+    passes: "Color[]"
 
 methods:
   joinGame:
