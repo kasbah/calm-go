@@ -13,6 +13,7 @@ export default function TextDisplay({
   requestUndo,
   captures,
   pass,
+  passes,
 }) {
   const [linkCopied, setLinkCopied] = React.useState(false);
   React.useEffect(() => {
@@ -34,12 +35,19 @@ export default function TextDisplay({
     isLoaded && captures[opponentColorText.toLowerCase()];
   const playerCaptures = isLoaded && captures[colorText];
 
+  const passWillEndGame =
+    isLoaded &&
+    gamePhase === GamePhase.InProgress &&
+    isUserTurn &&
+    userPlayer?.color === Color.White &&
+    passes.length > 0;
+
   return (
-    <div className="w-full flex justify-center text-center">
+    <div className="w-full flex justify-center text-center mt-10">
       {isLoaded && (
         <div className="flex flex-col space-y-10">
-          <div>
-            {isPlaying && players.length !== 2 && (
+          {isPlaying && players.length !== 2 && (
+            <div>
               <span>
                 {"You have no opponent. "}
                 {linkCopied ? (
@@ -66,8 +74,8 @@ export default function TextDisplay({
                   </>
                 )}
               </span>
-            )}
-          </div>
+            </div>
+          )}
           <div>
             <span
               className={players.length !== 2 ? "text-gray-500" : ""}
@@ -76,23 +84,50 @@ export default function TextDisplay({
               {isPlaying
                 ? ` You are playing ${colorText}.`
                 : " You are not playing."}
-              {isUserTurn && (
+            </span>
+          </div>
+          <div className="text-gray-500 italic">
+            {isUserTurn && (
+              <>
+                {" You may "}
+                <a
+                  className="font-bold"
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    pass();
+                  }}
+                >
+                  {"pass"}
+                </a>
+                {"."}
+              </>
+            )}
+            {passWillEndGame && (
+              <span className="text-black not-italic">
+                {" Passing now will end the game."}
+              </span>
+            )}
+            {gamePhase != GamePhase.NotStarted && isPlaying && !isUserTurn ? (
+              hasRequestedUndo ? (
+                <span>{"You have requested to undo the last move."}</span>
+              ) : (
                 <>
-                  {" You may "}
+                  You may
                   <a
-                    className="font-bold"
                     href="#"
+                    className="font-bold"
                     onClick={(e) => {
                       e.preventDefault();
-                      pass();
+                      requestUndo();
                     }}
                   >
-                    {"pass"}
+                    {players.length === 1 ? " undo " : " request to undo "}
                   </a>
-                  {"."}
+                  your last move.
                 </>
-              )}
-            </span>
+              )
+            ) : null}
           </div>
           {isPlaying && players.length === 2 && (
             <div>
@@ -125,28 +160,6 @@ export default function TextDisplay({
               </div>
             </div>
           )}
-          <div>
-            {gamePhase != GamePhase.NotStarted && isPlaying && !isUserTurn ? (
-              hasRequestedUndo ? (
-                <span>{"You have requested to undo the last move."}</span>
-              ) : (
-                <span className="text-gray-500 italic">
-                  You may
-                  <a
-                    href="#"
-                    className="font-bold"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      requestUndo();
-                    }}
-                  >
-                    {players.length === 1 ? " undo " : " request to undo "}
-                  </a>
-                  your last move.
-                </span>
-              )
-            ) : null}
-          </div>
         </div>
       )}
     </div>

@@ -60,6 +60,7 @@ export default function Game() {
               connection.pass({});
             }
           }}
+          passes={state?.passes}
         />
         <div className="width-full text-center justify-center space-y-2">
           <UndoRequestedDialog
