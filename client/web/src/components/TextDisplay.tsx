@@ -14,7 +14,9 @@ export default function TextDisplay({
   captures,
   pass,
   passes,
+  deadstones,
 }) {
+  console.log({gamePhase, deadstones})
   const [linkCopied, setLinkCopied] = React.useState(false);
   React.useEffect(() => {
     if (linkCopied) {
@@ -158,6 +160,11 @@ export default function TextDisplay({
                   </>
                 )}
               </div>
+            </div>
+          )}
+          {gamePhase === GamePhase.Ended && (
+            <div>
+              <pre>{JSON.stringify(deadstones, null, 2)}</pre>
             </div>
           )}
         </div>

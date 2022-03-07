@@ -2,9 +2,10 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "module": "esnext",
-    "strict": true,
+    "strict": false,
     "target": "esnext",
     "moduleResolution": "node",
     "isolatedModules": true
-  }
+  },
+  "typeRoots": ["./node_modules/@types", "./custom_typings"]
 }

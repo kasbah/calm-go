@@ -61,6 +61,7 @@ export default function Game() {
             }
           }}
           passes={state?.passes}
+          deadstones={state?.deadstones}
         />
         <div className="width-full text-center justify-center space-y-2">
           <UndoRequestedDialog
