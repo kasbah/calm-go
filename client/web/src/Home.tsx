@@ -18,19 +18,18 @@ function Home() {
   };
 
   React.useEffect(() => {
-    setName(userName)
+    setName(userName);
   }, [userName]);
 
   return (
     <div>
       <div className="flex h-screen flex-col space-y-10">
         <div className="flex justify-center">
-          <h1 className="font-medium leading-tight text-5xl mt-6 text-gray-800">
-            Calm Go
-          </h1>
-        </div>
-        <div className="flex justify-center">
           <div className="flex flex-col justify-left space-y-12">
+            <div className="text-xl mt-10 text-center">
+              <span>{"Welcome to "}</span>
+              <span className="text-gray-500 italic">{"   Calm Go."}</span>
+            </div>
             <BoardSizeSelect size={boardSize} onChange={setBoardSize} />
             <ColorSelect color={selectedColor} onChange={setSelectedColor} />
             <div className="flex place-items-center justify-center">
