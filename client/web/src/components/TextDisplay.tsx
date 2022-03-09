@@ -141,7 +141,7 @@ export default function TextDisplay({
               </div>
             )
           ) : null}
-          {players.length === 2 && (
+          {opponentCaptures + playerCaptures > 0 && (
             <>
               <div className="text-gray-500 italic">
                 {opponentColorText}
