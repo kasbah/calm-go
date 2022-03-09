@@ -101,7 +101,7 @@ export default function Goban() {
         }}
         onVertexMouseLeave={(e, vertex) => {
           setHoverVertex((v) => {
-            if (v[0] === vertex[0] && v[1] === vertex[1]) {
+            if (v != null && v[0] === vertex[0] && v[1] === vertex[1]) {
               return null;
             }
             return v;
