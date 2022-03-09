@@ -47,7 +47,7 @@ export default function Game() {
         <div className="flex flex-col">
           <div>
             <Goban />
-            <div style={{ marginLeft: "clamp(13px, 8vw, 66px)" }} className="mb-10">
+            <div style={{ marginLeft: "clamp(13px, 8vw, 80px)" }} className="mb-10">
               <TextDisplay
                 isLoaded={isLoaded}
                 isCreator={state?.createdBy === userPlayer}
