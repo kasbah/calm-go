@@ -96,17 +96,13 @@ export default function TextDisplay({
                   : "text-gray-500"
               } italic`}
             >
-              {" You may choose to "}
-              <a
-                className="font-bold"
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  pass();
-                }}
+              {" You may choose to"}
+              <button
+                className="border border-gray-300 mx-1 px-1"
+                onClick={pass}
               >
                 {"pass"}
-              </a>
+              </button>
               {"."}
             </div>
           )}
@@ -127,16 +123,12 @@ export default function TextDisplay({
             ) : (
               <div className="text-gray-500 italic">
                 You may
-                <a
-                  href="#"
-                  className="font-bold"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    requestUndo();
-                  }}
+                <button
+                  className="border border-gray-300 mx-1 px-1"
+                  onClick={requestUndo}
                 >
-                  {players.length === 1 ? " undo " : " request to undo "}
-                </a>
+                  {players.length === 1 ? "undo" : "request to undo"}
+                </button>
                 your last move.
               </div>
             )
