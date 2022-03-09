@@ -9,6 +9,8 @@ import TextDisplay from "./components/TextDisplay";
 import { useAppContext } from "./AppContext";
 import Dialog from "./components/Dialog";
 
+import "./Game.css";
+
 export default function Game() {
   const { stateId } = useParams();
   const { gameStates, getConnection, user } = useAppContext();
@@ -44,28 +46,28 @@ export default function Game() {
   return (
     <div className="flex flex-col">
       <div className="flex justify-center">
-        <div className="flex flex-col">
+        <div className="2xl:flex">
           <div>
-            <Goban />
-            <div style={{ marginLeft: "clamp(13px, 8vw, 80px)" }} className="mb-10">
-              <TextDisplay
-                isLoaded={isLoaded}
-                isCreator={state?.createdBy === userPlayer}
-                players={state?.players}
-                userPlayer={userPlayer}
-                gamePhase={state?.phase}
-                turn={state?.turn}
-                hasRequestedUndo={hasRequestedUndo}
-                requestUndo={sendUndo}
-                captures={state?.captures}
-                pass={() => {
-                  if (connection != null) {
-                    connection.pass({});
-                  }
-                }}
-                passes={state?.passes}
-              />
-            </div>
+          <Goban />
+          </div>
+          <div className="text-display-container mb-10">
+            <TextDisplay
+              isLoaded={isLoaded}
+              isCreator={state?.createdBy === userPlayer}
+              players={state?.players}
+              userPlayer={userPlayer}
+              gamePhase={state?.phase}
+              turn={state?.turn}
+              hasRequestedUndo={hasRequestedUndo}
+              requestUndo={sendUndo}
+              captures={state?.captures}
+              pass={() => {
+                if (connection != null) {
+                  connection.pass({});
+                }
+              }}
+              passes={state?.passes}
+            />
           </div>
         </div>
       </div>
