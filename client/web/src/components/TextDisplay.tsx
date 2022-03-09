@@ -150,9 +150,7 @@ export default function TextDisplay({
                 ) : (
                   <>
                     {" has captured "}
-                    <span className="text-black not-italic">
-                      {numberToWords.toWords(opponentCaptures)}
-                    </span>
+                    {numberToWords.toWords(opponentCaptures)}
                     {` stone${opponentCaptures > 1 ? "s" : ""}.`}
                   </>
                 )}
@@ -163,9 +161,7 @@ export default function TextDisplay({
                 ) : (
                   <>
                     {" You have captured "}
-                    <span className="text-black not-italic">
-                      {numberToWords.toWords(playerCaptures)}
-                    </span>
+                    {numberToWords.toWords(playerCaptures)}
                     {` stone${playerCaptures > 1 ? "s" : ""}.`}
                   </>
                 )}
