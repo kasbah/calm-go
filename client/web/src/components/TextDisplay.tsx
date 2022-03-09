@@ -43,13 +43,13 @@ export default function TextDisplay({
     passes.length > 0;
 
   return (
-    <div className="w-full flex justify-center text-center mt-10">
+    <div>
       {isLoaded && (
-        <div className="flex flex-col space-y-10">
+        <div className="flex flex-col space-y-1">
           {isPlaying && players.length !== 2 && (
-            <div>
-              <span>
-                {"You have no opponent. "}
+            <>
+              <div>{"You have no opponent. "}</div>
+              <div>
                 {linkCopied ? (
                   <>
                     <span className="text-gray-500 italic">
@@ -73,8 +73,8 @@ export default function TextDisplay({
                     {" and send it to a friend."}
                   </>
                 )}
-              </span>
-            </div>
+              </div>
+            </>
           )}
           <div>
             <span
@@ -86,51 +86,63 @@ export default function TextDisplay({
                 : " You are not playing."}
             </span>
           </div>
-          <div className="text-gray-500 italic">
-            {isUserTurn && (
-              <>
-                {" You may "}
-                <a
-                  className="font-bold"
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    pass();
-                  }}
-                >
-                  {"pass"}
-                </a>
-                {"."}
-              </>
-            )}
-            {passWillEndGame && (
+          {isUserTurn && (
+            <div
+              className={`${
+                passWillEndGame
+                  ? "text-black not-italic"
+                  : players.length !== 2
+                  ? "text-gray-400"
+                  : "text-gray-500"
+              } italic`}
+            >
+              {" You may choose to "}
+              <a
+                className="font-bold"
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  pass();
+                }}
+              >
+                {"pass"}
+              </a>
+              {"."}
+            </div>
+          )}
+          {passWillEndGame && (
+            <div>
               <span className="text-black not-italic">
                 {" Passing now will end the game."}
               </span>
-            )}
-            {gamePhase != GamePhase.NotStarted && isPlaying && !isUserTurn ? (
-              hasRequestedUndo ? (
-                <span>{"You have requested to undo the last move."}</span>
-              ) : (
-                <>
-                  You may
-                  <a
-                    href="#"
-                    className="font-bold"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      requestUndo();
-                    }}
-                  >
-                    {players.length === 1 ? " undo " : " request to undo "}
-                  </a>
-                  your last move.
-                </>
-              )
-            ) : null}
-          </div>
-          {isPlaying && players.length === 2 && (
-            <div>
+            </div>
+          )}
+          {gamePhase !== GamePhase.NotStarted && isPlaying && !isUserTurn ? (
+            hasRequestedUndo ? (
+              <div>
+                <span className="text-black not-italic">
+                  {"You have requested to undo the last move."}
+                </span>
+              </div>
+            ) : (
+              <div className="text-gray-500 italic">
+                You may
+                <a
+                  href="#"
+                  className="font-bold"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    requestUndo();
+                  }}
+                >
+                  {players.length === 1 ? " undo " : " request to undo "}
+                </a>
+                your last move.
+              </div>
+            )
+          ) : null}
+          {players.length === 2 && (
+            <>
               <div className="text-gray-500 italic">
                 {opponentColorText}
                 {opponentCaptures === 0 ? (
@@ -144,10 +156,10 @@ export default function TextDisplay({
                     {` stone${opponentCaptures > 1 ? "s" : ""}.`}
                   </>
                 )}
+              </div>
+              <div className="text-gray-500 italic">
                 {playerCaptures === 0 ? (
-                  ` You have not captured any stones yet${
-                    opponentCaptures === 0 ? " either." : "."
-                  }`
+                  " You have not captured any stones yet."
                 ) : (
                   <>
                     {" You have captured "}
@@ -158,7 +170,7 @@ export default function TextDisplay({
                   </>
                 )}
               </div>
-            </div>
+            </>
           )}
         </div>
       )}

@@ -87,39 +87,37 @@ export default function Goban() {
   });
 
   return (
-    <div className="flex justify-center">
-      <BoundedGoban
-        signMap={signMap}
-        ghostStoneMap={ghostStoneMap}
-        markerMap={markerMap}
-        maxWidth={windowSize.width}
-        maxHeight={windowSize.height}
-        fuzzyStonePlacement={true}
-        animateStonePlacement={true}
-        onVertexMouseEnter={(e, vertex) => {
-          setHoverVertex(vertex);
-        }}
-        onVertexMouseLeave={(e, vertex) => {
-          setHoverVertex((v) => {
-            if (v != null && v[0] === vertex[0] && v[1] === vertex[1]) {
-              return null;
-            }
-            return v;
-          });
-        }}
-        onVertexClick={(e, vertex) => {
-          if (connection != null && isUserTurn) {
-            connection.makeMove({ x: vertex[0], y: vertex[1] });
-            setSignMap((signMap) => {
-              if (signMap[vertex[1]][vertex[0]] === 0) {
-                signMap[vertex[1]][vertex[0]] = userSign;
-                setLastMove({ x: vertex[0], y: vertex[1] });
-              }
-              return signMap;
-            });
+    <BoundedGoban
+      signMap={signMap}
+      ghostStoneMap={ghostStoneMap}
+      markerMap={markerMap}
+      maxWidth={windowSize.width}
+      maxHeight={windowSize.height}
+      fuzzyStonePlacement={true}
+      animateStonePlacement={true}
+      onVertexMouseEnter={(e, vertex) => {
+        setHoverVertex(vertex);
+      }}
+      onVertexMouseLeave={(e, vertex) => {
+        setHoverVertex((v) => {
+          if (v != null && v[0] === vertex[0] && v[1] === vertex[1]) {
+            return null;
           }
-        }}
-      />
-    </div>
+          return v;
+        });
+      }}
+      onVertexClick={(e, vertex) => {
+        if (connection != null && isUserTurn) {
+          connection.makeMove({ x: vertex[0], y: vertex[1] });
+          setSignMap((signMap) => {
+            if (signMap[vertex[1]][vertex[0]] === 0) {
+              signMap[vertex[1]][vertex[0]] = userSign;
+              setLastMove({ x: vertex[0], y: vertex[1] });
+            }
+            return signMap;
+          });
+        }
+      }}
+    />
   );
 }

@@ -43,38 +43,44 @@ export default function Game() {
 
   return (
     <div className="flex flex-col">
-      <Goban />
-      <div className="flex flex-col space-y-10 ml-10 mr-10 mb-10">
-        <TextDisplay
-          isLoaded={isLoaded}
-          isCreator={state?.createdBy === userPlayer}
-          players={state?.players}
-          userPlayer={userPlayer}
-          gamePhase={state?.phase}
-          turn={state?.turn}
+      <div className="flex justify-center">
+        <div className="flex flex-col">
+          <div>
+            <Goban />
+            <div style={{ marginLeft: "clamp(13px, 8vw, 66px)" }} className="mb-10">
+              <TextDisplay
+                isLoaded={isLoaded}
+                isCreator={state?.createdBy === userPlayer}
+                players={state?.players}
+                userPlayer={userPlayer}
+                gamePhase={state?.phase}
+                turn={state?.turn}
+                hasRequestedUndo={hasRequestedUndo}
+                requestUndo={sendUndo}
+                captures={state?.captures}
+                pass={() => {
+                  if (connection != null) {
+                    connection.pass({});
+                  }
+                }}
+                passes={state?.passes}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="width-full text-center justify-center space-y-2">
+        <UndoRequestedDialog
+          isUserPlaying={isUserPlaying}
           hasRequestedUndo={hasRequestedUndo}
-          requestUndo={sendUndo}
-          captures={state?.captures}
-          pass={() => {
+          undoRequested={state?.undoRequested}
+          performUndo={sendUndo}
+          rejectUndo={() => {
             if (connection != null) {
-              connection.pass({});
+              connection.rejectUndo({});
             }
           }}
-          passes={state?.passes}
         />
-        <div className="width-full text-center justify-center space-y-2">
-          <UndoRequestedDialog
-            isUserPlaying={isUserPlaying}
-            hasRequestedUndo={hasRequestedUndo}
-            undoRequested={state?.undoRequested}
-            performUndo={sendUndo}
-            rejectUndo={() => {
-              if (connection != null) {
-                connection.rejectUndo({});
-              }
-            }}
-          />
-        </div>
       </div>
     </div>
   );
