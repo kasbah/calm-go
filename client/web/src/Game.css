@@ -1,3 +1,6 @@
+.text-display-container {
+    min-width: 310px;
+}
 @media (orientation: portrait) {
     .text-display-container {
         margin-left: clamp(13px, 8vw, 80px);
