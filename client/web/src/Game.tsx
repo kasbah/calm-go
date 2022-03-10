@@ -105,10 +105,10 @@ function UndoRequestedDialog({
       leastDestructiveRef={acceptRef}
       buttons={
         <>
-          <Button variant="danger" onClick={rejectUndo}>
+          <Button variant="secondary" onClick={rejectUndo}>
             Reject
           </Button>
-          <Button variant="secondary" ref={acceptRef} onClick={performUndo}>
+          <Button variant="primary" ref={acceptRef} onClick={performUndo}>
             Accept
           </Button>
         </>

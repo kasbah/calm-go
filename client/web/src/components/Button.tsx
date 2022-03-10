@@ -11,10 +11,9 @@ const classes = {
     large: "px-8 py-3 text-lg",
   },
   variant: {
-    primary: "bg-blue-green text-white hover:bg-white hover:text-charcoal",
+    primary: "border-blue-green text-blue-green hover:brightness-125",
     secondary:
       "border-black hover:border-gray-300 hover:text-gray-500",
-    danger: "bg-butterscotch text-white hover:bg-white hover:text-charcoal",
   },
 };
 
