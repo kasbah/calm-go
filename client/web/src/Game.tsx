@@ -46,7 +46,7 @@ export default function Game() {
   return (
     <div className="flex flex-col">
       <div className="flex justify-center">
-        <div className="2xl:flex">
+        <div className="landscape:flex landscape:flex-wrap landscape:justify-center">
           <div>
           <Goban />
           </div>

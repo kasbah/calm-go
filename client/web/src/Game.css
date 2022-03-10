@@ -1,10 +1,10 @@
-@media (max-width: 1536px) {
+@media (orientation: portrait) {
     .text-display-container {
         margin-left: clamp(13px, 8vw, 80px);
     }
 }
-@media (min-width: 1536px) {
+@media (orientation: landscape) {
     .text-display-container {
-        margin-top: clamp(13px, 8vw, 80px);
+        margin-top: clamp(13px, 8vh, 80px);
     }
 }
