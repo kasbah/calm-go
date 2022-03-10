@@ -42,6 +42,9 @@ export default function TextDisplay({
     userPlayer?.color === Color.White &&
     passes.length > 0;
 
+  const lastMoveWasPass =
+    passes != null && passes.length > 0 && passes[0] === userPlayer.color;
+
   return (
     <div>
       {isLoaded && (
@@ -59,9 +62,8 @@ export default function TextDisplay({
                   </>
                 ) : (
                   <>
-                    <a
-                      href="#"
-                      className="font-bold"
+                    <button
+                      className="border border-black px-1"
                       onClick={(e) => {
                         e.preventDefault();
                         navigator.clipboard.writeText(window.location);
@@ -69,7 +71,7 @@ export default function TextDisplay({
                       }}
                     >
                       {"Copy the link"}
-                    </a>
+                    </button>
                     {" and send it to a friend."}
                   </>
                 )}
@@ -113,26 +115,30 @@ export default function TextDisplay({
               </span>
             </div>
           )}
-          {gamePhase !== GamePhase.NotStarted && isPlaying && !isUserTurn ? (
-            hasRequestedUndo ? (
+          {gamePhase !== GamePhase.NotStarted &&
+            isPlaying &&
+            !isUserTurn &&
+            (hasRequestedUndo ? (
               <div>
-                <span className="text-black not-italic">
-                  {"You have requested to undo the last move."}
-                </span>
+                {lastMoveWasPass
+                  ? "You passed and then you requested to undo your pass."
+                  : "You have requested to undo the last move."}
               </div>
             ) : (
-              <div className="text-gray-500 italic">
-                You may
-                <button
-                  className="border border-gray-300 mx-1 px-1"
-                  onClick={requestUndo}
-                >
-                  {players.length === 1 ? "undo" : "request to undo"}
-                </button>
-                your last move.
+              <div>
+                {lastMoveWasPass && "You passed. "}
+                <span className="text-gray-500 italic">
+                  You may
+                  <button
+                    className="border border-gray-300 mx-1 px-1"
+                    onClick={requestUndo}
+                  >
+                    {players.length === 1 ? "undo" : "request to undo"}
+                  </button>
+                  {lastMoveWasPass ? " your pass." : " the last move."}
+                </span>
               </div>
-            )
-          ) : null}
+            ))}
           {opponentCaptures + playerCaptures > 0 && (
             <>
               <div className="text-gray-500 italic">
