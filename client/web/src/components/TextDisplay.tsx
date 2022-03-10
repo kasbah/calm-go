@@ -135,7 +135,7 @@ export default function TextDisplay({
                   >
                     {players.length === 1 ? "undo" : "request to undo"}
                   </button>
-                  {lastMoveWasPass ? " your pass." : " the last move."}
+                  {lastMoveWasPass ? "your pass." : "the last move."}
                 </span>
               </div>
             ))}
