@@ -55,7 +55,7 @@ export default function TextDisplay({
               <div>
                 {linkCopied ? (
                   <>
-                    <span className="text-gray-500 italic">
+                    <span className="text-gray-500">
                       {"You have copied the link."}
                     </span>
                     {" Send it to a friend."}
