@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "hathora": "^0.6.1",
+    "netlify-cli": "^9.13.0"
+  }
+}
