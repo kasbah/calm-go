@@ -55,8 +55,10 @@ export default function Game() {
               isLoaded={isLoaded}
               players={state?.players}
               userPlayer={userPlayer}
+              gameCreatedBy={state?.createdBy}
               gamePhase={state?.phase}
               turn={state?.turn}
+              turnNumber={state?.turnNumber}
               hasRequestedUndo={hasRequestedUndo}
               requestUndo={sendUndo}
               captures={state?.captures}

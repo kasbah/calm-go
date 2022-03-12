@@ -5,9 +5,11 @@ import { Color, GamePhase } from "../../../../api/types";
 export default function TextDisplay({
   isLoaded,
   players,
+  gameCreatedBy,
   userPlayer,
   gamePhase,
   turn,
+  turnNumber,
   hasRequestedUndo,
   requestUndo,
   captures,
@@ -34,6 +36,8 @@ export default function TextDisplay({
     isLoaded && captures[opponentColorText.toLowerCase()];
   const playerCaptures = isLoaded && captures[colorText];
 
+  const playerLastJoined = players?.[players.length - 1];
+
   const passWillEndGame =
     isLoaded &&
     gamePhase === GamePhase.InProgress &&
@@ -46,6 +50,14 @@ export default function TextDisplay({
 
   return (
     <div>
+      {turnNumber < 3 && gameCreatedBy !== playerLastJoined?.id && (
+        <div className="h-6">
+          {isPlaying && playerLastJoined?.id === userPlayer?.id
+            ? "You"
+            : colorToString(playerLastJoined.color)}
+          {" just joined the game."}
+        </div>
+      )}
       {isLoaded && (
         <div className="flex flex-col space-y-1">
           {isPlaying && players.length !== 2 && (
@@ -169,4 +181,16 @@ export default function TextDisplay({
       )}
     </div>
   );
+}
+
+function colorToString(color: Color): string {
+  switch (color) {
+    case Color.Black:
+      return "Black";
+    case Color.White:
+      return "White";
+    case Color.None:
+    default:
+      return "No color";
+  }
 }

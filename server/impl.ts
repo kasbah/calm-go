@@ -326,6 +326,7 @@ export class Impl implements Methods<InternalState> {
         white: state.board.getCaptures(-1),
       },
       turn: state.turn,
+      turnNumber: state.history.length,
       players: state.players,
       undoRequested: state.undoRequested,
       lastMove: state.lastMove,

@@ -14,13 +14,14 @@ types:
     black: "int"
     white: "int"
   Move:
-      x: "int"
-      y: "int"
+    x: "int"
+    y: "int"
   GameState:
     createdBy: "UserId"
     phase: "GamePhase"
     signMap: "int[][]"
     turn: "Color"
+    turnNumber: "int"
     players: "Player[]"
     undoRequested: "UserId?"
     captures: "Captures"
