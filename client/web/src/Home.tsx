@@ -6,7 +6,7 @@ import ColorSelect from "./components/ColorSelect";
 import { Color } from "../../../api/types";
 
 function Home() {
-  const { user, userName, createGame, preferredBoardSize } = useAppContext();
+  const { userName, createGame, preferredBoardSize } = useAppContext();
   const [name, setName] = React.useState(userName);
   const [boardSize, setBoardSize] = React.useState(preferredBoardSize);
   const [selectedColor, setSelectedColor] = React.useState(Color.Black);

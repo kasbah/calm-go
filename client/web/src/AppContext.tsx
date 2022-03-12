@@ -6,8 +6,8 @@ import { HathoraClient } from "../../.hathora/client";
 const AppContext = createContext({
   user: null,
   userName: null,
-  createGame: async ({ selectedColor, boardSize }) => {},
-  getConnection: (stateId) => {},
+  createGame: async ({}) => {},
+  getConnection: () => {},
   gameStates: {},
   preferredBoardSize: "9",
 });

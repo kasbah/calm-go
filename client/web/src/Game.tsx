@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { HathoraConnection } from "../../.hathora/client";
 
-import { GamePhase, Color } from "../../../api/types";
 import Goban from "./components/Goban";
 import Button from "./components/Button";
 import TextDisplay from "./components/TextDisplay";

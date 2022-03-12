@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useWindowSize } from "@reach/window-size";
 import { BoundedGoban } from "@sabaki/shudan";
