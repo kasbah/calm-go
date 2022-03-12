@@ -51,8 +51,8 @@ export default function TextDisplay({
         <div className="flex flex-col space-y-1">
           {isPlaying && players.length !== 2 && (
             <>
-              <div>{"You have no opponent. "}</div>
-              <div>
+              <div className="h-6">{"You have no opponent. "}</div>
+              <div className="h-6">
                 {linkCopied ? (
                   <>
                     <span className="text-gray-500">
@@ -78,7 +78,7 @@ export default function TextDisplay({
               </div>
             </>
           )}
-          <div>
+          <div className="h-6">
             <span
               className={players.length !== 2 ? "text-gray-500" : ""}
             >{`${turnText}`}</span>
@@ -90,7 +90,7 @@ export default function TextDisplay({
           </div>
           {isUserTurn && (
             <div
-              className={`${
+              className={`h-6 ${
                 passWillEndGame
                   ? "text-black not-italic"
                   : players.length !== 2
@@ -109,7 +109,7 @@ export default function TextDisplay({
             </div>
           )}
           {passWillEndGame && (
-            <div>
+            <div className="h-6">
               <span className="text-black not-italic">
                 {" Passing now will end the game."}
               </span>
@@ -119,13 +119,13 @@ export default function TextDisplay({
             isPlaying &&
             !isUserTurn &&
             (hasRequestedUndo ? (
-              <div>
+              <div className="h-6">
                 {lastMoveWasPass
                   ? "You passed and then you requested to undo your pass."
                   : "You have requested to undo the last move."}
               </div>
             ) : (
-              <div>
+              <div className="h-6">
                 {lastMoveWasPass && "You passed. "}
                 <span className="text-gray-500 italic">
                   You may
@@ -141,7 +141,7 @@ export default function TextDisplay({
             ))}
           {opponentCaptures + playerCaptures > 0 && (
             <>
-              <div className="text-gray-500 italic">
+              <div className="h-6 text-gray-500 italic">
                 {opponentColorText}
                 {opponentCaptures === 0 ? (
                   " has not captured any stones yet."
@@ -153,7 +153,7 @@ export default function TextDisplay({
                   </>
                 )}
               </div>
-              <div className="text-gray-500 italic">
+              <div className="h-6 text-gray-500 italic">
                 {playerCaptures === 0 ? (
                   " You have not captured any stones yet."
                 ) : (

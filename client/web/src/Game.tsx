@@ -50,7 +50,7 @@ export default function Game() {
           <div>
           <Goban />
           </div>
-          <div className="text-display-container mb-10">
+          <div className="text-display-container mb-10 grow-0">
             <TextDisplay
               isLoaded={isLoaded}
               isCreator={state?.createdBy === userPlayer}
