@@ -12,27 +12,32 @@ jobs:
     steps:
       - name: Git checkout
         uses: actions/checkout@v2
+
       - name: Install build dependencies
         run: npm ci
+
       - name: Build
         run: npx hathora build
+
       - name: Deploy server
         # we rsync this over to the server where pm2 is running and watching this folder
         run: |
-          echo -e '${{ secrets.CALM_GO_SERVER_DEPLOY_KEY }}' > key-file
-          chmod 600 key-file
+          echo -e '${{ secrets.CALM_GO_SERVER_DEPLOY_KEY }}' > key-file;
+          chmod 600 key-file;
           rsync --archive --compress --update --delete --recursive \
             -e 'ssh -i key-file -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' \
             dist/server \
-           '${{ secrets.CALM_GO_SERVER_DEPLOY_ADDRESS }}'
-          rm -f key-file
+           '${{ secrets.CALM_GO_SERVER_DEPLOY_ADDRESS }}';
+          rm -f key-file;
+
+      - name: Add _redirects file
+        # required to make client-side routing work when a sub-path is
+        # hit directly
+        run: echo '/* /index.html 200' > client/web/_redirects;
+
       - name: Deploy client
         run: |
-          # required to make client-side routing work when a sub-path is
-          # hit directly
-          echo '/* /index.html 200' > client/web/_redirects
-          # deploy the site
           npx netlify deploy --prodIfUnlocked \
-            --site '${{ secrets.NETLIFY_SITE_ID }}' \
-            --auth '${{ secrets.NETLIFY_AUTH_TOKEN }}' \
-            --dir=dist/client/web
+          --site '${{ secrets.NETLIFY_SITE_ID }}' \
+          --auth '${{ secrets.NETLIFY_AUTH_TOKEN }}' \
+          --dir=dist/client/web;
