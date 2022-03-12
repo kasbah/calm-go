@@ -26,7 +26,7 @@ jobs:
       - name: Add _redirects file
         # required to make client-side routing work when a sub-path is
         # hit directly
-        run: echo '/* /index.html 200' > client/web/_redirects;
+        run: echo '/* /index.html 200' > dist/client/web/_redirects;
 
       - name: Deploy client
         run: |
