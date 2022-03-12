@@ -90,9 +90,7 @@ export default function TextDisplay({
             </>
           )}
           {gamePhase === GamePhase.Ended && (
-            <div className="h-6">
-              The game has ended.
-            </div>
+            <div className="h-6">The game has ended.</div>
           )}
           {gamePhase !== GamePhase.Ended && (
             <div className="h-6">

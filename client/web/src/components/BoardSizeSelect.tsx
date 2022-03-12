@@ -13,9 +13,9 @@ export default function BoardSizeSelect({ onChange, size }) {
   }, [selectedSize]);
   return (
     <div className="flex space-x-6 justify-center">
-      <RadioInput value={"9"} selectedSize={selectedSize} onChange={setSize} />
-      <RadioInput value={"13"} selectedSize={selectedSize} onChange={setSize} />
-      <RadioInput value={"19"} selectedSize={selectedSize} onChange={setSize} />
+      <RadioInput selectedSize={selectedSize} value={"9"} onChange={setSize} />
+      <RadioInput selectedSize={selectedSize} value={"13"} onChange={setSize} />
+      <RadioInput selectedSize={selectedSize} value={"19"} onChange={setSize} />
     </div>
   );
 }
@@ -28,18 +28,18 @@ function RadioInput({ value, selectedSize, onChange }) {
     <div className={`border ${borderStyle} pl-2 pr-2 text-xl`}>
       <VisuallyHidden>
         <input
-          type="radio"
-          id={id}
           key={id}
-          name="goban-size"
-          value={value}
           checked={checked}
+          id={id}
+          name="goban-size"
+          type="radio"
+          value={value}
           onChange={() => onChange(value)}
         />
       </VisuallyHidden>
       <label
-        className="cursor-pointer"
         key={id + "-label"}
+        className="cursor-pointer"
         htmlFor={id}
       >{`${value} x ${value}`}</label>
     </div>

@@ -12,8 +12,7 @@ const classes = {
   },
   variant: {
     primary: "border-blue-green text-blue-green hover:brightness-125",
-    secondary:
-      "border-black hover:border-gray-300 hover:text-gray-500",
+    secondary: "border-black hover:border-gray-300 hover:text-gray-500",
   },
 };
 
@@ -33,13 +32,13 @@ const Button = forwardRef(
   ) => (
     <button
       ref={ref}
-      disabled={disabled}
-      type={type}
       className={`${classes.base} ${classes.size[size]} ${
         classes.variant[variant]
-      } ${pill ? classes.pill : ""} ${
-        disabled ? classes.disabled : ""
-      } ${className || ''}`}
+      } ${pill ? classes.pill : ""} ${disabled ? classes.disabled : ""} ${
+        className || ""
+      }`}
+      disabled={disabled}
+      type={type}
       {...props}
     >
       {children}

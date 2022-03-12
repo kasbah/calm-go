@@ -10,9 +10,9 @@ function App() {
     <BrowserRouter>
       <AppContextProvider>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/_/:stateId" element={<Game />} />
-          <Route path="*" element={<div>Not found</div>} />
+          <Route element={<Home />} path="/" />
+          <Route element={<Game />} path="/_/:stateId" />
+          <Route element={<div>Not found</div>} path="*" />
         </Routes>
       </AppContextProvider>
     </BrowserRouter>

@@ -48,41 +48,41 @@ export default function Game() {
       <div className="flex justify-center">
         <div className="landscape:flex landscape:flex-wrap landscape:justify-center">
           <div>
-          <Goban />
+            <Goban />
           </div>
           <div className="text-display-container mb-10 grow-0">
             <TextDisplay
-              isLoaded={isLoaded}
-              players={state?.players}
-              userPlayer={userPlayer}
+              captures={state?.captures}
               gameCreatedBy={state?.createdBy}
               gamePhase={state?.phase}
-              turn={state?.turn}
-              turnNumber={state?.turnNumber}
               hasRequestedUndo={hasRequestedUndo}
-              requestUndo={sendUndo}
-              captures={state?.captures}
+              isLoaded={isLoaded}
               pass={() => {
                 if (connection != null) {
                   connection.pass({});
                 }
               }}
               passes={state?.passes}
+              players={state?.players}
+              requestUndo={sendUndo}
+              turn={state?.turn}
+              turnNumber={state?.turnNumber}
+              userPlayer={userPlayer}
             />
           </div>
         </div>
       </div>
       <div className="width-full text-center justify-center space-y-2">
         <UndoRequestedDialog
-          isUserPlaying={isUserPlaying}
           hasRequestedUndo={hasRequestedUndo}
-          undoRequested={state?.undoRequested}
+          isUserPlaying={isUserPlaying}
           performUndo={sendUndo}
           rejectUndo={() => {
             if (connection != null) {
               connection.rejectUndo({});
             }
           }}
+          undoRequested={state?.undoRequested}
         />
       </div>
     </div>
@@ -99,21 +99,21 @@ function UndoRequestedDialog({
   const acceptRef = useRef();
   return (
     <Dialog
-      isOpen={isUserPlaying && !hasRequestedUndo && undoRequested != null}
-      label="Undo Requested"
-      description="Your opponent has requested to undo the last move."
-      onDismiss={rejectUndo}
-      leastDestructiveRef={acceptRef}
       buttons={
         <>
           <Button variant="secondary" onClick={rejectUndo}>
             Reject
           </Button>
-          <Button variant="primary" ref={acceptRef} onClick={performUndo}>
+          <Button ref={acceptRef} variant="primary" onClick={performUndo}>
             Accept
           </Button>
         </>
       }
+      description="Your opponent has requested to undo the last move."
+      isOpen={isUserPlaying && !hasRequestedUndo && undoRequested != null}
+      label="Undo Requested"
+      leastDestructiveRef={acceptRef}
+      onDismiss={rejectUndo}
     />
   );
 }
@@ -121,8 +121,8 @@ function UndoRequestedDialog({
 function UndoButton({ hasRequestedUndo, performUndo }) {
   return (
     <Button
-      variant="secondary"
       className={hasRequestedUndo ? "italic text-sm" : ""}
+      variant="secondary"
       onClick={performUndo}
     >
       {hasRequestedUndo ? "Cancel Undo Request" : "Undo"}

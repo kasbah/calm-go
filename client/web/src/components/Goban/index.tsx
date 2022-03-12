@@ -88,24 +88,13 @@ export default function Goban() {
 
   return (
     <BoundedGoban
-      signMap={signMap}
+      animateStonePlacement={true}
+      fuzzyStonePlacement={true}
       ghostStoneMap={ghostStoneMap}
       markerMap={markerMap}
-      maxWidth={windowSize.width}
       maxHeight={windowSize.height}
-      fuzzyStonePlacement={true}
-      animateStonePlacement={true}
-      onVertexMouseEnter={(e, vertex) => {
-        setHoverVertex(vertex);
-      }}
-      onVertexMouseLeave={(e, vertex) => {
-        setHoverVertex((v) => {
-          if (v != null && v[0] === vertex[0] && v[1] === vertex[1]) {
-            return null;
-          }
-          return v;
-        });
-      }}
+      maxWidth={windowSize.width}
+      signMap={signMap}
       onVertexClick={(e, vertex) => {
         if (connection != null && isUserTurn) {
           connection.makeMove({ x: vertex[0], y: vertex[1] });
@@ -117,6 +106,17 @@ export default function Goban() {
             return signMap;
           });
         }
+      }}
+      onVertexMouseEnter={(e, vertex) => {
+        setHoverVertex(vertex);
+      }}
+      onVertexMouseLeave={(e, vertex) => {
+        setHoverVertex((v) => {
+          if (v != null && v[0] === vertex[0] && v[1] === vertex[1]) {
+            return null;
+          }
+          return v;
+        });
       }}
     />
   );

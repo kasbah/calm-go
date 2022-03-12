@@ -10,12 +10,12 @@ export default function VsDisplay({ opponents, userId }) {
         <div className="text-gray-500">(no players yet)</div>
       ) : (
         <div className="flex w-full justify-evenly max-w-4xl">
-          <PlayerDisplay player={opponents?.[0]} isUser={userIndex === 0} />
+          <PlayerDisplay isUser={userIndex === 0} player={opponents?.[0]} />
           <div className="text-xl">vs</div>
           <PlayerDisplay
             alignRight
-            player={opponents?.[1]}
             isUser={userIndex === 1}
+            player={opponents?.[1]}
           />
         </div>
       )}

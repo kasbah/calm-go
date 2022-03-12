@@ -6,15 +6,15 @@ export default function ColorSelect({ color, onChange }) {
   return (
     <div className="flex space-x-6 justify-center">
       <RadioInput
-        value={Color.Black}
         label="Black"
         selectedColor={color}
+        value={Color.Black}
         onChange={onChange}
       />
       <RadioInput
-        value={Color.White}
         label="White"
         selectedColor={color}
+        value={Color.White}
         onChange={onChange}
       />
     </div>
@@ -29,20 +29,18 @@ function RadioInput({ value, label, selectedColor, onChange }) {
     <div className={`border ${borderStyle} pl-2 pr-2 text-xl`}>
       <VisuallyHidden>
         <input
-          type="radio"
-          id={id}
           key={id}
-          name="player-color"
-          value={value}
           checked={checked}
+          id={id}
+          name="player-color"
+          type="radio"
+          value={value}
           onChange={() => onChange(value)}
         />
       </VisuallyHidden>
-      <label
-        className="cursor-pointer"
-        key={id + "-label"}
-        htmlFor={id}
-      >{label}</label>
+      <label key={id + "-label"} className="cursor-pointer" htmlFor={id}>
+        {label}
+      </label>
     </div>
   );
 }

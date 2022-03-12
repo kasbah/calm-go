@@ -29,10 +29,10 @@ export default function Dialog({
     <>
       <AlertDialogOverlay
         className="z-50"
-        style={{ background: "hsla(0, 100%, 100%, 0.9)" }}
         isOpen={isOpen}
-        onDismiss={onDismiss}
         leastDestructiveRef={leastDestructiveRef}
+        style={{ background: "hsla(0, 100%, 100%, 0.9)" }}
+        onDismiss={onDismiss}
       >
         <AlertDialogContent
           className="max-w-2xl"

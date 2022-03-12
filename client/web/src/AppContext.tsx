@@ -12,7 +12,7 @@ const AppContext = createContext({
   preferredBoardSize: "9",
 });
 
-const connections = {}
+const connections = {};
 
 const client: HathoraClient = new HathoraClient();
 
