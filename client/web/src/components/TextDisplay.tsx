@@ -4,7 +4,6 @@ import { Color, GamePhase } from "../../../../api/types";
 
 export default function TextDisplay({
   isLoaded,
-  isCreator,
   players,
   userPlayer,
   gamePhase,
