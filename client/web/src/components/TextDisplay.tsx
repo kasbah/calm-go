@@ -89,16 +89,23 @@ export default function TextDisplay({
               </div>
             </>
           )}
-          <div className="h-6">
-            <span
-              className={players.length !== 2 ? "text-gray-500" : ""}
-            >{`${turnText}`}</span>
-            <span className="text-gray-500 italic">
-              {isPlaying
-                ? ` You are playing ${colorText}.`
-                : " You are not playing."}
-            </span>
-          </div>
+          {gamePhase === GamePhase.Ended && (
+            <div className="h-6">
+              The game has ended.
+            </div>
+          )}
+          {gamePhase !== GamePhase.Ended && (
+            <div className="h-6">
+              <span
+                className={players.length !== 2 ? "text-gray-500" : ""}
+              >{`${turnText}`}</span>
+              <span className="text-gray-500 italic">
+                {isPlaying
+                  ? ` You are playing ${colorText}.`
+                  : " You are not playing."}
+              </span>
+            </div>
+          )}
           {isUserTurn && (
             <div
               className={`h-6 ${
