@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { HathoraConnection } from "../../.hathora/client";
+import { UserId } from "../../../api/types";
 
 import Goban from "./components/Goban";
 import Button from "./components/Button";
@@ -20,14 +21,9 @@ export default function Game() {
 
   const isLoaded = state != null;
   const userPlayer = (players || []).find((p) => p.id === user?.id);
-  const opponent = userPlayer
-    ? (players || []).find((p) => p.id !== user?.id)
-    : null;
   const isUserPlaying = userPlayer != null;
   const hasRequestedUndo =
-    state?.undoRequested != null && state?.undoRequested == user?.id;
-
-  const isUserTurn = state?.turn === userPlayer?.color;
+    state?.undoRequested != null && state?.undoRequested === user?.id;
 
   useEffect(() => {
     connection = getConnection(stateId);
@@ -88,13 +84,20 @@ export default function Game() {
   );
 }
 
+interface UndoRequestedDialogProps {
+  isUserPlaying: boolean;
+  hasRequestedUndo: boolean;
+  undoRequested: UserId;
+  performUndo: Function;
+  rejectUndo: Function;
+}
 function UndoRequestedDialog({
   isUserPlaying,
   hasRequestedUndo,
   undoRequested,
   performUndo,
   rejectUndo,
-}) {
+}: UndoRequestedDialogProps) {
   const acceptRef = useRef();
   return (
     <Dialog
@@ -114,17 +117,5 @@ function UndoRequestedDialog({
       leastDestructiveRef={acceptRef}
       onDismiss={rejectUndo}
     />
-  );
-}
-
-function UndoButton({ hasRequestedUndo, performUndo }) {
-  return (
-    <Button
-      className={hasRequestedUndo ? "italic text-sm" : ""}
-      variant="secondary"
-      onClick={performUndo}
-    >
-      {hasRequestedUndo ? "Cancel Undo Request" : "Undo"}
-    </Button>
   );
 }

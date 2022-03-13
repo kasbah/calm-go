@@ -1,10 +1,8 @@
 import React, { forwardRef } from "react";
-import PropTypes from "prop-types";
 
 const classes = {
   base: "border transition ease-in-out duration-300 w-full max-w-md focus-visible:outline-none",
   disabled: "opacity-50",
-  pill: "rounded-full",
   size: {
     small: "px-2 py-1 text-sm",
     normal: "px-4 py-2",
@@ -20,39 +18,42 @@ const Button = forwardRef(
   (
     {
       children,
-      type = "button",
       className,
       variant = "primary",
       size = "normal",
-      pill,
       disabled = false,
       ...props
-    },
+    }: Partial<ButtonProps>,
     ref
-  ) => (
-    <button
-      ref={ref}
-      className={`${classes.base} ${classes.size[size]} ${
-        classes.variant[variant]
-      } ${pill ? classes.pill : ""} ${disabled ? classes.disabled : ""} ${
-        className || ""
-      }`}
-      disabled={disabled}
-      type={type}
-      {...props}
-    >
-      {children}
-    </button>
-  )
+  ) => {
+    const cls =
+      classes.base +
+      " " +
+      classes.size[size] +
+      " " +
+      classes.varian[variant] +
+      " " +
+      (disabled ? classes.disabled : "") +
+      (className || "");
+    return (
+      <button
+        ref={ref}
+        className={cls}
+        disabled={disabled}
+        type="button"
+        {...props}
+      >
+        {children}
+      </button>
+    );
+  }
 );
 
-Button.propTypes = {
-  submit: PropTypes.oneOf(["submit", "button"]),
-  className: PropTypes.string,
-  pill: PropTypes.bool,
-  disabled: PropTypes.bool,
-  variant: PropTypes.oneOf(["primary", "secondary", "danger"]),
-  size: PropTypes.oneOf(["small", "normal", "large"]),
-};
+interface ButtonProps {
+  className: string;
+  disabled: boolean;
+  variant: "primary" | "secondary";
+  size: "small" | "normal" | "large";
+}
 
 export default Button;
