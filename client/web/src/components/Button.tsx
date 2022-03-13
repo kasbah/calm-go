@@ -31,7 +31,7 @@ const Button = forwardRef(
       " " +
       classes.size[size] +
       " " +
-      classes.varian[variant] +
+      classes.variant[variant] +
       " " +
       (disabled ? classes.disabled : "") +
       (className || "");
