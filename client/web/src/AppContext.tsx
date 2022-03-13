@@ -6,7 +6,7 @@ import { HathoraClient } from "../../.hathora/client";
 const AppContext = createContext({
   user: null,
   userName: null,
-  createGame: async ({}) => {},
+  createGame: async () => {},
   getConnection: () => {},
   gameStates: {},
   preferredBoardSize: "9",
@@ -23,20 +23,23 @@ export default function AppContextProvider({ children }) {
   const [userName, setUserName] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(async () => {
-    let token = localStorage.getItem(client.appId);
-    let u;
-    if (token == null) {
-      token = await client.loginAnonymous();
-      u = HathoraClient.getUserFromToken(token);
-      localStorage.setItem(client.appId, token);
-    }
-    try {
-      u = HathoraClient.getUserFromToken(token);
-    } catch (e) {
-      u = null;
-    }
-    setUser(u);
+  useEffect(() => {
+    const getUserAndToken = async () => {
+      let token = localStorage.getItem(client.appId);
+      let u;
+      if (token == null) {
+        token = await client.loginAnonymous();
+        u = HathoraClient.getUserFromToken(token);
+        localStorage.setItem(client.appId, token);
+      }
+      try {
+        u = HathoraClient.getUserFromToken(token);
+      } catch (e) {
+        u = null;
+      }
+      setUser(u);
+    };
+    getUserAndToken();
   }, []);
 
   useEffect(() => {

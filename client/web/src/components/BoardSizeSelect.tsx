@@ -10,7 +10,7 @@ export default function BoardSizeSelect({ onChange, size }) {
     if (typeof onChange === "function") {
       onChange(selectedSize);
     }
-  }, [selectedSize]);
+  }, [selectedSize, onChange]);
   return (
     <div className="flex space-x-6 justify-center">
       <RadioInput selectedSize={selectedSize} value={"9"} onChange={setSize} />

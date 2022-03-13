@@ -74,8 +74,8 @@ export default function TextDisplay({
                   {/* This button is not vissible just here to maintain the line-height when the actual button is clicked. */}
                   <button
                     aria-hidden={true}
-                    disabled={true}
                     className="w-px border border-white px-1 text-white"
+                    disabled={true}
                   >
                     C
                   </button>
@@ -114,7 +114,7 @@ export default function TextDisplay({
               <span className="text-gray-500 italic inline">
                 {isPlaying
                   ? ` You are playing ${colorText}.`
-                  : " You are not playing."}
+                  : " You are not playing in this game."}
               </span>
               <br />
             </>

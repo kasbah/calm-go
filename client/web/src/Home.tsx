@@ -11,12 +11,6 @@ function Home() {
   const [boardSize, setBoardSize] = React.useState(preferredBoardSize);
   const [selectedColor, setSelectedColor] = React.useState(Color.Black);
 
-  const handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      createGame({ userName: event.target.value, boardSize, selectedColor });
-    }
-  };
-
   React.useEffect(() => {
     setName(userName);
   }, [userName]);

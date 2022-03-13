@@ -77,7 +77,7 @@ export default function Goban() {
       )
     );
     setGhostStoneMap(g);
-  }, [hoverVertex, signMap]);
+  }, [hoverVertex, signMap, isUserPlaying, isUserTurn]);
 
   useEffect(() => {
     if (connection == null) {
