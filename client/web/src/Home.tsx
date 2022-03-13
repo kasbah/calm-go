@@ -22,12 +22,16 @@ function Home() {
           <div className="flex flex-col justify-left space-y-12">
             <div className="text-xl mt-10 text-center">
               <span>{"Welcome to "}</span>
-              <span className="text-gray-500 italic">{"   Calm Go."}</span>
+              <span className="text-gray-500 italic">{"Calm Go."}</span>
+            </div>
+            <div className="mx-5 text-center text-gray-800">
+              Play <a className="underline" href="https://en.wikipedia.org/wiki/Go_(game)">Go/Weiqi</a> online vs friends. No sign-up required.
             </div>
             <BoardSizeSelect size={boardSize} onChange={setBoardSize} />
             <ColorSelect color={selectedColor} onChange={setSelectedColor} />
             <div className="flex place-items-center justify-center">
               <Button
+                className="max-w-[80vw]"
                 size="large"
                 variant="secondary"
                 onClick={() =>
