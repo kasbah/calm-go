@@ -11,7 +11,7 @@ function App() {
       <AppContextProvider>
         <Routes>
           <Route element={<Home />} path="/" />
-          <Route element={<Game />} path="/_/:stateId" />
+          <Route element={<Game />} path="/0:stateId" />
           <Route element={<div>Not found</div>} path="*" />
         </Routes>
       </AppContextProvider>

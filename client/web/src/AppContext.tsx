@@ -84,7 +84,7 @@ export default function AppContextProvider({ children }) {
     setPreferredBoardSize(boardSize);
     connection.setBoardSize({ size: parseInt(boardSize, 10) });
     connection.pickColor({ color: selectedColor });
-    navigate(`/_/${connection.stateId}`);
+    navigate(`/0${connection.stateId}`);
   };
 
   const getConnection = (stateId) => {
