@@ -49,99 +49,126 @@ export default function TextDisplay({
     passes != null && passes.length > 0 && passes[0] === userPlayer?.color;
 
   return (
-    <div>
-      {turnNumber < 3 && gameCreatedBy !== playerLastJoined?.id && (
-        <div className="h-7">
-          {isPlaying && playerLastJoined?.id === userPlayer?.id
-            ? "You"
-            : colorToString(playerLastJoined.color)}
-          {" just joined the game."}
-        </div>
-      )}
+    <div style={{ width: 400, maxWidth: "80vw" }}>
       {isLoaded && (
-        <div className="flex flex-col">
+        <div>
+          {turnNumber < 3 && gameCreatedBy !== playerLastJoined?.id && (
+            <>
+              {isPlaying && playerLastJoined?.id === userPlayer?.id
+                ? "You"
+                : colorToString(playerLastJoined.color)}
+              {" just joined the game."}
+              <br />
+            </>
+          )}
           {isPlaying && players.length !== 2 && (
             <>
-              <div className="h-7">{"You have no opponent. "}</div>
-              <div className="h-7">
-                {linkCopied ? (
-                  <>
-                    <span className="text-gray-500">
-                      {"You have copied the link."}
-                    </span>
-                    {" Send it to a friend."}
-                  </>
-                ) : (
-                  <>
-                    <button
-                      className="border border-black px-1"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        navigator.clipboard.writeText(window.location);
-                        setLinkCopied(true);
-                      }}
-                    >
-                      {"Copy the link"}
-                    </button>
-                    {" and send it to a friend."}
-                  </>
-                )}
-              </div>
+              {"You have no opponent. "}
+              <br />
+              {linkCopied ? (
+                <>
+                  <span className="text-gray-500">
+                    {"You have copied the link."}
+                  </span>
+                  {" Send it to a friend."}
+                  {/* This button is not vissible just here to maintain the line-height when the actual button is clicked. */}
+                  <button
+                    aria-hidden={true}
+                    disabled={true}
+                    className="w-px border border-white px-1 text-white"
+                  >
+                    C
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    className="border border-black px-1"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigator.clipboard.writeText(window.location);
+                      setLinkCopied(true);
+                    }}
+                  >
+                    {"Copy the link"}
+                  </button>
+                  {" and send it to a friend."}
+                </>
+              )}
+              <br />
             </>
           )}
           {gamePhase === GamePhase.Ended && (
-            <div className="h-7">The game has ended.</div>
+            <>
+              The game has ended.
+              <br />
+            </>
           )}
           {gamePhase !== GamePhase.Ended && (
-            <div className="h-7">
+            <>
               <span
-                className={players.length !== 2 ? "text-gray-500" : ""}
+                className={
+                  (players.length !== 2 ? "text-gray-500" : "") + " inline"
+                }
               >{`${turnText}`}</span>
-              <span className="text-gray-500 italic">
+              <span className="text-gray-500 italic inline">
                 {isPlaying
                   ? ` You are playing ${colorText}.`
                   : " You are not playing."}
               </span>
-            </div>
+              <br />
+            </>
           )}
           {isUserTurn && (
-            <div
-              className={`h-7 ${
-                passWillEndGame
-                  ? "text-black not-italic"
-                  : players.length !== 2
-                  ? "text-gray-400"
-                  : "text-gray-500"
-              } italic`}
-            >
-              {" You may choose to"}
-              <button
-                className="border border-gray-300 mx-1 px-1"
-                onClick={pass}
+            <>
+              <span
+                className={`${
+                  passWillEndGame
+                    ? "text-black not-italic"
+                    : players.length !== 2
+                    ? "text-gray-400"
+                    : "text-gray-500"
+                } italic`}
               >
-                {"pass"}
-              </button>
-              {"."}
-            </div>
+                {" You may choose to"}
+                <button
+                  className="border border-gray-300 mx-1 px-1"
+                  onClick={pass}
+                >
+                  {"pass"}
+                </button>
+                {"."}
+              </span>
+              <br />
+            </>
           )}
           {passWillEndGame && (
-            <div className="h-7">
+            <>
               <span className="text-black not-italic">
                 {" Passing now will end the game."}
               </span>
-            </div>
+              <br />
+            </>
           )}
           {gamePhase !== GamePhase.NotStarted &&
             isPlaying &&
             !isUserTurn &&
             (hasRequestedUndo ? (
-              <div className="h-7">
-                {lastMoveWasPass
-                  ? "You passed and then you requested to undo your pass."
-                  : "You have requested to undo the last move."}
-              </div>
+              <>
+                {lastMoveWasPass ? (
+                  <>
+                    {"You passed and then you requested to undo your pass."}
+                    <br />
+                  </>
+                ) : (
+                  <>
+                    {"You have requested to undo the last move."}
+                    <br />
+                  </>
+                )}
+              </>
             ) : (
-              <div className="h-7">
+              <>
                 {lastMoveWasPass && "You passed. "}
                 <span className="text-gray-500 italic">
                   You may
@@ -153,11 +180,12 @@ export default function TextDisplay({
                   </button>
                   {lastMoveWasPass ? "your pass." : "the last move."}
                 </span>
-              </div>
+                <br />
+              </>
             ))}
           {opponentCaptures + playerCaptures > 0 && (
             <>
-              <div className="h-7 text-gray-500 italic">
+              <span className="text-gray-500 italic">
                 {opponentColorText}
                 {opponentCaptures === 0 ? (
                   " has not captured any stones yet."
@@ -168,8 +196,9 @@ export default function TextDisplay({
                     {` stone${opponentCaptures > 1 ? "s" : ""}.`}
                   </>
                 )}
-              </div>
-              <div className="h-7 text-gray-500 italic">
+              </span>
+              <br />
+              <span className="text-gray-500 italic">
                 {playerCaptures === 0 ? (
                   " You have not captured any stones yet."
                 ) : (
@@ -179,7 +208,7 @@ export default function TextDisplay({
                     {` stone${playerCaptures > 1 ? "s" : ""}.`}
                   </>
                 )}
-              </div>
+              </span>
             </>
           )}
         </div>
