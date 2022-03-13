@@ -100,7 +100,7 @@ export default function TextDisplay({
               <span className="text-gray-500 italic">
                 {isPlaying
                   ? ` You are playing ${colorText}.`
-                  : " You are not playing."}
+                  : " You are not playing in this game."}
               </span>
             </div>
           )}
