@@ -1,6 +1,8 @@
-import Board, { Vertex } from "@sabaki/go-board";
+import Board, { Vertex, Sign } from "@sabaki/go-board";
 import { Methods, Context } from "./.hathora/methods";
 import { Response } from "../api/base";
+/// <reference types="./custom_typings/@sabaki/deadstones" />
+import sabakiDeadstones from "@sabaki/deadstones";
 import {
   Color,
   Player,
@@ -317,6 +319,13 @@ export class Impl implements Methods<InternalState> {
         }
       }
     }
+    let deadStonesMap
+    if (state.phase === GamePhase.Ended) {
+      deadStonesMap = sabakiDeadstones.guess(state.board.signMap, {
+        finished: true,
+      });
+      console.log({deadStonesMap})
+    }
     return {
       createdBy: state.createdBy,
       phase: state.phase,
@@ -331,6 +340,46 @@ export class Impl implements Methods<InternalState> {
       undoRequested: state.undoRequested,
       lastMove: state.lastMove,
       passes: passes.map(({ color }) => color),
+      deadStonesMap,
     };
   }
+}
+
+function getScore(
+  board: Board,
+  areaMap: Sign[][],
+  { komi = 0, handicap = 0 } = {}
+) {
+  const score = {
+    area: [0, 0],
+    territory: [0, 0],
+    captures: [1, -1].map((sign) => board.getCaptures(sign as Sign)),
+    areaScore: 0,
+    territoryScore: 0,
+  };
+
+  for (let x = 0; x < board.width; x++) {
+    for (let y = 0; y < board.height; y++) {
+      const z = areaMap[y][x];
+      const index = z > 0 ? 0 : 1;
+
+      score.area[index] += Math.abs(Math.sign(z));
+      if (board.get([x, y]) === 0) {
+        score.territory[index] += Math.abs(Math.sign(z));
+      }
+    }
+  }
+
+  score.area = score.area.map(Math.round);
+  score.territory = score.territory.map(Math.round);
+
+  score.areaScore = score.area[0] - score.area[1] - komi - handicap;
+  score.territoryScore =
+    score.territory[0] -
+    score.territory[1] +
+    score.captures[0] -
+    score.captures[1] -
+    komi;
+
+  return score;
 }

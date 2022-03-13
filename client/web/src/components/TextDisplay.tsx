@@ -15,6 +15,7 @@ export default function TextDisplay({
   captures,
   pass,
   passes,
+  deadStonesMap,
 }) {
   const [linkCopied, setLinkCopied] = React.useState(false);
   React.useEffect(() => {
@@ -207,6 +208,11 @@ export default function TextDisplay({
                 )}
               </span>
             </>
+          )}
+          {gamePhase === GamePhase.Ended && (
+            <div>
+              <pre>{JSON.stringify(deadStonesMap, null, 2)}</pre>
+            </div>
           )}
         </div>
       )}

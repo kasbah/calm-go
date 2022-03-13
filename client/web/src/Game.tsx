@@ -63,6 +63,7 @@ export default function Game() {
               turn={state?.turn}
               turnNumber={state?.turnNumber}
               userPlayer={userPlayer}
+              deadStonesMap={state?.deadStonesMap}
             />
           </div>
         </div>

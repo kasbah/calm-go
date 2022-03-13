@@ -16,6 +16,12 @@ types:
   Move:
     x: "int"
     y: "int"
+  Score:
+    area: "int[][]"
+    territory: "int[][]"
+    captures: "int[][]"
+    areaScore: "int"
+    territoryScore: "int"
   GameState:
     createdBy: "UserId"
     phase: "GamePhase"
@@ -27,6 +33,8 @@ types:
     captures: "Captures"
     lastMove: "Move?"
     passes: "Color[]"
+    deadStonesMap: "int[][]?"
+    score: "Score?"
 
 methods:
   joinGame:
