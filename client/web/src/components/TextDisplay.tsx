@@ -74,7 +74,7 @@ export default function TextDisplay({
                   {/* This button is not vissible just here to maintain the line-height when the actual button is clicked. */}
                   <button
                     aria-hidden={true}
-                    className="w-px border border-white px-1 text-white"
+                    style={{height: 26, width: 1, visibility: 'hidden'}}
                     disabled={true}
                   >
                     C
