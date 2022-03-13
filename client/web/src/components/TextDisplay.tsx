@@ -46,7 +46,7 @@ export default function TextDisplay({
     passes.length > 0;
 
   const lastMoveWasPass =
-    passes != null && passes.length > 0 && passes[0] === userPlayer.color;
+    passes != null && passes.length > 0 && passes[0] === userPlayer?.color;
 
   return (
     <div>
