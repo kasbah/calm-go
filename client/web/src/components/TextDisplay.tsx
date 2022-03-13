@@ -135,18 +135,15 @@ export default function TextDisplay({
                   className="border border-gray-300 mx-1 px-1"
                   onClick={pass}
                 >
-                  {"pass"}
+                  {"pass."}
                 </button>
-                {"."}
               </span>
               <br />
             </>
           )}
           {passWillEndGame && (
             <>
-              <span className="text-black not-italic">
-                {" Passing now will end the game."}
-              </span>
+              {"Passing now will end the game."}
               <br />
             </>
           )}
