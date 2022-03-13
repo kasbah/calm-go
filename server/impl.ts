@@ -223,7 +223,7 @@ export class Impl implements Methods<InternalState> {
     state.history.push({ type: "pass", color: player.color });
     state.turn = player.color === Color.White ? Color.Black : Color.White;
     state.phase = GamePhase.InProgress;
-    // if that last two actions were passes, and the player passing is playing
+    // if there were two passes in a row, and the player passing now is playing
     // white then end the game (white always gets the last pass)
     if (
       player.color === Color.White &&
