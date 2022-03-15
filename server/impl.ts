@@ -66,12 +66,12 @@ export class Impl implements Methods<InternalState> {
       lastMove: undefined,
     };
   }
-  joinGame(
+  async joinGame(
     state: InternalState,
     userId: UserId,
     ctx: Context,
     request: IJoinGameRequest
-  ): Response {
+  ): Promise<Response> {
     if (state.players.length === 2) {
       return Response.error("Game already has two players.");
     }
@@ -91,12 +91,12 @@ export class Impl implements Methods<InternalState> {
     state.players.push({ id: userId, color });
     return Response.ok();
   }
-  leaveGame(
+  async leaveGame(
     state: InternalState,
     userId: UserId,
     ctx: Context,
     request: ILeaveGameRequest
-  ): Response {
+  ): Promise<Response> {
     const playerLeaving = state.players.find((player) => player.id === userId);
     if (playerLeaving == null) {
       return Response.error("Player is not in this game.");
@@ -104,7 +104,7 @@ export class Impl implements Methods<InternalState> {
     state.players = state.players.filter((player) => player.id !== userId);
     return Response.ok();
   }
-  setBoardSize(
+  async setBoardSize(
     state: InternalState,
     userId: UserId,
     ctx: Context,
@@ -128,12 +128,12 @@ export class Impl implements Methods<InternalState> {
     state.board = Board.fromDimensions(request.size);
     return Response.ok();
   }
-  pickColor(
+  async pickColor(
     state: InternalState,
     userId: UserId,
     ctx: Context,
     request: IPickColorRequest
-  ): Response {
+  ): Promise<Response> {
     const player = state.players.find((player) => player.id === userId);
     if (player == null) {
       return Response.error("Player is not in this game.");
@@ -159,12 +159,12 @@ export class Impl implements Methods<InternalState> {
     }
     return Response.ok();
   }
-  makeMove(
+  async makeMove(
     state: InternalState,
     userId: UserId,
     ctx: Context,
     request: IMakeMoveRequest
-  ): Response {
+  ): Promise<Response> {
     const player = state.players.find((player) => player.id === userId);
     if (player == null) {
       return Response.error("Player is not in this game.");
@@ -208,17 +208,17 @@ export class Impl implements Methods<InternalState> {
       return Response.error(e.toString());
     }
   }
-  pass(
+  async pass(
     state: InternalState,
     userId: UserId,
     ctx: Context,
     request: IPassRequest
-  ): Response {
+  ): Promise<Response> {
     const player = state.players.find((player) => player.id === userId);
     if (player == null) {
       return Response.error("Player is not in this game.");
     }
-    const response = checkTurn(state, player.color);
+    const response = await checkTurn(state, player.color);
     if (response.type === "error") {
       return response;
     }
@@ -236,12 +236,12 @@ export class Impl implements Methods<InternalState> {
     }
     return Response.ok();
   }
-  undo(
+  async undo(
     state: InternalState,
     userId: UserId,
     ctx: Context,
     request: IUndoRequest
-  ): Response {
+  ): Promise<Response> {
     const player = state.players.find((player) => player.id === userId);
     if (player == null) {
       return Response.error("Player is not in this game.");
@@ -296,16 +296,16 @@ export class Impl implements Methods<InternalState> {
     }
     return Response.ok();
   }
-  rejectUndo(
+  async rejectUndo(
     state: InternalState,
     userId: UserId,
     ctx: Context,
     request: IUndoRequest
-  ): Response {
+  ): Promise<Response> {
     state.undoRequested = undefined;
     return Response.ok();
   }
-  getUserState(state: InternalState, userId: UserId): GameState {
+  async getUserState(state: InternalState, userId: UserId): Promise<GameState> {
     const lastMove = state.history[state.history.length - 1];
     const moveBeforeLast = state.history[state.history.length - 2];
     const threeMovesAgo = state.history[state.history.length - 3];
@@ -319,12 +319,12 @@ export class Impl implements Methods<InternalState> {
         }
       }
     }
-    let deadStonesMap
+    let deadStonesMap;
     if (state.phase === GamePhase.Ended) {
-      deadStonesMap = sabakiDeadstones.guess(state.board.signMap, {
+      deadStonesMap = await sabakiDeadstones.guess(state.board.signMap, {
         finished: true,
       });
-      console.log({deadStonesMap})
+      console.log({ deadStonesMap });
     }
     return {
       createdBy: state.createdBy,
