@@ -6,7 +6,7 @@ import "@sabaki/shudan/css/goban.css";
 import "./Goban.css";
 import { HathoraConnection } from "../../../../.hathora/client";
 
-import { Color } from "../../../../../api/types";
+import { Color, GamePhase } from "../../../../../api/types";
 import { useAppContext } from "../../AppContext";
 
 const defaultSignMap = [
@@ -56,7 +56,7 @@ export default function Goban() {
   const isUserTurn = state?.turn === userColor;
 
   // for marking the last move with a dot
-  const markerMap = signMap.map((row, y) =>
+  const markerMap = state?.phase === GamePhase.InProgress && signMap.map((row, y) =>
     row.map((_, x) =>
       x === lastMove?.x && y === lastMove?.y ? { type: "circle" } : {}
     )
@@ -91,6 +91,7 @@ export default function Goban() {
       animateStonePlacement={true}
       fuzzyStonePlacement={true}
       ghostStoneMap={ghostStoneMap}
+      dimmedVertices={state?.deadStonesMap}
       markerMap={markerMap}
       maxHeight={windowSize.height}
       maxWidth={windowSize.width}

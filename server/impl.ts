@@ -235,6 +235,15 @@ export class Impl implements Methods<InternalState> {
       isPass(state.history[state.history.length - 2])
     ) {
       state.phase = GamePhase.Ended;
+      // this is not great since the promise makes race conditions on
+      // state.deadStonesMap possible (but they are still unlikely to occur)
+      sabakiDeadstones
+        .guess(state.board.signMap, {
+          finished: true,
+        })
+        .then((deadStonesMap) => {
+          state.deadStonesMap = deadStonesMap;
+        });
     }
     return Response.ok();
   }

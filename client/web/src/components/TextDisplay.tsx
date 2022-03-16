@@ -15,7 +15,7 @@ export default function TextDisplay({
   captures,
   pass,
   passes,
-  deadStonesMap,
+  score,
 }) {
   const [linkCopied, setLinkCopied] = React.useState(false);
   React.useEffect(() => {
@@ -211,7 +211,7 @@ export default function TextDisplay({
           )}
           {gamePhase === GamePhase.Ended && (
             <div>
-              <pre>{JSON.stringify(deadStonesMap, null, 2)}</pre>
+              <pre>{JSON.stringify(score, null, 2)}</pre>
             </div>
           )}
         </div>

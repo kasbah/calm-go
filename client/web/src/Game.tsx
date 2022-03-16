@@ -38,8 +38,6 @@ export default function Game() {
     }
   };
 
-  console.log(state?.deadStonesMap);
-
   return (
     <div className="flex flex-col">
       <div className="flex justify-center">
@@ -65,7 +63,7 @@ export default function Game() {
               turn={state?.turn}
               turnNumber={state?.turnNumber}
               userPlayer={userPlayer}
-              deadStonesMap={state?.deadStonesMap}
+              score={state?.score}
             />
           </div>
         </div>
