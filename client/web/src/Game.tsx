@@ -38,8 +38,6 @@ export default function Game() {
     }
   };
 
-  console.log(state?.deadStonesMap)
-
   return (
     <div className="flex flex-col">
       <div className="flex justify-center">
