@@ -38,6 +38,7 @@ export default function AppContextProvider({ children }) {
         u = null;
       }
       setUser(u);
+      console.log(u);
     };
     getUserAndToken();
   }, []);
@@ -79,6 +80,7 @@ export default function AppContextProvider({ children }) {
       onUpdate,
       onConnectionFailure
     );
+    console.log("createGame", connection);
     connections[connection.stateId] = connection;
     setUserName(userName);
     setPreferredBoardSize(boardSize);
@@ -97,6 +99,7 @@ export default function AppContextProvider({ children }) {
         onUpdate,
         onConnectionFailure
       );
+      console.log("getConnection", connection);
       connections[stateId] = connection;
     }
     return connection;
