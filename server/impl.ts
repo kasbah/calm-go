@@ -34,6 +34,7 @@ type InternalState = {
   players: Player[];
   undoRequested: UserId | undefined;
   lastMove: Move | undefined;
+  deadStonesMap: number[][] | undefined;
 };
 
 function checkTurn(state: InternalState, playerColor: Color): Response {
@@ -64,6 +65,7 @@ export class Impl implements Methods<InternalState> {
       players: [{ id: userId, color: Color.None }],
       undoRequested: undefined,
       lastMove: undefined,
+      deadStonesMap: undefined,
     };
   }
   joinGame(
@@ -319,13 +321,6 @@ export class Impl implements Methods<InternalState> {
         }
       }
     }
-    let deadStonesMap
-    if (state.phase === GamePhase.Ended) {
-      deadStonesMap = sabakiDeadstones.guess(state.board.signMap, {
-        finished: true,
-      });
-      console.log({deadStonesMap})
-    }
     return {
       createdBy: state.createdBy,
       phase: state.phase,
@@ -340,7 +335,7 @@ export class Impl implements Methods<InternalState> {
       undoRequested: state.undoRequested,
       lastMove: state.lastMove,
       passes: passes.map(({ color }) => color),
-      deadStonesMap,
+      deadStonesMap: state.deadStonesMap,
     };
   }
 }
