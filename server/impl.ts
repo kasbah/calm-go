@@ -1,6 +1,8 @@
-import Board, { Vertex } from "@sabaki/go-board";
+/// <reference types="./custom_typings/@sabaki/deadstones" />
+import Board, { Vertex, Sign } from "@sabaki/go-board";
 import { Methods, Context } from "./.hathora/methods";
 import { Response } from "../api/base";
+import sabakiDeadstones from "@sabaki/deadstones";
 import {
   Color,
   Player,
@@ -32,6 +34,7 @@ type InternalState = {
   players: Player[];
   undoRequested: UserId | undefined;
   lastMove: Move | undefined;
+  deadStonesMap: number[][] | undefined;
 };
 
 function checkTurn(state: InternalState, playerColor: Color): Response {
@@ -62,6 +65,7 @@ export class Impl implements Methods<InternalState> {
       players: [{ id: userId, color: Color.None }],
       undoRequested: undefined,
       lastMove: undefined,
+      deadStonesMap: undefined,
     };
   }
   joinGame(
@@ -231,6 +235,15 @@ export class Impl implements Methods<InternalState> {
       isPass(state.history[state.history.length - 2])
     ) {
       state.phase = GamePhase.Ended;
+      // this is not great since the promise makes race conditions on
+      // state.deadStonesMap possible (but they are still unlikely to occur)
+      sabakiDeadstones
+        .guess(state.board.signMap, {
+          finished: true,
+        })
+        .then((deadStonesMap) => {
+          state.deadStonesMap = deadStonesMap;
+        });
     }
     return Response.ok();
   }
@@ -331,6 +344,46 @@ export class Impl implements Methods<InternalState> {
       undoRequested: state.undoRequested,
       lastMove: state.lastMove,
       passes: passes.map(({ color }) => color),
+      deadStonesMap: state.deadStonesMap,
     };
   }
+}
+
+function getScore(
+  board: Board,
+  areaMap: Sign[][],
+  { komi = 0, handicap = 0 } = {}
+) {
+  const score = {
+    area: [0, 0],
+    territory: [0, 0],
+    captures: [1, -1].map((sign) => board.getCaptures(sign as Sign)),
+    areaScore: 0,
+    territoryScore: 0,
+  };
+
+  for (let x = 0; x < board.width; x++) {
+    for (let y = 0; y < board.height; y++) {
+      const z = areaMap[y][x];
+      const index = z > 0 ? 0 : 1;
+
+      score.area[index] += Math.abs(Math.sign(z));
+      if (board.get([x, y]) === 0) {
+        score.territory[index] += Math.abs(Math.sign(z));
+      }
+    }
+  }
+
+  score.area = score.area.map(Math.round);
+  score.territory = score.territory.map(Math.round);
+
+  score.areaScore = score.area[0] - score.area[1] - komi - handicap;
+  score.territoryScore =
+    score.territory[0] -
+    score.territory[1] +
+    score.captures[0] -
+    score.captures[1] -
+    komi;
+
+  return score;
 }
