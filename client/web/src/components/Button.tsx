@@ -1,7 +1,7 @@
 import React, { forwardRef } from "react";
 
 const classes = {
-  base: "border transition ease-in-out duration-300 w-full max-w-md focus-visible:outline-none",
+  base: "border transition ease-in-out duration-300 w-full focus-visible:outline-none",
   disabled: "opacity-50",
   size: {
     small: "px-2 py-1 text-sm",
