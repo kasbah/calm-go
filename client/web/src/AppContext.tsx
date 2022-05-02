@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { HathoraClient } from "../../.hathora/client";
+import { HathoraClient, HathoraConnection } from "../../.hathora/client";
 
 const AppContext = createContext({
   user: null,
@@ -75,8 +75,10 @@ export default function AppContextProvider({ children }) {
 
   const createGame = async ({ userName, selectedColor, boardSize }) => {
     const token = localStorage.getItem(client.appId);
-    const connection = await client.connectNew(
+    const stateId = await client.create(token, {});
+    const connection = client.connect(
       token,
+      stateId,
       onUpdate,
       onConnectionFailure
     );
@@ -89,11 +91,11 @@ export default function AppContextProvider({ children }) {
     navigate(`/0${connection.stateId}`);
   };
 
-  const getConnection = (stateId) => {
+  const getConnection = (stateId: string) => {
     const token = localStorage.getItem(client.appId);
-    let connection = connections[stateId];
+    let connection: HathoraConnection = connections[stateId];
     if (connection == null && token != null) {
-      connection = client.connectExisting(
+      connection = client.connect(
         token,
         stateId,
         onUpdate,

@@ -23,7 +23,7 @@ types:
     areaScore: "int"
     territoryScore: "int"
   GameState:
-    createdBy: "UserId"
+    createdBy: "UserId?"
     phase: "GamePhase"
     signMap: "int[][]"
     turn: "Color"
