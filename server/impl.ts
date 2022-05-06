@@ -10,6 +10,7 @@ import {
   GamePhase,
   GameState,
   UserId,
+  IInitializeRequest,
   IJoinGameRequest,
   ILeaveGameRequest,
   ISetBoardSizeRequest,
@@ -26,7 +27,7 @@ function isPass(obj: any): obj is Pass {
 }
 
 type InternalState = {
-  createdBy: UserId;
+  createdBy: UserId | undefined;
   phase: GamePhase;
   board: Board;
   history: (Board | Pass)[];
@@ -55,14 +56,14 @@ function checkTurn(state: InternalState, playerColor: Color): Response {
 }
 
 export class Impl implements Methods<InternalState> {
-  initialize(userId: UserId, ctx: Context): InternalState {
+  initialize(ctx: Context, request: IInitializeRequest): InternalState {
     return {
-      createdBy: userId,
+      createdBy: undefined,
       phase: GamePhase.NotStarted,
       board: Board.fromDimensions(9),
       history: [],
       turn: Color.Black,
-      players: [{ id: userId, color: Color.None }],
+      players: [],
       undoRequested: undefined,
       lastMove: undefined,
       deadStonesMap: undefined,
@@ -80,6 +81,9 @@ export class Impl implements Methods<InternalState> {
     const playerJoined = state.players.find((player) => player.id === userId);
     if (playerJoined != null) {
       return Response.error("Player has already joined this game.");
+    }
+    if (state.createdBy === undefined) {
+      state.createdBy = userId;
     }
     let color = Color.None;
     const oponent = state.players.find((player) => player.id !== userId);
