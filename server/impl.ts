@@ -56,7 +56,7 @@ function checkTurn(state: InternalState, playerColor: Color): Response {
 }
 
 export class Impl implements Methods<InternalState> {
-  initialize(ctx: Context, requset: IInitializeRequest): InternalState {
+  initialize(ctx: Context, request: IInitializeRequest): InternalState {
     return {
       createdBy: undefined,
       phase: GamePhase.NotStarted,
