@@ -1,4 +1,5 @@
 import React, { createContext, useEffect, useState, useContext } from "react";
+import { Color } from "../../../api/types";
 import { useNavigate } from "react-router-dom";
 
 import { HathoraClient, HathoraConnection } from "../../.hathora/client";
@@ -82,12 +83,14 @@ export default function AppContextProvider({ children }) {
       onUpdate,
       onConnectionFailure
     );
-    console.log("createGame", connection);
+    console.log('createGame', connection)
+    await connection.joinGame({});
+    console.log({ selectedColor });
+    await connection.pickColor({ color: selectedColor });
     connections[connection.stateId] = connection;
     setUserName(userName);
     setPreferredBoardSize(boardSize);
-    connection.setBoardSize({ size: parseInt(boardSize, 10) });
-    connection.pickColor({ color: selectedColor });
+    await connection.setBoardSize({ size: parseInt(boardSize, 10) });
     navigate(`/0${connection.stateId}`);
   };
 

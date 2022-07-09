@@ -20,6 +20,8 @@ import {
   IUndoRequest,
 } from "../api/types";
 
+console.log('hello from server')
+
 type Pass = { type: "pass"; color: Color };
 
 function isPass(obj: any): obj is Pass {
@@ -57,6 +59,7 @@ function checkTurn(state: InternalState, playerColor: Color): Response {
 
 export class Impl implements Methods<InternalState> {
   initialize(ctx: Context, request: IInitializeRequest): InternalState {
+    console.log('init')
     return {
       createdBy: undefined,
       phase: GamePhase.NotStarted,
@@ -75,6 +78,7 @@ export class Impl implements Methods<InternalState> {
     ctx: Context,
     request: IJoinGameRequest
   ): Response {
+    console.log('joinGame', {userId, request, state})
     if (state.players.length === 2) {
       return Response.error("Game already has two players.");
     }
@@ -140,6 +144,7 @@ export class Impl implements Methods<InternalState> {
     ctx: Context,
     request: IPickColorRequest
   ): Response {
+    console.log('pickColor', {userId, ctx})
     const player = state.players.find((player) => player.id === userId);
     if (player == null) {
       return Response.error("Player is not in this game.");
