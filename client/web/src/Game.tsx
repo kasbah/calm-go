@@ -26,8 +26,7 @@ export default function Game() {
     state?.undoRequested != null && state?.undoRequested === user?.id;
 
   useEffect(() => {
-    getConnection(stateId).then((conn) => {
-      connection = conn;
+    getConnection(stateId).then((connection) => {
       if (!isUserPlaying && state?.players.length !== 2 && connection != null) {
         connection.joinGame({});
       }
