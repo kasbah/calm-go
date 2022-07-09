@@ -26,10 +26,12 @@ export default function Game() {
     state?.undoRequested != null && state?.undoRequested === user?.id;
 
   useEffect(() => {
-    connection = getConnection(stateId);
-    if (!isUserPlaying && state?.players.length !== 2 && connection != null) {
-      connection.joinGame({});
-    }
+    getConnection(stateId).then((conn) => {
+      connection = conn;
+      if (!isUserPlaying && state?.players.length !== 2 && connection != null) {
+        connection.joinGame({});
+      }
+    });
   });
 
   const sendUndo = () => {
