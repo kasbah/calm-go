@@ -8,7 +8,7 @@ const AppContext = createContext({
   user: null,
   userName: null,
   createGame: async () => {},
-  getConnection: () => {},
+  getConnection: async () => {},
   gameStates: {},
   preferredBoardSize: "9",
 });
@@ -77,28 +77,28 @@ export default function AppContextProvider({ children }) {
   const createGame = async ({ userName, selectedColor, boardSize }) => {
     const token = localStorage.getItem(client.appId);
     const stateId = await client.create(token, {});
-    const connection = client.connect(
+    const connection = await client.connect(
       token,
       stateId,
       onUpdate,
       onConnectionFailure
     );
-    console.log('createGame', connection)
+    console.log('createGame', connection);
     await connection.joinGame({});
     console.log({ selectedColor });
     await connection.pickColor({ color: selectedColor });
-    connections[connection.stateId] = connection;
+    connections[stateId] = connection;
     setUserName(userName);
     setPreferredBoardSize(boardSize);
     await connection.setBoardSize({ size: parseInt(boardSize, 10) });
-    navigate(`/0${connection.stateId}`);
+    navigate(`/0${stateId}`);
   };
 
-  const getConnection = (stateId: string) => {
+  const getConnection = async (stateId: string) => {
     const token = localStorage.getItem(client.appId);
     let connection: HathoraConnection = connections[stateId];
     if (connection == null && token != null) {
-      connection = client.connect(
+      connection = await client.connect(
         token,
         stateId,
         onUpdate,
