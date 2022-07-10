@@ -2,7 +2,8 @@
 import Board, { Vertex, Sign } from "@sabaki/go-board";
 import { Methods, Context } from "./.hathora/methods";
 import { Response } from "../api/base";
-import sabakiDeadstones from "@sabaki/deadstones";
+import sabakiDeadstones from "./deadstones/js/main";
+
 import {
   Color,
   Player,
