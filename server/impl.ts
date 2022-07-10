@@ -20,8 +20,6 @@ import {
   IUndoRequest,
 } from "../api/types";
 
-console.log('hello from server')
-
 type Pass = { type: "pass"; color: Color };
 
 function isPass(obj: any): obj is Pass {

@@ -39,7 +39,6 @@ export default function AppContextProvider({ children }) {
         u = null;
       }
       setUser(u);
-      console.log(u);
     };
     getUserAndToken();
   }, []);
@@ -83,9 +82,7 @@ export default function AppContextProvider({ children }) {
       onUpdate,
       onConnectionFailure
     );
-    console.log('createGame', connection);
     await connection.joinGame({});
-    console.log({ selectedColor });
     await connection.pickColor({ color: selectedColor });
     connections[stateId] = connection;
     setUserName(userName);
@@ -104,7 +101,6 @@ export default function AppContextProvider({ children }) {
         onUpdate,
         onConnectionFailure
       );
-      console.log("getConnection", connection);
       connections[stateId] = connection;
     }
     return connection;

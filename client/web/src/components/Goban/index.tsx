@@ -56,11 +56,13 @@ export default function Goban() {
   const isUserTurn = state?.turn === userColor;
 
   // for marking the last move with a dot
-  const markerMap = state?.phase === GamePhase.InProgress && signMap.map((row, y) =>
-    row.map((_, x) =>
-      x === lastMove?.x && y === lastMove?.y ? { type: "circle" } : {}
-    )
-  );
+  const markerMap =
+    state?.phase === GamePhase.InProgress &&
+    signMap.map((row, y) =>
+      row.map((_, x) =>
+        x === lastMove?.x && y === lastMove?.y ? { type: "circle" } : {}
+      )
+    );
 
   useEffect(() => {
     // appears as a grey dot when we use sign = 1
@@ -81,8 +83,9 @@ export default function Goban() {
 
   useEffect(() => {
     if (connection == null) {
-      const c = getConnection(stateId);
-      setConnection(c);
+      getConnection(stateId).then((c) => {
+        setConnection(c);
+      });
     }
   });
 
