@@ -1,4 +1,3 @@
-/// <reference types="./custom_typings/@sabaki/deadstones" />
 import Board, { Vertex, Sign } from "@sabaki/go-board";
 import { Methods, Context } from "./.hathora/methods";
 import { Response } from "../api/base";
