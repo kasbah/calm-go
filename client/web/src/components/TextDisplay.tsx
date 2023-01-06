@@ -275,7 +275,7 @@ export default function TextDisplay({
             </>
           )}
           {gamePhase !== GamePhase.NotStarted &&
-            isPlaying & (gamePhase !== GamePhase.Ended) &&
+            isPlaying && (gamePhase !== GamePhase.Ended) &&
             !isUserTurn &&
             (hasRequestedUndo ? (
               <>
