@@ -35,6 +35,7 @@ types:
     passes: "Color[]"
     deadStonesMap: "int[][]?"
     score: "Score?"
+    sgf: "string"
 
 methods:
   joinGame:

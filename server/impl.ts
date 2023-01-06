@@ -1,7 +1,11 @@
+/// <reference types="./custom_typings/@sabaki/sgf" />
+/// <reference types="./custom_typings/@sabaki/immutable-gametree" />
 import Board, { Vertex, Sign } from "@sabaki/go-board";
 import { Methods, Context } from "./.hathora/methods";
 import { Response } from "../api/base";
 import sabakiDeadstones from "./deadstones/js/main";
+import { Pass, isPass } from "./pass";
+import { moveHistoryToSgf } from "./sgf";
 
 import {
   Color,
@@ -20,12 +24,6 @@ import {
   IUndoRequest,
 } from "../api/types";
 
-type Pass = { type: "pass"; color: Color };
-
-function isPass(obj: any): obj is Pass {
-  return obj != null && obj.type === "pass";
-}
-
 type InternalState = {
   createdBy: UserId | undefined;
   phase: GamePhase;
@@ -36,6 +34,7 @@ type InternalState = {
   undoRequested: UserId | undefined;
   lastMove: Move | undefined;
   deadStonesMap: number[][] | undefined;
+  moveHistory: { color: Color; move: Move | "pass" }[];
 };
 
 function checkTurn(state: InternalState, playerColor: Color): Response {
@@ -67,6 +66,7 @@ export class Impl implements Methods<InternalState> {
       undoRequested: undefined,
       lastMove: undefined,
       deadStonesMap: undefined,
+      moveHistory: [],
     };
   }
   joinGame(
@@ -204,6 +204,7 @@ export class Impl implements Methods<InternalState> {
         preventKo: true,
       });
       state.history.push(state.board);
+      state.moveHistory.push({ color: player.color, move: request });
       state.board = newBoard;
       state.turn = player.color === Color.White ? Color.Black : Color.White;
       state.phase = GamePhase.InProgress;
@@ -229,6 +230,7 @@ export class Impl implements Methods<InternalState> {
       return response;
     }
     state.history.push({ type: "pass", color: player.color });
+    state.moveHistory.push({ color: player.color, move: "pass" });
     state.turn = player.color === Color.White ? Color.Black : Color.White;
     state.phase = GamePhase.InProgress;
     // if there were two passes in a row, and the player passing now is playing
@@ -303,6 +305,7 @@ export class Impl implements Methods<InternalState> {
     }
     // actually undo
     state.history.pop();
+    state.moveHistory.pop();
     state.undoRequested = undefined;
     if (state.history.length === 0) {
       state.phase = GamePhase.NotStarted;
@@ -349,6 +352,7 @@ export class Impl implements Methods<InternalState> {
       lastMove: state.lastMove,
       passes: passes.map(({ color }) => color),
       deadStonesMap: state.deadStonesMap,
+      sgf: moveHistoryToSgf(state.moveHistory, state.board.width),
     };
   }
 }

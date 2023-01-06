@@ -40,6 +40,8 @@ export default function Game() {
     }
   };
 
+  console.log(state?.sgf)
+
   return (
     <div className="flex flex-col">
       <div className="flex justify-center">
