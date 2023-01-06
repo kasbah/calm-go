@@ -40,6 +40,10 @@ export default function TextDisplay({
     isLoaded && captures[opponentColorText.toLowerCase()];
   const playerCaptures = isLoaded && captures[colorText];
 
+  const deadStones = score?.deadStones?.[colorText];
+  const opponentDeadStones =
+    score?.deadStones?.[opponentColorText.toLowerCase()];
+
   const playerLastJoined = players?.[players.length - 1];
 
   const passWillEndGame =
@@ -212,7 +216,13 @@ export default function TextDisplay({
                   <>
                     {" has captured "}
                     {numberToWords.toWords(opponentCaptures)}
-                    {` stone${opponentCaptures > 1 ? "s" : ""}.`}
+                    {` stone${opponentCaptures > 1 ? "s" : ""}`}
+                    {opponentDeadStones > 0
+                      ? ` (${numberToWords.toWords(opponentDeadStones)} ${
+                          opponentDeadStones > 1 ? "were" : "was"
+                        } marked dead)`
+                      : ""}
+                    {"."}
                   </>
                 )}
               </span>
@@ -224,7 +234,13 @@ export default function TextDisplay({
                   <>
                     {" You have captured "}
                     {numberToWords.toWords(playerCaptures)}
-                    {` stone${playerCaptures > 1 ? "s" : ""}.`}
+                    {` stone${playerCaptures > 1 ? "s" : ""}`}
+                    {deadStones > 0
+                      ? ` (${numberToWords.toWords(deadStones)} ${
+                          deadStones > 1 ? "were" : "was"
+                        } marked dead)`
+                      : ""}
+                    {"."}
                   </>
                 )}
               </span>
