@@ -1,28 +1,29 @@
+/// <reference types="./custom_typings/@sabaki/influence" />
 /// <reference types="./custom_typings/@sabaki/sgf" />
 /// <reference types="./custom_typings/@sabaki/immutable-gametree" />
-import Board, { Vertex, Sign } from "@sabaki/go-board";
-import { Methods, Context } from "./.hathora/methods";
+import Board, { Sign, Vertex } from "@sabaki/go-board";
+import influence from "@sabaki/influence";
 import { Response } from "../api/base";
-import * as sabakiDeadstones from "./deadstones/js/main";
-import { Pass, isPass } from "./pass";
-import { moveHistoryToSgf } from "./sgf";
-
 import {
   Color,
-  Player,
-  Move,
   GamePhase,
   GameState,
-  UserId,
   IInitializeRequest,
   IJoinGameRequest,
   ILeaveGameRequest,
-  ISetBoardSizeRequest,
-  IPickColorRequest,
   IMakeMoveRequest,
   IPassRequest,
+  IPickColorRequest,
+  ISetBoardSizeRequest,
   IUndoRequest,
+  Move,
+  Player,
+  UserId,
 } from "../api/types";
+import { Context, Methods } from "./.hathora/methods";
+import * as sabakiDeadstones from "./deadstones/js/main";
+import { isPass, Pass } from "./pass";
+import { moveHistoryToSgf } from "./sgf";
 
 type InternalState = {
   createdBy: UserId | undefined;
@@ -33,7 +34,7 @@ type InternalState = {
   players: Player[];
   undoRequested: UserId | undefined;
   lastMove: Move | undefined;
-  deadStonesMap: number[][] | undefined;
+  deadStonesMap: Vertex[] | undefined;
   moveHistory: { color: Color; move: Move | "pass" }[];
 };
 
@@ -337,6 +338,14 @@ export class Impl implements Methods<InternalState> {
         }
       }
     }
+    let score;
+    if (state.deadStonesMap) {
+      for (const vertex of state.deadStonesMap) {
+        state.board.set(vertex, 0);
+      }
+      const areaMap = influence.areaMap(state.board.signMap);
+      score = getScore(state.board, areaMap, { komi: 6.5 });
+    }
     return {
       createdBy: state.createdBy,
       phase: state.phase,
@@ -353,6 +362,7 @@ export class Impl implements Methods<InternalState> {
       passes: passes.map(({ color }) => color),
       deadStonesMap: state.deadStonesMap,
       sgf: moveHistoryToSgf(state.moveHistory, state.board.width),
+      score,
     };
   }
 }

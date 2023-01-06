@@ -17,11 +17,11 @@ types:
     x: "int"
     y: "int"
   Score:
-    area: "int[][]"
-    territory: "int[][]"
-    captures: "int[][]"
-    areaScore: "int"
-    territoryScore: "int"
+    area: "int[]"
+    territory: "int[]"
+    captures: "int[]"
+    areaScore: "float"
+    territoryScore: "float"
   GameState:
     createdBy: "UserId?"
     phase: "GamePhase"

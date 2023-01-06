@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { HathoraConnection } from "../../.hathora/client";
-import { UserId } from "../../../api/types";
+import { UserId, GameState } from "../../../api/types";
 
 import Goban from "./components/Goban";
 import Button from "./components/Button";
@@ -16,7 +16,7 @@ export default function Game() {
   const { gameStates, getConnection, user } = useAppContext();
   let connection: HathoraConnection | undefined;
 
-  const state = gameStates[stateId];
+  const state: GameState = gameStates[stateId];
   const players = state?.players;
 
   const isLoaded = state != null;

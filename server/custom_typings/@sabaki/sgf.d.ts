@@ -1,5 +1,5 @@
-declare const m: any;
+declare const sgf: any;
 
 declare module "@sabaki/sgf" {
-  export = m;
+  export = sgf;
 }
