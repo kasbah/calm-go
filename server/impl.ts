@@ -338,12 +338,30 @@ export class Impl implements Methods<InternalState> {
         }
       }
     }
+    let captures = {
+      black: state.board.getCaptures(1),
+      white: state.board.getCaptures(-1),
+    };
+    let deadStones = {
+      black: 0,
+      white: 0,
+    }
     let score;
     if (state.deadStonesMap) {
-      const board = state.board.clone()
+      const board = state.board.clone();
       for (const vertex of state.deadStonesMap) {
+        const sign = board.get(vertex)
+        if (sign === 1) {
+          captures.black += 1
+          deadStones.black += 1
+        } else if (sign === -1) {
+          captures.white += 1
+          deadStones.white += 1
+        }
         board.set(vertex, 0);
       }
+      board.setCaptures(1, captures.black)
+      board.setCaptures(-1, captures.white)
       const areaMap = influence.areaMap(board.signMap);
       score = getScore(board, areaMap, { komi: 6.5 });
     }
@@ -351,10 +369,8 @@ export class Impl implements Methods<InternalState> {
       createdBy: state.createdBy,
       phase: state.phase,
       signMap: state.board.signMap,
-      captures: {
-        black: state.board.getCaptures(1),
-        white: state.board.getCaptures(-1),
-      },
+      captures,
+      deadStones,
       turn: state.turn,
       turnNumber: state.history.length,
       players: state.players,
@@ -371,7 +387,7 @@ export class Impl implements Methods<InternalState> {
 function getScore(
   board: Board,
   areaMap: Sign[][],
-  { komi = 0, handicap = 0 } = {}
+  { komi = 6.5, handicap = 0 } = {}
 ) {
   const score = {
     area: [0, 0],

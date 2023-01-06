@@ -31,6 +31,7 @@ types:
     players: "Player[]"
     undoRequested: "UserId?"
     captures: "Captures"
+    deadStones: "Captures"
     lastMove: "Move?"
     passes: "Color[]"
     deadStonesMap: "int[][]?"
