@@ -3,7 +3,7 @@
 import Board, { Vertex, Sign } from "@sabaki/go-board";
 import { Methods, Context } from "./.hathora/methods";
 import { Response } from "../api/base";
-import sabakiDeadstones from "./deadstones/js/main";
+import * as sabakiDeadstones from "./deadstones/js/main";
 import { Pass, isPass } from "./pass";
 import { moveHistoryToSgf } from "./sgf";
 
