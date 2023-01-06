@@ -136,13 +136,13 @@ export default function TextDisplay({
                 </thead>
                 <tbody>
                   <tr>
-                    <td className="p-2 border text-bold">Black</td>
+                    <td className="p-2 border font-bold">Black</td>
                     <td className="p-2 border">{score.area.black}</td>
                     <td className="p-2 border">0</td>
                     <td className="p-2 border">{`${score.area.black} + 0 = ${score.area.black}`}</td>
                   </tr>
                   <tr>
-                    <td className="p-2 border text-bold">White</td>
+                    <td className="p-2 border font-bold">White</td>
                     <td className="p-2 border">{score.area.white}</td>
                     <td className="p-2 border">6.5</td>
                     <td className="p-2 border">{`${score.area.white} + 6.5 = ${
@@ -173,7 +173,7 @@ export default function TextDisplay({
                 </thead>
                 <tbody>
                   <tr>
-                    <td className="p-2 border text-bold">Black</td>
+                    <td className="p-2 border font-bold">Black</td>
                     <td className="p-2 border">{score.territory.black}</td>
                     <td className="p-2 border">0</td>
                     <td
@@ -190,7 +190,7 @@ export default function TextDisplay({
                     }`}</td>
                   </tr>
                   <tr>
-                    <td className="p-2 border text-bold">White</td>
+                    <td className="p-2 border font-bold">White</td>
                     <td className="p-2 border">{score.territory.white}</td>
                     <td className="p-2 border">6.5</td>
                     <td
