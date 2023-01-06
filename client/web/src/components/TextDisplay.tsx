@@ -123,7 +123,7 @@ export default function TextDisplay({
               <br />
             </>
           )}
-          {isUserTurn && (
+          {gamePhase !== GamePhase.Ended && isUserTurn && (
             <>
               <span
                 className={`${
@@ -228,7 +228,7 @@ export default function TextDisplay({
           >
             {"save an SGF file"}
           </button>{" "}
-          {" of this Game."}
+          {" of this game."}
         </p>
       )}
     </div>
