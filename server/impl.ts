@@ -353,11 +353,11 @@ export class Impl implements Methods<InternalState> {
       for (const vertex of state.deadStonesMap) {
         const sign = board.get(vertex);
         if (sign === 1) {
-          captures.black += 1;
-          deadStones.black += 1;
-        } else if (sign === -1) {
           captures.white += 1;
           deadStones.white += 1;
+        } else if (sign === -1) {
+          captures.black += 1;
+          deadStones.black += 1;
         }
         board.set(vertex, 0);
       }

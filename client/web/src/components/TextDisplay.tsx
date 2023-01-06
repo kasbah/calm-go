@@ -44,6 +44,9 @@ export default function TextDisplay({
   const opponentDeadStones =
     score?.deadStones?.[opponentColorText.toLowerCase()];
 
+  const deadStonesWhite = score?.deadStones?.white;
+  const deadStonesBlack = score?.deadStones?.black;
+
   const playerLastJoined = players?.[players.length - 1];
 
   const passWillEndGame =
@@ -56,7 +59,6 @@ export default function TextDisplay({
   const lastMoveWasPass =
     passes != null && passes.length > 0 && passes[0] === userPlayer?.color;
 
-  let won;
   if (gamePhase === GamePhase.Ended) {
   }
 
@@ -113,12 +115,105 @@ export default function TextDisplay({
           {gamePhase === GamePhase.Ended && (
             <>
               {score.winner === userPlayer?.color
-                ? "You won the game."
+                ? `You won the game by an area of ${Math.abs(
+                    score.areaScore
+                  )} or a territory of ${Math.abs(score.territoryScore)}.`
                 : score.winner === Color.White
-                ? "White won the game."
+                ? `White won the game by an area of ${Math.abs(
+                    score.areaScore
+                  )} or a territory of ${Math.abs(score.territoryScore)}.`
                 : score.winner === Color.Black
-                ? "Black won the game."
+                ? `Black won the game by an area of ${Math.abs(
+                    score.areaScore
+                  )} or a territory of ${Math.abs(score.territoryScore)}.`
                 : "Who won the game depends on the scoring method you would like to use."}
+              <br />
+              <br />
+              <table class="table-auto border">
+                <thead class="p-2 border">
+                  <th class="p-2 border"></th>
+                  <th class="p-2 border">Area</th>
+                  <th class="p-2 border">Komi</th>
+                  <th class="p-2 border"></th>
+                </thead>
+                <tr>
+                  <th class="p-2 border">Black</th>
+                  <td class="p-2 border">{score.area.black}</td>
+                  <td class="p-2 border">0</td>
+                  <td class="p-2 border">{`${score.area.black} + 0 = ${score.area.black}`}</td>
+                </tr>
+                <tr>
+                  <th class="p-2 border">White</th>
+                  <td class="p-2 border">{score.area.white}</td>
+                  <td class="p-2 border">6.5</td>
+                  <td class="p-2 border">{`${score.area.white} + 6.5 = ${
+                    score.area.white + 6.5
+                  }`}</td>
+                </tr>
+                <tr>
+                  <td class="p-2 border"></td>
+                  <td class="p-2 border"></td>
+                  <td class="p-2 border"></td>
+                  <td class="p-2 border">
+                    {`${score.area.black} - ${score.area.white + 6.5} = `}
+                    <span class="font-bold">{score.areaScore}</span>
+                  </td>
+                </tr>
+              </table>
+              <br />
+              <table class="table-auto border">
+                <thead class="p-2 border">
+                  <th class="p-2 border"></th>
+                  <th class="p-2 border">Territory</th>
+                  <th class="p-2 border">Komi</th>
+                  <th class="p-2 border">Captures</th>
+                  <th class="p-2 border"></th>
+                </thead>
+                <tr>
+                  <th class="p-2 border">Black</th>
+                  <td class="p-2 border">{score.territory.black}</td>
+                  <td class="p-2 border">0</td>
+                  <td
+                    class="p-2 border"
+                    style={{ minWidth: deadStonesBlack > 0 ? 100 : 0 }}
+                  >
+                    {score.captures.black}{" "}
+                    {deadStonesBlack > 0 && `(${deadStonesBlack} dead)`}
+                  </td>
+                  <td class="p-2 border">{`${score.territory.black} + 0 + ${
+                    score.captures.black
+                  } = ${score.territory.black + score.captures.black}`}</td>
+                </tr>
+                <tr>
+                  <th class="p-2 border">White</th>
+                  <td class="p-2 border">{score.territory.white}</td>
+                  <td class="p-2 border">6.5</td>
+                  <td
+                    class="p-2 border"
+                    style={{ minWidth: deadStonesBlack > 0 ? 100 : 0 }}
+                  >
+                    {score.captures.white}{" "}
+                    {deadStonesWhite > 0 && `(${deadStonesWhite} dead)`}
+                  </td>
+                  <td class="p-2 border">{`${score.territory.white} + 6.5 + ${
+                    score.captures.white
+                  } = ${
+                    score.territory.white + 6.5 + score.captures.white
+                  }`}</td>
+                </tr>
+                <tr>
+                  <td class="p-2 border"></td>
+                  <td class="p-2 border"></td>
+                  <td class="p-2 border"></td>
+                  <td class="p-2 border"></td>
+                  <td class="p-2 border">
+                    {`${score.territory.black + score.captures.black} - ${
+                      score.territory.white + 6.5 + score.captures.white
+                    } = `}
+                    <span class="font-bold">{score.territoryScore}</span>
+                  </td>
+                </tr>
+              </table>
               <br />
             </>
           )}
@@ -245,11 +340,6 @@ export default function TextDisplay({
                 )}
               </span>
             </>
-          )}
-          {gamePhase === GamePhase.Ended && (
-            <div>
-              <pre>{JSON.stringify(score, null, 2)}</pre>
-            </div>
           )}
         </div>
       )}
