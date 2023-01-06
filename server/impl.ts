@@ -295,7 +295,7 @@ export class Impl implements Methods<InternalState> {
         .filter((m) => !isPass(m))
         .pop();
       if (moveBeforeLast == null) {
-        // it must have been the start of the games, remove the lastMove marker
+        // it must have been the start of the game, remove the lastMove marker
         state.lastMove = undefined;
       } else {
         // if we have a move use a diff to establish the lastMove marker

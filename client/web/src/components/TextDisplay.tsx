@@ -132,6 +132,7 @@ export default function TextDisplay({
                   <th className="p-2 border">Komi</th>
                   <th className="p-2 border"></th>
                 </thead>
+
                 <tr>
                   <th className="p-2 border">Black</th>
                   <td className="p-2 border">{score.area.black}</td>
@@ -191,9 +192,9 @@ export default function TextDisplay({
                     {score.captures.white}{" "}
                     {deadStonesWhite > 0 && `(${deadStonesWhite} dead)`}
                   </td>
-                  <td className="p-2 border">{`${score.territory.white} + 6.5 + ${
-                    score.captures.white
-                  } = ${
+                  <td className="p-2 border">{`${
+                    score.territory.white
+                  } + 6.5 + ${score.captures.white} = ${
                     score.territory.white + 6.5 + score.captures.white
                   }`}</td>
                 </tr>
@@ -265,7 +266,7 @@ export default function TextDisplay({
             </>
           )}
           {gamePhase !== GamePhase.NotStarted &&
-            isPlaying &&
+            isPlaying & (gamePhase !== GamePhase.Ended) &&
             !isUserTurn &&
             (hasRequestedUndo ? (
               <>
@@ -297,34 +298,35 @@ export default function TextDisplay({
                 <br />
               </>
             ))}
-          {opponentCaptures + playerCaptures > 0 && (
-            <>
-              <span className="text-gray-500 italic">
-                {opponentColorText}
-                {opponentCaptures === 0 ? (
-                  " has not captured any stones yet."
-                ) : (
-                  <>
-                    {" has captured "}
-                    {numberToWords.toWords(opponentCaptures)}
-                    {` stone${opponentCaptures > 1 ? "s" : ""}.`}
-                  </>
-                )}
-              </span>
-              <br />
-              <span className="text-gray-500 italic">
-                {playerCaptures === 0 ? (
-                  " You have not captured any stones yet."
-                ) : (
-                  <>
-                    {" You have captured "}
-                    {numberToWords.toWords(playerCaptures)}
-                    {` stone${playerCaptures > 1 ? "s" : ""}.`}
-                  </>
-                )}
-              </span>
-            </>
-          )}
+          {gamePhase !== GamePhase.Ended &&
+            opponentCaptures + playerCaptures > 0 && (
+              <>
+                <span className="text-gray-500 italic">
+                  {opponentColorText}
+                  {opponentCaptures === 0 ? (
+                    " has not captured any stones yet."
+                  ) : (
+                    <>
+                      {" has captured "}
+                      {numberToWords.toWords(opponentCaptures)}
+                      {` stone${opponentCaptures > 1 ? "s" : ""}.`}
+                    </>
+                  )}
+                </span>
+                <br />
+                <span className="text-gray-500 italic">
+                  {playerCaptures === 0 ? (
+                    " You have not captured any stones yet."
+                  ) : (
+                    <>
+                      {" You have captured "}
+                      {numberToWords.toWords(playerCaptures)}
+                      {` stone${playerCaptures > 1 ? "s" : ""}.`}
+                    </>
+                  )}
+                </span>
+              </>
+            )}
         </div>
       )}
       {gamePhase !== GamePhase.NotStarted && sgf && (
