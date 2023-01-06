@@ -52,6 +52,10 @@ export default function TextDisplay({
   const lastMoveWasPass =
     passes != null && passes.length > 0 && passes[0] === userPlayer?.color;
 
+  let won;
+  if (gamePhase === GamePhase.Ended) {
+  }
+
   return (
     <div style={{ width: 400, maxWidth: "80vw" }}>
       {isLoaded && (
@@ -104,7 +108,13 @@ export default function TextDisplay({
           )}
           {gamePhase === GamePhase.Ended && (
             <>
-              The game has ended.
+              {score.winner === userPlayer?.color
+                ? "You won the game."
+                : score.winner === Color.White
+                ? "White won the game."
+                : score.winner === Color.Black
+                ? "Black won the game."
+                : "Who won the game depends on the scoring method you would like to use."}
               <br />
             </>
           )}
@@ -119,6 +129,14 @@ export default function TextDisplay({
                 {isPlaying
                   ? ` You are playing ${colorText}.`
                   : " You are not playing in this game."}
+              </span>
+              <br />
+            </>
+          )}
+          {gamePhase === GamePhase.Ended && (
+            <>
+              <span className="text-gray-500 italic inline">
+                {isPlaying && ` You were playing ${colorText}.`}
               </span>
               <br />
             </>

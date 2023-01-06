@@ -18,6 +18,7 @@ import {
   IUndoRequest,
   Move,
   Player,
+  Total,
   UserId,
 } from "../api/types";
 import { Context, Methods } from "./.hathora/methods";
@@ -345,32 +346,31 @@ export class Impl implements Methods<InternalState> {
     let deadStones = {
       black: 0,
       white: 0,
-    }
+    };
     let score;
     if (state.deadStonesMap) {
       const board = state.board.clone();
       for (const vertex of state.deadStonesMap) {
-        const sign = board.get(vertex)
+        const sign = board.get(vertex);
         if (sign === 1) {
-          captures.black += 1
-          deadStones.black += 1
+          captures.black += 1;
+          deadStones.black += 1;
         } else if (sign === -1) {
-          captures.white += 1
-          deadStones.white += 1
+          captures.white += 1;
+          deadStones.white += 1;
         }
         board.set(vertex, 0);
       }
-      board.setCaptures(1, captures.black)
-      board.setCaptures(-1, captures.white)
+      board.setCaptures(1, captures.black);
+      board.setCaptures(-1, captures.white);
       const areaMap = influence.areaMap(board.signMap);
-      score = getScore(board, areaMap, { komi: 6.5 });
+      score = getScore(board, areaMap, deadStones, { komi: 6.5 });
     }
     return {
       createdBy: state.createdBy,
       phase: state.phase,
       signMap: state.board.signMap,
       captures,
-      deadStones,
       turn: state.turn,
       turnNumber: state.history.length,
       players: state.players,
@@ -387,38 +387,53 @@ export class Impl implements Methods<InternalState> {
 function getScore(
   board: Board,
   areaMap: Sign[][],
+  deadStones: Total,
   { komi = 6.5, handicap = 0 } = {}
 ) {
   const score = {
-    area: [0, 0],
-    territory: [0, 0],
-    captures: [1, -1].map((sign) => board.getCaptures(sign as Sign)),
+    area: { black: 0, white: 0 },
+    territory: { black: 0, white: 0 },
+    captures: { black: board.getCaptures(1), white: board.getCaptures(-1) },
     areaScore: 0,
     territoryScore: 0,
+    deadStones,
+    winner: Color.None,
   };
 
   for (let x = 0; x < board.width; x++) {
     for (let y = 0; y < board.height; y++) {
       const z = areaMap[y][x];
-      const index = z > 0 ? 0 : 1;
+      const color = z > 0 ? "black" : "white";
 
-      score.area[index] += Math.abs(Math.sign(z));
+      score.area[color] += Math.abs(Math.sign(z));
       if (board.get([x, y]) === 0) {
-        score.territory[index] += Math.abs(Math.sign(z));
+        score.territory[color] += Math.abs(Math.sign(z));
       }
     }
   }
 
-  score.area = score.area.map(Math.round);
-  score.territory = score.territory.map(Math.round);
+  score.area = {
+    black: Math.round(score.area.black),
+    white: Math.round(score.area.white),
+  };
+  score.territory = {
+    black: Math.round(score.territory.black),
+    white: Math.round(score.territory.white),
+  };
 
-  score.areaScore = score.area[0] - score.area[1] - komi - handicap;
+  score.areaScore = score.area.black - score.area.white - komi - handicap;
   score.territoryScore =
-    score.territory[0] -
-    score.territory[1] +
-    score.captures[0] -
-    score.captures[1] -
+    score.territory.black -
+    score.territory.white +
+    score.captures.black -
+    score.captures.white -
     komi;
+
+  if (score.areaScore < 0 && score.territoryScore < 0) {
+    score.winner = Color.White;
+  } else if (score.areaScore > 0 && score.territoryScore > 0) {
+    score.winner = Color.Black;
+  }
 
   return score;
 }

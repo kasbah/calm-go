@@ -10,18 +10,20 @@ types:
     - "NotStarted"
     - "InProgress"
     - "Ended"
-  Captures:
-    black: "int"
-    white: "int"
+  Total:
+    black: "float"
+    white: "float"
   Move:
     x: "int"
     y: "int"
   Score:
-    area: "int[]"
-    territory: "int[]"
-    captures: "int[]"
-    areaScore: "float"
-    territoryScore: "float"
+    area: "Total"
+    territory: "Total"
+    captures: "Total"
+    deadStones: "Total"
+    areaScore: float
+    territoryScore: float
+    winner: "Color"
   GameState:
     createdBy: "UserId?"
     phase: "GamePhase"
@@ -30,8 +32,7 @@ types:
     turnNumber: "int"
     players: "Player[]"
     undoRequested: "UserId?"
-    captures: "Captures"
-    deadStones: "Captures"
+    captures: "Total"
     lastMove: "Move?"
     passes: "Color[]"
     deadStonesMap: "int[][]?"
