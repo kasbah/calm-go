@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as numberToWords from "number-to-words";
 import { Color, GamePhase } from "../../../../api/types";
+import { saveAs } from "file-saver";
 
 export default function TextDisplay({
   isLoaded,
@@ -16,6 +17,8 @@ export default function TextDisplay({
   pass,
   passes,
   score,
+  sgf,
+  stateId,
 }) {
   const [linkCopied, setLinkCopied] = React.useState(false);
   React.useEffect(() => {
@@ -75,7 +78,7 @@ export default function TextDisplay({
                   {/* This button is not vissible just here to maintain the line-height when the actual button is clicked. */}
                   <button
                     aria-hidden={true}
-                    style={{height: 26, width: 1, visibility: 'hidden'}}
+                    style={{ height: 26, width: 1, visibility: "hidden" }}
                     disabled={true}
                   >
                     C
@@ -216,6 +219,18 @@ export default function TextDisplay({
           )}
         </div>
       )}
+      {gamePhase !== GamePhase.NotStarted && sgf && (
+        <p className="text-gray-300">
+          {"You can "}
+          <button
+            className="border border-gray-300 mx-1 px-1"
+            onClick={() => saveSgf(stateId, sgf)}
+          >
+            {"save an SGF file"}
+          </button>{" "}
+          {" of this Game."}
+        </p>
+      )}
     </div>
   );
 }
@@ -230,4 +245,9 @@ function colorToString(color: Color): string {
     default:
       return "No color";
   }
+}
+
+function saveSgf(stateId: string, sgf: string) {
+  const blob = new Blob([sgf], { type: "text/plain;charset=utf-8" });
+  saveAs(blob, `calm-go-0${stateId}.sgf`);
 }

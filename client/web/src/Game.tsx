@@ -40,8 +40,6 @@ export default function Game() {
     }
   };
 
-  console.log(state?.sgf)
-
   return (
     <div className="flex flex-col">
       <div className="flex justify-center">
@@ -69,6 +67,8 @@ export default function Game() {
               turnNumber={state?.turnNumber}
               userPlayer={userPlayer}
               score={state?.score}
+              sgf={state?.sgf}
+              stateId={stateId}
             />
           </div>
         </div>
