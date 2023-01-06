@@ -340,11 +340,12 @@ export class Impl implements Methods<InternalState> {
     }
     let score;
     if (state.deadStonesMap) {
+      const board = state.board.clone()
       for (const vertex of state.deadStonesMap) {
-        state.board.set(vertex, 0);
+        board.set(vertex, 0);
       }
-      const areaMap = influence.areaMap(state.board.signMap);
-      score = getScore(state.board, areaMap, { komi: 6.5 });
+      const areaMap = influence.areaMap(board.signMap);
+      score = getScore(board, areaMap, { komi: 6.5 });
     }
     return {
       createdBy: state.createdBy,
