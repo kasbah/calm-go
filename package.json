@@ -1,4 +1,9 @@
 {
+  "$schema": "https://json.schemastore.org/package.json",
+  "private": true,
+  "scripts": {
+    "dev": "hathora dev"
+  },
   "dependencies": {
     "hathora": "^0.10.3",
     "netlify-cli": "^9.13.0"
