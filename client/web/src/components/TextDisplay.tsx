@@ -168,7 +168,7 @@ export default function TextDisplay({
                     <th className="p-2 border">Territory</th>
                     <th className="p-2 border">Komi</th>
                     <th className="p-2 border">Captures</th>
-                    <th className="p-2 border"></th>
+                    <th className="p-2 border" style={{ minWidth: 180 }}></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -178,7 +178,7 @@ export default function TextDisplay({
                     <td className="p-2 border">0</td>
                     <td
                       className="p-2 border"
-                      style={{ minWidth: deadStonesBlack > 0 ? 100 : 0 }}
+                      style={{ minWidth: deadStonesBlack > 0 ? 120 : 0 }}
                     >
                       {score.captures.black}{" "}
                       {deadStonesBlack > 0 && `(${deadStonesBlack} dead)`}
@@ -195,7 +195,7 @@ export default function TextDisplay({
                     <td className="p-2 border">6.5</td>
                     <td
                       className="p-2 border"
-                      style={{ minWidth: deadStonesBlack > 0 ? 100 : 0 }}
+                      style={{ minWidth: deadStonesWhite > 0 ? 120 : 0 }}
                     >
                       {score.captures.white}{" "}
                       {deadStonesWhite > 0 && `(${deadStonesWhite} dead)`}
