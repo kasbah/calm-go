@@ -22,13 +22,9 @@ import {
   UserId,
 } from "../api/types";
 import { Context, Methods } from "./.hathora/methods";
+import { Action, isMove, isPass, PassAction } from "./action";
 import * as sabakiDeadstones from "./deadstones/js/main";
-import { moveHistoryToSgf } from "./sgf";
-
-type MoveAction = { color: Color; move: Move };
-type PassAction = { color: Color; move: "pass" };
-
-type Action = MoveAction | PassAction;
+import { actionsToSgf } from "./sgf";
 
 type InternalState = {
   createdBy: UserId | undefined;
@@ -358,7 +354,7 @@ export class Impl implements Methods<InternalState> {
       lastMove,
       passes: passes.map(({ color }) => color),
       deadStonesMap: state.deadStonesMap,
-      sgf: moveHistoryToSgf(state.history, state.board.width),
+      sgf: actionsToSgf(state.history, state.board.width),
       score,
     };
   }
@@ -416,12 +412,4 @@ function getScore(
   }
 
   return score;
-}
-
-function isPass(action?: Action): action is PassAction {
-  return action != null && action.move === "pass";
-}
-
-function isMove(action?: Action): action is MoveAction {
-  return action != null && action.move !== "pass";
 }

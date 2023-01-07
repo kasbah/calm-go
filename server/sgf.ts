@@ -1,6 +1,7 @@
 import GameTree from "@sabaki/immutable-gametree";
 import sgf from "@sabaki/sgf";
-import { Color, Move } from "../api/types";
+import { Color } from "../api/types";
+import { Action } from "./action";
 
 const alphabet: Readonly<string[]> = [
   "a",
@@ -31,10 +32,7 @@ const alphabet: Readonly<string[]> = [
   "z",
 ];
 
-export function moveHistoryToSgf(
-  moveHistory: { color: Color; move: Move | "pass" }[],
-  boardSize: number
-) {
+export function actionsToSgf(actions: Action[], boardSize: number) {
   let tree = new GameTree();
   tree = tree.mutate((draft) => {
     draft.updateProperty(0, "GM", ["1"]);
@@ -46,7 +44,7 @@ export function moveHistoryToSgf(
     draft.updateProperty(0, "SZ", [boardSize.toString()]);
   });
   let id = 0;
-  for (const { color, move } of moveHistory) {
+  for (const { color, move } of actions) {
     const c = color === Color.Black ? "B" : "W";
     const m = move === "pass" ? "" : `${alphabet[move.x]}${alphabet[move.y]}`;
     tree = tree.mutate((draft) => {
