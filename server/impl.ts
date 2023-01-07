@@ -23,20 +23,23 @@ import {
 } from "../api/types";
 import { Context, Methods } from "./.hathora/methods";
 import * as sabakiDeadstones from "./deadstones/js/main";
-import { isPass, Pass } from "./pass";
 import { moveHistoryToSgf } from "./sgf";
+
+type MoveAction = { color: Color; move: Move };
+type PassAction = { color: Color; move: "pass" };
+
+type Action = MoveAction | PassAction;
 
 type InternalState = {
   createdBy: UserId | undefined;
   phase: GamePhase;
   board: Board;
-  history: (Board | Pass)[];
   turn: Color;
   players: Player[];
   undoRequested: UserId | undefined;
   lastMove: Move | undefined;
   deadStonesMap: Vertex[] | undefined;
-  moveHistory: { color: Color; move: Move | "pass" }[];
+  history: Action[];
 };
 
 function checkTurn(state: InternalState, playerColor: Color): Response {
@@ -62,13 +65,12 @@ export class Impl implements Methods<InternalState> {
       createdBy: undefined,
       phase: GamePhase.NotStarted,
       board: Board.fromDimensions(9),
-      history: [],
       turn: Color.Black,
       players: [],
       undoRequested: undefined,
       lastMove: undefined,
       deadStonesMap: undefined,
-      moveHistory: [],
+      history: [],
     };
   }
   joinGame(
@@ -205,8 +207,7 @@ export class Impl implements Methods<InternalState> {
         preventSuicide: true,
         preventKo: true,
       });
-      state.history.push(state.board);
-      state.moveHistory.push({ color: player.color, move: request });
+      state.history.push({ color: player.color, move: request });
       state.board = newBoard;
       state.turn = player.color === Color.White ? Color.Black : Color.White;
       state.phase = GamePhase.InProgress;
@@ -231,11 +232,10 @@ export class Impl implements Methods<InternalState> {
     if (response.type === "error") {
       return response;
     }
-    state.history.push({ type: "pass", color: player.color });
-    state.moveHistory.push({ color: player.color, move: "pass" });
+    state.history.push({ color: player.color, move: "pass" });
     state.turn = player.color === Color.White ? Color.Black : Color.White;
     state.phase = GamePhase.InProgress;
-    // if there were two passes in a row, and the player passing now is playing
+    // if there were two or more passes in a row, and the player passing now is playing
     // white then end the game (white always gets the last pass)
     if (
       player.color === Color.White &&
@@ -243,8 +243,8 @@ export class Impl implements Methods<InternalState> {
       isPass(state.history[state.history.length - 2])
     ) {
       state.phase = GamePhase.Ended;
-      // this is not great since the promise makes race conditions on
-      // state.deadStonesMap possible (but they are still unlikely to occur)
+      // this is not great since the promise causes a race condition on
+      // state.deadStonesMap (but it seems unlikely to actually cause a problem?)
       sabakiDeadstones
         .guess(state.board.signMap, {
           finished: true,
@@ -265,8 +265,8 @@ export class Impl implements Methods<InternalState> {
     if (player == null) {
       return Response.error("Player is not in this game.");
     }
-    const lastTurn = state.history[state.history.length - 1];
-    if (lastTurn == null) {
+    const lastAction = state.history[state.history.length - 1];
+    if (lastAction == null) {
       return Response.error("Nothing to undo.");
     }
     // the request from the first player is recorded
@@ -277,43 +277,21 @@ export class Impl implements Methods<InternalState> {
     if (state.undoRequested === userId) {
       return Response.error("Undo already requested.");
     }
-    // when the second player requests undo it's a confirmation and we perform
-    // the undo
-    if (isPass(lastTurn)) {
-      state.turn = lastTurn.color;
-    } else {
-      // if it wasn't a pass it get's a bit more complicated to restore the
-      // "lastMove" marker especially in the case when a pass (or multiple
-      // passes) is followed by a move (followed by the undo we are
-      // performing). we have to find the previous actual stone placed, so have
-      // to skip all passes. we look at a max of three turns (since three
-      // passes in a row would mean the game ended guaranteed, so couldn't have
-      // happened) we check for passes and restore the lastMove marker to the
-      // first non-pass move within that
-      const moveBeforeLast = state.history
-        .slice(-4, -1)
-        .filter((m) => !isPass(m))
-        .pop();
-      if (moveBeforeLast == null) {
-        // it must have been the start of the game, remove the lastMove marker
-        state.lastMove = undefined;
-      } else {
-        // if we have a move use a diff to establish the lastMove marker
-        const diffVerteces = lastTurn.diff(moveBeforeLast as Board);
-        state.lastMove = { x: diffVerteces![0][0], y: diffVerteces![0][1] };
-      }
-      state.turn = state.turn === Color.White ? Color.Black : Color.White;
-      state.board = lastTurn;
-    }
-    // actually undo
+
+    // if we got here the second player confirmed undo and we perform the undo
     state.history.pop();
-    state.moveHistory.pop();
     state.undoRequested = undefined;
+
+    if (isMove(lastAction)) {
+      state.board.set([lastAction.move.x, lastAction.move.y], 0);
+    }
+
     if (state.history.length === 0) {
       state.phase = GamePhase.NotStarted;
     } else {
       state.phase = GamePhase.InProgress;
     }
+
     return Response.ok();
   }
   rejectUndo(
@@ -326,16 +304,16 @@ export class Impl implements Methods<InternalState> {
     return Response.ok();
   }
   getUserState(state: InternalState, userId: UserId): GameState {
-    const lastMove = state.history[state.history.length - 1];
-    const moveBeforeLast = state.history[state.history.length - 2];
-    const threeMovesAgo = state.history[state.history.length - 3];
-    const passes = [];
-    if (isPass(lastMove)) {
-      passes.push(lastMove);
-      if (isPass(moveBeforeLast)) {
-        passes.push(moveBeforeLast);
-        if (isPass(threeMovesAgo)) {
-          passes.push(threeMovesAgo);
+    const lastAction = state.history[state.history.length - 1];
+    const actionBeforeLast = state.history[state.history.length - 2];
+    const threeActionsAgo = state.history[state.history.length - 3];
+    const passes: PassAction[] = [];
+    if (isPass(lastAction)) {
+      passes.push(lastAction);
+      if (isPass(actionBeforeLast)) {
+        passes.push(actionBeforeLast);
+        if (isPass(threeActionsAgo)) {
+          passes.push(threeActionsAgo);
         }
       }
     }
@@ -366,6 +344,8 @@ export class Impl implements Methods<InternalState> {
       const areaMap = influence.areaMap(board.signMap);
       score = getScore(board, areaMap, deadStones, { komi: 6.5 });
     }
+    const reversed = [...state.history].reverse();
+    const lastMove = reversed.find(isMove)?.move;
     return {
       createdBy: state.createdBy,
       phase: state.phase,
@@ -375,10 +355,10 @@ export class Impl implements Methods<InternalState> {
       turnNumber: state.history.length,
       players: state.players,
       undoRequested: state.undoRequested,
-      lastMove: state.lastMove,
+      lastMove,
       passes: passes.map(({ color }) => color),
       deadStonesMap: state.deadStonesMap,
-      sgf: moveHistoryToSgf(state.moveHistory, state.board.width),
+      sgf: moveHistoryToSgf(state.history, state.board.width),
       score,
     };
   }
@@ -436,4 +416,12 @@ function getScore(
   }
 
   return score;
+}
+
+function isPass(action?: Action): action is PassAction {
+  return action != null && action.move === "pass";
+}
+
+function isMove(action?: Action): action is MoveAction {
+  return action != null && action.move !== "pass";
 }
