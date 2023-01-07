@@ -293,7 +293,10 @@ export default function TextDisplay({
               </>
             ) : (
               <>
-                {lastMoveWasPass && "You passed. "}
+                {lastMoveWasPass &&
+                  `You passed${
+                    gamePhase === GamePhase.Ended ? " to end the game." : "."
+                  }`}
                 <span className="text-gray-500 italic">
                   You may
                   <button
