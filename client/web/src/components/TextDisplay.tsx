@@ -139,22 +139,32 @@ export default function TextDisplay({
                     <td className="p-2 border font-bold">Black</td>
                     <td className="p-2 border">{score.area.black}</td>
                     <td className="p-2 border">0</td>
-                    <td className="p-2 border">{`${score.area.black} + 0 = ${score.area.black}`}</td>
+                    <td className="p-2 border text-right">
+                      <span className="text-gray-400">
+                        {`${score.area.black} + 0 = `}
+                      </span>
+                      {score.area.black}
+                    </td>
                   </tr>
                   <tr>
                     <td className="p-2 border font-bold">White</td>
                     <td className="p-2 border">{score.area.white}</td>
                     <td className="p-2 border">6.5</td>
-                    <td className="p-2 border">{`${score.area.white} + 6.5 = ${
-                      score.area.white + 6.5
-                    }`}</td>
+                    <td className="p-2 border text-right">
+                      <span className="text-gray-400">
+                        {`${score.area.white} + 6.5 = `}
+                      </span>
+                      {score.area.white + 6.5}
+                    </td>
                   </tr>
                   <tr>
                     <td className="p-2 border"></td>
                     <td className="p-2 border"></td>
                     <td className="p-2 border"></td>
-                    <td className="p-2 border">
-                      {`${score.area.black} - ${score.area.white + 6.5} = `}
+                    <td className="p-2 border text-right">
+                      <span className="text-gray-400">
+                        {`${score.area.black} - ${score.area.white + 6.5} = `}
+                      </span>
                       <span className="font-bold">{score.areaScore}</span>
                     </td>
                   </tr>
@@ -183,11 +193,12 @@ export default function TextDisplay({
                       {score.captures.black}{" "}
                       {deadStonesBlack > 0 && `(${deadStonesBlack} dead)`}
                     </td>
-                    <td className="p-2 border">{`${
-                      score.territory.black
-                    } + 0 + ${score.captures.black} = ${
-                      score.territory.black + score.captures.black
-                    }`}</td>
+                    <td className="p-2 border text-right">
+                      <span className="text-gray-400">
+                        {`${score.territory.black} + 0 + ${score.captures.black} = `}
+                      </span>
+                      {score.territory.black + score.captures.black}
+                    </td>
                   </tr>
                   <tr>
                     <td className="p-2 border font-bold">White</td>
@@ -200,21 +211,24 @@ export default function TextDisplay({
                       {score.captures.white}{" "}
                       {deadStonesWhite > 0 && `(${deadStonesWhite} dead)`}
                     </td>
-                    <td className="p-2 border">{`${
-                      score.territory.white
-                    } + 6.5 + ${score.captures.white} = ${
-                      score.territory.white + 6.5 + score.captures.white
-                    }`}</td>
+                    <td className="p-2 border text-right">
+                      <span className="text-gray-400">
+                        {`${score.territory.white} + 6.5 + ${score.captures.white} = `}
+                      </span>
+                      {score.territory.white + 6.5 + score.captures.white}
+                    </td>
                   </tr>
                   <tr>
                     <td className="p-2 border"></td>
                     <td className="p-2 border"></td>
                     <td className="p-2 border"></td>
                     <td className="p-2 border"></td>
-                    <td className="p-2 border">
-                      {`${score.territory.black + score.captures.black} - ${
-                        score.territory.white + 6.5 + score.captures.white
-                      } = `}
+                    <td className="p-2 border text-right">
+                      <span className="text-gray-400">
+                        {`${score.territory.black + score.captures.black} - ${
+                          score.territory.white + 6.5 + score.captures.white
+                        } = `}
+                      </span>
                       <span className="font-bold">{score.territoryScore}</span>
                     </td>
                   </tr>
