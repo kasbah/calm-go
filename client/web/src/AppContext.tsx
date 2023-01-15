@@ -75,19 +75,26 @@ export default function AppContextProvider({ children }) {
 
   const createGame = async ({ userName, selectedColor, boardSize }) => {
     const token = localStorage.getItem(client.appId);
+    console.log({token})
     const stateId = await client.create(token, {});
+    console.log({stateId})
     const connection = await client.connect(
       token,
       stateId,
       onUpdate,
       onConnectionFailure
     );
+    console.log({connection})
     await connection.joinGame({});
+    console.log('joined')
     await connection.pickColor({ color: selectedColor });
+    console.log({selectedColor})
     connections[stateId] = connection;
     setUserName(userName);
+    console.log({userName})
     setPreferredBoardSize(boardSize);
     await connection.setBoardSize({ size: parseInt(boardSize, 10) });
+    console.log({boardSize})
     navigate(`/0${stateId}`);
   };
 
