@@ -5,7 +5,7 @@
     "dev": "hathora dev"
   },
   "dependencies": {
-    "hathora": "^0.10.4",
+    "hathora": "^0.9.26",
     "netlify-cli": "^9.13.0"
   }
 }
