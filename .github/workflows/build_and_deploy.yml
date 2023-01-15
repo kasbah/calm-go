@@ -17,7 +17,7 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: npx hathora build
+        run: COORDINATOR_HOST=coordinator.calmgo.games npx hathora build
 
       - name: Deploy server
         # we rsync this over to the server where pm2 is running and watching this folder
