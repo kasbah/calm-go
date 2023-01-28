@@ -276,7 +276,9 @@ export class Impl implements Methods<InternalState> {
 
     // if we got here the second player confirmed undo and we perform the undo
     state.history.pop();
+    state.turn = lastAction.color
     state.undoRequested = undefined;
+    state.deadStonesMap = undefined;
 
     if (isMove(lastAction)) {
       state.board.set([lastAction.move.x, lastAction.move.y], 0);
