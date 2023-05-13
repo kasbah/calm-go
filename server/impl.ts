@@ -29,7 +29,7 @@ import { actionsToSgf } from "./sgf";
 type InternalState = {
   createdBy: UserId | undefined;
   phase: GamePhase;
-  board: Board;
+  size: number;
   turn: Color;
   players: Player[];
   undoRequested: UserId | undefined;
@@ -55,18 +55,36 @@ function checkTurn(state: InternalState, playerColor: Color): Response {
   return Response.ok();
 }
 
+function computeBoard(size: number, history: Action[]): Board {
+  let board: Board = Board.fromDimensions(size);
+  for (const moveOrPass of history) {
+    if (isMove(moveOrPass)) {
+      board = board.makeMove(moveOrPass.color === Color.Black ? 1 : -1, [
+        moveOrPass.move.x,
+        moveOrPass.move.y,
+      ]);
+    } else {
+      board = board.makeMove(
+        moveOrPass.color === Color.Black ? 1 : -1,
+        [-1, -1]
+      );
+    }
+  }
+  return board;
+}
+
 export class Impl implements Methods<InternalState> {
   initialize(ctx: Context, request: IInitializeRequest): InternalState {
     return {
       createdBy: undefined,
       phase: GamePhase.NotStarted,
-      board: Board.fromDimensions(9),
       turn: Color.Black,
       players: [],
       undoRequested: undefined,
       lastMove: undefined,
       deadStonesMap: undefined,
       history: [],
+      size: 9,
     };
   }
   joinGame(
@@ -131,7 +149,7 @@ export class Impl implements Methods<InternalState> {
     if (request.size < 1) {
       return Response.error(`Minimum board size is 1, got ${request.size}.`);
     }
-    state.board = Board.fromDimensions(request.size);
+    state.size = request.size;
     return Response.ok();
   }
   pickColor(
@@ -181,10 +199,8 @@ export class Impl implements Methods<InternalState> {
     }
     const sign = player.color === Color.White ? -1 : 1;
     const vertex: Vertex = [request.x, request.y];
-    const { pass, overwrite, ko, suicide } = state.board.analyzeMove(
-      sign,
-      vertex
-    );
+    const board = computeBoard(state.size, state.history);
+    const { pass, overwrite, ko, suicide } = board.analyzeMove(sign, vertex);
     if (pass) {
       return Response.error("Move is outside the board.");
     }
@@ -198,13 +214,12 @@ export class Impl implements Methods<InternalState> {
       return Response.error("Move is suicide.");
     }
     try {
-      const newBoard = state.board.makeMove(sign, vertex, {
+      board.makeMove(sign, vertex, {
         preventOverwrite: true,
         preventSuicide: true,
         preventKo: true,
       });
       state.history.push({ color: player.color, move: request });
-      state.board = newBoard;
       state.turn = player.color === Color.White ? Color.Black : Color.White;
       state.phase = GamePhase.InProgress;
       state.lastMove = request;
@@ -239,10 +254,11 @@ export class Impl implements Methods<InternalState> {
       isPass(state.history[state.history.length - 2])
     ) {
       state.phase = GamePhase.Ended;
+      const board = computeBoard(state.size, state.history);
       // this is not great since the promise causes a race condition on
       // state.deadStonesMap (but it seems unlikely to actually cause a problem)
       sabakiDeadstones
-        .guess(state.board.signMap, {
+        .guess(board.signMap, {
           finished: true,
         })
         .then((deadStonesMap) => {
@@ -280,17 +296,6 @@ export class Impl implements Methods<InternalState> {
     state.undoRequested = undefined;
     state.deadStonesMap = undefined;
 
-    state.board = Board.fromDimensions(state.board.height);
-
-    for (const moveOrPass of state.history) {
-      if (isMove(moveOrPass)) {
-        state.board = state.board.makeMove(
-          moveOrPass.color === Color.Black ? 1 : -1,
-          [moveOrPass.move.x, moveOrPass.move.y]
-        );
-      }
-    }
-
     if (state.history.length === 0) {
       state.phase = GamePhase.NotStarted;
     } else {
@@ -322,9 +327,10 @@ export class Impl implements Methods<InternalState> {
         }
       }
     }
+    const board = computeBoard(state.size, state.history);
     let captures = {
-      black: state.board.getCaptures(1),
-      white: state.board.getCaptures(-1),
+      black: board.getCaptures(1),
+      white: board.getCaptures(-1),
     };
     let deadStones = {
       black: 0,
@@ -332,9 +338,10 @@ export class Impl implements Methods<InternalState> {
     };
     let score;
     if (state.deadStonesMap) {
-      const board = state.board.clone();
+      // if we have a deadStonesMap the game has finished, calculate a score
+      const boardWithoutDead = board.clone();
       for (const vertex of state.deadStonesMap) {
-        const sign = board.get(vertex);
+        const sign = boardWithoutDead.get(vertex);
         if (sign === 1) {
           captures.white += 1;
           deadStones.white += 1;
@@ -342,19 +349,19 @@ export class Impl implements Methods<InternalState> {
           captures.black += 1;
           deadStones.black += 1;
         }
-        board.set(vertex, 0);
+        boardWithoutDead.set(vertex, 0);
       }
-      board.setCaptures(1, captures.black);
-      board.setCaptures(-1, captures.white);
-      const areaMap = influence.areaMap(board.signMap);
-      score = getScore(board, areaMap, deadStones, { komi: 6.5 });
+      boardWithoutDead.setCaptures(1, captures.black);
+      boardWithoutDead.setCaptures(-1, captures.white);
+      const areaMap = influence.areaMap(boardWithoutDead.signMap);
+      score = getScore(boardWithoutDead, areaMap, deadStones, { komi: 6.5 });
     }
     const reversed = [...state.history].reverse();
     const lastMove = reversed.find(isMove)?.move;
     return {
       createdBy: state.createdBy,
       phase: state.phase,
-      signMap: state.board.signMap,
+      signMap: board.signMap,
       captures,
       turn: state.turn,
       turnNumber: state.history.length,
@@ -363,7 +370,7 @@ export class Impl implements Methods<InternalState> {
       lastMove,
       passes: passes.map(({ color }) => color),
       deadStonesMap: state.deadStonesMap,
-      sgf: actionsToSgf(state.history, state.board.width),
+      sgf: actionsToSgf(state.history, state.size),
       score,
     };
   }
