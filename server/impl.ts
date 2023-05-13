@@ -284,9 +284,9 @@ export class Impl implements Methods<InternalState> {
 
     for (const moveOrPass of state.history) {
       if (isMove(moveOrPass)) {
-        state.board.set(
-          [moveOrPass.move.x, moveOrPass.move.y],
-          moveOrPass.color === Color.Black ? 1 : -1
+        state.board = state.board.makeMove(
+          moveOrPass.color === Color.Black ? 1 : -1,
+          [moveOrPass.move.x, moveOrPass.move.y]
         );
       }
     }
