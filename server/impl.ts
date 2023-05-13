@@ -86,11 +86,11 @@ export class Impl implements Methods<InternalState> {
       state.createdBy = userId;
     }
     let color = Color.None;
-    const oponent = state.players.find((player) => player.id !== userId);
-    if (oponent != null) {
-      if (oponent.color === Color.Black) {
+    const opponent = state.players.find((player) => player.id !== userId);
+    if (opponent != null) {
+      if (opponent.color === Color.Black) {
         color = Color.White;
-      } else if (oponent.color === Color.White) {
+      } else if (opponent.color === Color.White) {
         color = Color.Black;
       }
     }
@@ -147,20 +147,20 @@ export class Impl implements Methods<InternalState> {
     if (state.phase !== GamePhase.NotStarted) {
       return Response.error("Can only pick color if game has not started.");
     }
-    const oponent = state.players.find((player) => player.id !== userId);
+    const opponent = state.players.find((player) => player.id !== userId);
     if (
       request.color !== Color.None &&
-      oponent != null &&
-      oponent.color !== Color.None
+      opponent != null &&
+      opponent.color !== Color.None
     ) {
-      return Response.error("Can not change color once oponent has as color.");
+      return Response.error("Can not change color once opponent has as color.");
     }
     player.color = request.color;
-    if (oponent != null) {
+    if (opponent != null) {
       if (player.color === Color.Black) {
-        oponent.color = Color.White;
+        opponent.color = Color.White;
       } else if (player.color === Color.White) {
-        oponent.color = Color.Black;
+        opponent.color = Color.Black;
       }
     }
     return Response.ok();
@@ -240,7 +240,7 @@ export class Impl implements Methods<InternalState> {
     ) {
       state.phase = GamePhase.Ended;
       // this is not great since the promise causes a race condition on
-      // state.deadStonesMap (but it seems unlikely to actually cause a problem?)
+      // state.deadStonesMap (but it seems unlikely to actually cause a problem)
       sabakiDeadstones
         .guess(state.board.signMap, {
           finished: true,
