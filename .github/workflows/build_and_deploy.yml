@@ -19,6 +19,8 @@ jobs:
       - name: Build
         env:
           COORDINATOR_HOST: ${{ vars.COORDINATOR_HOST }}
+          APP_ID: ${{ secrets.APP_ID }}
+          APP_SECRET: ${{ secrets.APP_SECRET }}
         run: npx hathora build
 
       - name: Deploy server
