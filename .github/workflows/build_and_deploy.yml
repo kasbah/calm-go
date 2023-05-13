@@ -17,6 +17,8 @@ jobs:
         run: npm ci
 
       - name: Build
+        env:
+          COORDINATOR_HOST: ${{ vars.COORDINATOR_HOST }}
         run: npx hathora build
 
       - name: Deploy server
