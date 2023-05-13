@@ -25,7 +25,11 @@ jobs:
 
       - name: Deploy server
         # we rsync this over to the server where pm2 is running and watching this folder
-        run: "echo -e '${{ secrets.CALM_GO_SERVER_DEPLOY_KEY }}' > key-file && chmod 600 key-file && rsync --archive --compress --update --delete --recursive -e 'ssh -i key-file -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' server/dist '${{ vars.CALM_GO_SERVER_DEPLOY_ADDRESS }}:' && rm -f key-file"
+        run: echo -e '${{ secrets.CALM_GO_SERVER_DEPLOY_KEY }}' > /tmp/key-file && chmod 600 /tmp/key-file && rsync --archive --compress --update --delete --recursive -e 'ssh -i /tmp/key-file -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' server/dist '${{ vars.CALM_GO_SERVER_DEPLOY_ADDRESS }}:'
+
+      - if: always()
+        name: Remove key-file
+        run: rm -f /tmp/key-file
 
       - name: Add _redirects file
         # required to make client-side routing work when a sub-path is
